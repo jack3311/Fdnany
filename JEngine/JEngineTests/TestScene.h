@@ -1,6 +1,6 @@
 #pragma once
 #include <JEngineLib\IScene.h>
-#include <JEngineLib\Game.h>
+#include <JEngineLib\Engine.h>
 
 class TestScene :
 	public JEngine::IScene
@@ -9,7 +9,7 @@ public:
 	TestScene();
 	~TestScene();
 
-	void preSceneRender(JEngine::Game &);
-	void postSceneRender(JEngine::Game &);
+	void preSceneRender(JEngine::Engine &);
+	void postSceneRender(JEngine::Engine &);
 };
 

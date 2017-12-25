@@ -1,21 +1,36 @@
-#include <JEngineLib\Game.h>
+#include <JEngineLib\Engine.h>
 #include <JEngineLib\Maths.h>
-#include <JEngineLib\SceneManager.h>
+#include <JEngineLib\SceneManagement.h>
+#include <JEngineLib\JobManagement.h>
 
 #include "TestScene.h"
+#include "TestJob.h"
 
 
 int main()
 {
-	JEngine::Game::createGame();
-	JEngine::Game & game = JEngine::Game::getGame();
+	JEngine::Engine::startup();
+	JEngine::Engine & engine = JEngine::Engine::getEngine();
 
-	game.initialise("Test Game", "log.txt");
+	engine.initialise("Test Game", "log.txt");
 
-	auto sceneID = game.getSceneManager().registerScene(std::make_shared<TestScene>());
-	game.getSceneManager().pushScene(sceneID);
+	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
+	engine.getSceneManager().pushScene(sceneID);
+
+	std::vector<std::shared_ptr<TestJob>> jobs(5000);
+
+	//Add some test jobs
+	for (int i = 0; i < 5000; ++i)
+	{
+		jobs[i] = std::make_shared<TestJob>(i);
+		engine.getJobManager().enqueueJob(jobs[i]);
+		//job->execute();
+	}
+
 	
-	game.start();
+	engine.start();
+
+	engine.cleanUp();
 
 	return 0;
 }

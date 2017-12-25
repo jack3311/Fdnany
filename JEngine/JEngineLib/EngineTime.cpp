@@ -1,7 +1,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-#include "GameTime.h"
+#include "EngineTime.h"
 
 #include "Logger.h"
 #include "Util.h"
@@ -12,7 +12,7 @@ namespace JEngine
 #define MAX_FRAMES_FOR_FPS_AVG 10000u
 #define MAX_SECONDS_FOR_FPS_AVG 5.f
 
-	GameTime::GameTime() :
+	EngineTime::EngineTime() :
 		timeSinceStart(0.f),
 		timeSinceStartUnscaled(0.f),
 		timeScale(1.f),
@@ -23,11 +23,11 @@ namespace JEngine
 	}
 
 
-	GameTime::~GameTime()
+	EngineTime::~EngineTime()
 	{
 	}
 
-	void GameTime::update()
+	void EngineTime::update()
 	{
 		//Calculate delta time
 		double currentTime = glfwGetTime();
@@ -64,17 +64,17 @@ namespace JEngine
 		}
 	}
 
-	void GameTime::setTimeScale(float _value)
+	void EngineTime::setTimeScale(float _value)
 	{
 		timeScale = _value;
 	}
 
-	float GameTime::getTimeSinceStart() const
+	float EngineTime::getTimeSinceStart() const
 	{
 		return timeSinceStart;
 	}
 
-	float GameTime::getTimeSinceStartUnscaled() const
+	float EngineTime::getTimeSinceStartUnscaled() const
 	{
 		return timeSinceStartUnscaled;
 	}

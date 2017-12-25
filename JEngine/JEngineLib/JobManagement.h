@@ -8,9 +8,26 @@
 
 namespace JEngine
 {
+	class Job;
+	class Worker;
+	class JobManager;
+
+	class Job
+	{
+	private:
+		bool isFinished = false;
+
+	public:
+		virtual void execute() = 0;
+		void setComplete();
+
+		void waitUntilFinished();
+	};
+
 	class Worker
 	{
 	private:
+		bool shouldBeWorking;
 		bool isWorking;
 		std::shared_ptr<Job> currentJob;
 		std::thread workThread;
@@ -26,23 +43,18 @@ namespace JEngine
 		void stop();
 	};
 
-	class Job
-	{
-	private:
-		void start();
-		void waitUntilFinished();
-
-	public:
-		virtual void doWork() = 0;
-	};
-
 	class JobManager
 	{
 	private:
 		unsigned int numWorkers;
 		std::vector<std::unique_ptr<Worker>> workers;
 		std::queue<std::shared_ptr<Job>> jobs;
-		std::mutex jobsMutex;
+		bool _hasJobsOrShutdown;
+		std::condition_variable hasJobsCV;
+		std::mutex hasJobsCVMutex;
+
+
+		void start();
 
 	public:
 		JobManager();
@@ -51,10 +63,13 @@ namespace JEngine
 
 		bool initialise();
 
-		void start();
 		void stop();
 
-		void pushJob(std::shared_ptr<Job> job);
-		std::shared_ptr<Job> popJob();
+		void enqueueJob(std::shared_ptr<Job> job);
+		bool dequeueJob(std::shared_ptr<Job> & job);
+
+		void waitForJobOrShutdown();
+
+		bool hasJobs() const;
 	};
 }

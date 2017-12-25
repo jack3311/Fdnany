@@ -2,7 +2,7 @@
 
 namespace JEngine
 {
-	class GameTime
+	class EngineTime
 	{
 	private:
 		double lastTime;
@@ -17,8 +17,8 @@ namespace JEngine
 
 
 	public:
-		GameTime();
-		~GameTime();
+		EngineTime();
+		~EngineTime();
 
 		float deltaTime;
 		float deltaTimeUnscaled;

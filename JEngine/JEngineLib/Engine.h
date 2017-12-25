@@ -7,59 +7,63 @@
 
 #include <memory>
 #include <string>
+#include <mutex>
 
 namespace JEngine
 {
-	class GameTime;
+	class EngineTime;
 	class SceneManager;
+	class JobManager;
 
-	class Game
+	class Engine
 	{
 	private:
-		static Game * game;
+		static Engine * engine;
 	public:
-		static Game & getGame();
-		static void createGame();
+		static Engine & getEngine();
+		static void startup();
 
 
 	private:
-		Game();
-		~Game();
-		Game(const Game &) = delete;
+		Engine();
+		~Engine();
+		Engine(const Engine &) = delete;
 
 		GLFWwindow * window = nullptr;
 
-		std::unique_ptr<GameTime> gameTime;
+		std::unique_ptr<EngineTime> engineTime;
 		std::unique_ptr<SceneManager> sceneManager;
+		std::unique_ptr<JobManager> jobManager;
 
 		ivec2 windowSize;
 
 		bool shouldQuit = false;
 
+		std::thread engineThread;
+
+		std::condition_variable stopCV;
+		std::mutex stopCVMutex;
+
 
 		//Frame functions
-		void doOneGameFrame();
+		void executeOneFrame();
 
 		void render() const;
 
-		void cleanUp();
-
 	public:
-
-
-		GameTime & getGameTime();
+		EngineTime & getGameTime();
 		SceneManager & getSceneManager();
+		JobManager & getJobManager();
 
 		const ivec2 & getWindowSize() const;
 
 		bool initialise(std::string _title, std::string _logFile);
 
+		void cleanUp();
+
+
 		void start();
 
 		void stop();
-
-
-
-
 	};
 }

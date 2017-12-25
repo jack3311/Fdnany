@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+#include "SceneManagement.h"
 
 #include <cassert>
 
@@ -63,8 +63,8 @@ namespace JEngine
 		return currentScenes.top();
 	}
 
-	bool SceneManager::hasScene() const
+	bool SceneManager::hasNoScenes() const
 	{
-		return currentScenes.size() > 0u;
+		return currentScenes.empty();
 	}
 }

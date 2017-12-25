@@ -2,11 +2,11 @@
 
 namespace JEngine
 {
-	class Game;
+	class Engine;
 
 	__interface IScene
 	{
-		void preSceneRender(Game &);
-		void postSceneRender(Game &);
+		void preSceneRender(Engine &);
+		void postSceneRender(Engine &);
 	};
 }

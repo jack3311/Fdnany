@@ -1,9 +1,10 @@
-#include "Game.h"
+#include "Engine.h"
 
 #include <iostream>
 
-#include "GameTime.h"
-#include "SceneManager.h"
+#include "EngineTime.h"
+#include "SceneManagement.h"
+#include "JobManagement.h"
 #include "Logger.h"
 #include "Input.h"
 #include "Util.h"
@@ -15,50 +16,56 @@ namespace JEngine
 		void errorCallback(int _error, const char * _description)
 		{
 			Logger::getLogger().log(_description);
-			Game::getGame().stop();
+			Engine::getEngine().stop();
 		}
 	}
 
 
-	Game * Game::game;
+	Engine * Engine::engine;
 
-	Game::Game()
+	Engine::Engine()
 	{
-		//Create game systems
-		gameTime = std::make_unique<GameTime>();
+		//Create engine systems
+		engineTime = std::make_unique<EngineTime>();
 		sceneManager = std::make_unique<SceneManager>();
+		jobManager = std::make_unique<JobManager>();
 	}
 
-	Game::~Game()
+	Engine::~Engine()
 	{
 	}
 
-	Game & Game::getGame()
+	Engine & Engine::getEngine()
 	{
-		return *game;
+		return *engine;
 	}
 
-	void Game::createGame()
+	void Engine::startup()
 	{
-		game = new Game();
+		engine = new Engine();
 	}
 
-	GameTime & Game::getGameTime()
+	EngineTime & Engine::getGameTime()
 	{
-		return *gameTime;
+		return *engineTime;
 	}
 
-	SceneManager & Game::getSceneManager()
+	SceneManager & Engine::getSceneManager()
 	{
 		return *sceneManager;
 	}
 
-	const ivec2 & Game::getWindowSize() const
+	JobManager & Engine::getJobManager()
+	{
+		return *jobManager;
+	}
+
+	const ivec2 & Engine::getWindowSize() const
 	{
 		return windowSize;
 	}
 
-	bool Game::initialise(std::string _title, std::string _logFile)
+	bool Engine::initialise(std::string _title, std::string _logFile)
 	{
 		//Initialise Logger
 		ERR_IF(!Logger::getLogger().initialise("log.txt"), "Failed to initialise logger");
@@ -79,50 +86,57 @@ namespace JEngine
 		//Initialise GLEW
 		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW");
 
-		//Initialise game systems
+		//Initialise engine systems
 		ERR_IF(!Input::initialise(), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
+		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
 
-		Logger::getLogger().log("Game initialised successfully");
+		Logger::getLogger().log("Engine initialised successfully");
 
 		return true;
 	}
 
-	void Game::start()
+	void Engine::start()
 	{
-		//Main loop
-		while (!(glfwWindowShouldClose(window) || shouldQuit))
-		{
-			//Keep running
+		engineThread = std::thread([this]() {
 
-			doOneGameFrame();
+			//Set current context on the new thread
+			glfwMakeContextCurrent(window);
 
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}
+			//Main loop
+			while (!(glfwWindowShouldClose(window) || shouldQuit)) //Keep running
+			{
+				executeOneFrame();
 
-		//Clean up resources
-		cleanUp();
+				glfwSwapBuffers(window);
+				glfwPollEvents();
+			}
+
+		});
+		engineThread.detach();
 	}
 
-	void Game::stop()
+	void Engine::stop()
 	{
 		shouldQuit = true;
 	}
 
-	void Game::cleanUp()
+	void Engine::cleanUp()
 	{
+		//Clean up/Shut down engine systems
+		jobManager->stop();
+
 		glfwTerminate();
 	}
 
-	void Game::doOneGameFrame()
+	void Engine::executeOneFrame()
 	{
 		//PRE-RENDER:
 
 		//Get current scene
-		if (!sceneManager->hasScene())
+		if (sceneManager->hasNoScenes())
 		{
-			//No scene, stop game
+			//No scene, stop engine
 			stop();
 			return;
 		}
@@ -137,7 +151,7 @@ namespace JEngine
 		glViewport(0, 0, width, height);
 
 		//Update systems
-		gameTime->update();
+		engineTime->update();
 		Input::update();
 
 		//Pre-render for current scene
@@ -155,7 +169,7 @@ namespace JEngine
 
 	}
 
-	void Game::render() const
+	void Engine::render() const
 	{
 		glClearColor(1.f, 0.f, 1.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);

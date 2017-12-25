@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <mutex>
 
 namespace JEngine
 {
@@ -26,6 +27,7 @@ namespace JEngine
 
 	private:
 		std::ofstream fileStream;
+		std::mutex loggingMutex;
 
 	public:
 		/// 

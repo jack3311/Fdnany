@@ -45,6 +45,6 @@ namespace JEngine
 
 		std::shared_ptr<IScene> getCurrentScene();
 
-		bool hasScene() const;
+		bool hasNoScenes() const;
 	};
 }
