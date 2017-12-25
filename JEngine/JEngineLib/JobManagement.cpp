@@ -58,11 +58,19 @@ namespace JEngine
 	
 	void Job::setComplete()
 	{
-		isFinished = true;
+		{
+			std::lock_guard<std::mutex> lk(isFinishedCVMutex);
+			isFinished = true;
+		}
+
+		isFinishedCV.notify_all();
 	}
 
 	void Job::waitUntilFinished()
 	{
+		std::unique_lock<std::mutex> lk(isFinishedCVMutex);
+		isFinishedCV.wait(lk, [this]() { return isFinished; });
+		lk.unlock();
 	}
 
 

@@ -98,22 +98,17 @@ namespace JEngine
 
 	void Engine::start()
 	{
-		engineThread = std::thread([this]() {
+		//Set current context on the new thread
+		glfwMakeContextCurrent(window);
 
-			//Set current context on the new thread
-			glfwMakeContextCurrent(window);
+		//Main loop
+		while (!(glfwWindowShouldClose(window) || shouldQuit)) //Keep running
+		{
+			executeOneFrame();
 
-			//Main loop
-			while (!(glfwWindowShouldClose(window) || shouldQuit)) //Keep running
-			{
-				executeOneFrame();
-
-				glfwSwapBuffers(window);
-				glfwPollEvents();
-			}
-
-		});
-		engineThread.detach();
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
 	}
 
 	void Engine::stop()

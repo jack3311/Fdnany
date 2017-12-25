@@ -6,9 +6,9 @@ class TestJob :
 	public JEngine::Job
 {
 private:
-	int num = -1;
 
 public:
+	int num = -1;
 	static int numComplete;
 
 	enum {

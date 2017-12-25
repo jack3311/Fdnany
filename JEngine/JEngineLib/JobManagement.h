@@ -17,6 +17,9 @@ namespace JEngine
 	private:
 		bool isFinished = false;
 
+		std::condition_variable isFinishedCV;
+		std::mutex isFinishedCVMutex;
+
 	public:
 		virtual void execute() = 0;
 		void setComplete();

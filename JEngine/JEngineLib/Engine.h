@@ -39,11 +39,6 @@ namespace JEngine
 
 		bool shouldQuit = false;
 
-		std::thread engineThread;
-
-		std::condition_variable stopCV;
-		std::mutex stopCVMutex;
-
 
 		//Frame functions
 		void executeOneFrame();
@@ -63,7 +58,6 @@ namespace JEngine
 
 
 		void start();
-
 		void stop();
 	};
 }
