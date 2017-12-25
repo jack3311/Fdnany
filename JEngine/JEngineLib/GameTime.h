@@ -12,6 +12,9 @@ namespace JEngine
 		float timeSinceStart;
 		float timeSinceStartUnscaled;
 
+		unsigned int numFramesForFPS;
+		float cumulativeSecondsForFPS;
+
 
 	public:
 		GameTime();

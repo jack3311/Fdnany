@@ -6,11 +6,12 @@
 #include "Maths.h"
 
 #include <memory>
+#include <string>
 
 namespace JEngine
 {
 	class GameTime;
-	class Logger;
+	class SceneManager;
 
 	class Game
 	{
@@ -29,25 +30,34 @@ namespace JEngine
 		GLFWwindow * window = nullptr;
 
 		std::unique_ptr<GameTime> gameTime;
-
-		Logger & logger;
+		std::unique_ptr<SceneManager> sceneManager;
 
 		ivec2 windowSize;
+
+		bool shouldQuit = false;
+
 
 		//Frame functions
 		void doOneGameFrame();
 
 		void render() const;
 
+		void cleanUp();
+
 	public:
 
 
 		GameTime & getGameTime();
+		SceneManager & getSceneManager();
+
 		const ivec2 & getWindowSize() const;
 
+		bool initialise(std::string _title, std::string _logFile);
 
+		void start();
 
-		bool start();
+		void stop();
+
 
 
 

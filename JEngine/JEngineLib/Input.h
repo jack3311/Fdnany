@@ -76,7 +76,7 @@ namespace JEngine
 		/// initialise:
 		/// initialises input
 		///
-		static void initialise();
+		static bool initialise();
 
 	private:
 		Input() = delete;
