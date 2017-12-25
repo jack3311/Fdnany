@@ -21,21 +21,25 @@ int main()
 	
 
 	std::thread t([&]() {
-		std::vector<std::shared_ptr<TestJob>> jobs(5000);
+		std::vector<std::shared_ptr<TestJob>> jobs(5000000);
+
+		auto time1 = glfwGetTime();
 
 		//Add some test jobs
-		for (int i = 0; i < 5000; ++i)
+		for (int i = 0; i < 5000000; ++i)
 		{
-			jobs[i] = std::make_shared<TestJob>(i);
+			jobs[i] = std::make_shared<TestJob>(i + 10000000);
 			engine.getJobManager().enqueueJob(jobs[i]);
-			//job->execute();
 		}
 
-		for (int i = 0; i < 5000; ++i)
+		for (int i = 0; i < 5000000; ++i)
 		{
 			jobs[i]->waitUntilFinished();
-			JEngine::Logger::getLogger().log(strJoinConvert(jobs[i]->num, " result: ", jobs[i]->isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
 		}
+		auto time2 = glfwGetTime();
+
+		auto len = time2 - time1;
+		JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
 	});
 
 	t.detach();

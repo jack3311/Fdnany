@@ -3,8 +3,6 @@
 #include <JEngineLib\Logger.h>
 #include <JEngineLib\Util.h>
 
-int TestJob::numComplete = 0;
-
 TestJob::TestJob(int _num) : num(_num)
 {
 }
@@ -21,14 +19,11 @@ void TestJob::execute()
 		if (num % i == 0) {
 			isThisNumberPrimeData = NOT_PRIME;
 			//JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
-			++numComplete;
 			return;
 		}
 	}
 
 	isThisNumberPrimeData = PRIME;
-
-	++numComplete;
 	
 
 	//JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));

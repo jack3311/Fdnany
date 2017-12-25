@@ -87,7 +87,7 @@ namespace JEngine
 	bool JobManager::initialise()
 	{
 		//Set up workers
-		numWorkers = std::thread::hardware_concurrency() - 1u;
+		numWorkers = std::thread::hardware_concurrency() - 2u;
 
 		workers.resize(numWorkers);
 		for (unsigned int i = 0; i < numWorkers; ++i)
@@ -147,6 +147,8 @@ namespace JEngine
 
 	void JobManager::waitForJobOrShutdown()
 	{
+		if (_hasJobsOrShutdown) return;
+
 		std::unique_lock<std::mutex> lk(hasJobsCVMutex);
 
 		hasJobsCV.wait(lk, [this]() { return _hasJobsOrShutdown; });
