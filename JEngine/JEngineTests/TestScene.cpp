@@ -2,6 +2,8 @@
 
 #include <JEngineLib\JobManagement.h>
 #include <JEngineLib\Input.h>
+#include <JEngineLib\Logger.h>
+#include <JEngineLib\Util.h>
 
 #include "TestJob.h"
 
@@ -21,7 +23,14 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	static int currentNum = 0;
 	if (_engine.getJobManager().getJobCount() < _engine.getJobManager().getNumWorkers())
 	{
-		_engine.getJobManager().enqueueJob(std::make_shared<TestJob>(++currentNum));
+		auto job = std::make_shared<TestJob>(++currentNum);
+
+		job->getEvent() += [](const JEngine::Job * _job) {
+			auto job = dynamic_cast<const TestJob *>(_job);
+			JEngine::Logger::getLogger().log(strJoinConvert(job->num, " result: ", job->isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
+		};
+
+		_engine.getJobManager().enqueueJob(job);
 	}
 }
 

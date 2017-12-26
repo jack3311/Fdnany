@@ -54,8 +54,8 @@ namespace JEngine
 		shouldBeWorking = false;
 	}
 
-
 	
+
 	void Job::setComplete()
 	{
 		{
@@ -64,6 +64,8 @@ namespace JEngine
 		}
 
 		isFinishedCV.notify_all();
+
+		jEvent.triggerEvent(this);
 	}
 
 	void Job::waitUntilFinished()
@@ -71,6 +73,11 @@ namespace JEngine
 		std::unique_lock<std::mutex> lk(isFinishedCVMutex);
 		isFinishedCV.wait(lk, [this]() { return isFinished; });
 		lk.unlock();
+	}
+
+	JEventParameterised<const Job *> & Job::getEvent()
+	{
+		return jEvent;
 	}
 
 

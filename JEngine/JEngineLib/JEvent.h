@@ -7,14 +7,14 @@ template <typename... Args>
 class JEventParameterised
 {
 private:
-	std::vector<const std::function<void(Args...)>> eventListeners;
+	std::vector<std::function<void(Args...)>> eventListeners;
 
 public:
 	JEventParameterised();
 	JEventParameterised(const JEventParameterised &) = delete;
 	~JEventParameterised();
 
-	JEventParameterised & operator+=(const std::function<void(Args...)> _func);
+	JEventParameterised & operator+=(const std::function<void(Args...)> & _func);
 
 	void triggerEvent(Args... _args);
 };
@@ -30,9 +30,10 @@ inline JEventParameterised<Args...>::~JEventParameterised()
 }
 
 template<typename ...Args>
-inline JEventParameterised<Args...> & JEventParameterised<Args...>::operator+=(const std::function<void(Args...)> _func)
+inline JEventParameterised<Args...> & JEventParameterised<Args...>::operator+=(const std::function<void(Args...)> & _func)
 {
 	eventListeners.push_back(_func);
+	return *this;
 }
 
 template<typename ...Args>
