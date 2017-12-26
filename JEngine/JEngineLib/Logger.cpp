@@ -55,11 +55,22 @@ namespace JEngine
 			break;
 		}
 
-		loggingMutex.lock();
-		std::cout << ss.str() << _a << std::endl;
+		ss << _a << std::endl;
 
-		if (fileStream.is_open())
-			fileStream << ss.str() << _a << std::endl;
+		std::string str = ss.str();
+		const char * c_str = str.c_str();
+
+		loggingMutex.lock();
+		{
+			//std::cout << str;
+			printf(ss.str().c_str());
+
+			if (fileStream.is_open())
+			{
+				fileStream.write(ss.str().c_str(), ss.str().length());
+				//fileStream << str;
+			}
+		}
 		loggingMutex.unlock();
 	}
 

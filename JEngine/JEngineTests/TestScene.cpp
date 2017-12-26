@@ -4,8 +4,13 @@
 #include <JEngineLib\Input.h>
 #include <JEngineLib\Logger.h>
 #include <JEngineLib\Util.h>
+#include <JEngineLib\FrameAllocator.h>
+#include <JEngineLib\PoolAllocator.h>
 
 #include "TestJob.h"
+
+
+#include <iostream>
 
 
 
@@ -20,6 +25,7 @@ TestScene::~TestScene()
 
 void TestScene::preSceneRender(JEngine::Engine & _engine)
 {
+	/* JOBS/THREADING TESTS
 	static int currentNum = 0;
 	if (_engine.getJobManager().getJobCount() < _engine.getJobManager().getNumWorkers())
 	{
@@ -32,6 +38,67 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 		_engine.getJobManager().enqueueJob(job);
 	}
+	*/
+
+	/* FRAME ALLOCATION TESTS
+	double * doubles[100000];
+
+	auto time1 = glfwGetTime();
+	{
+		for (int i = 0; i < 100; ++i)
+		{
+			for (int i = 0; i < 100000; ++i)
+			{
+				doubles[i] = _engine.getFrameAllocator().allocateRaw<double>();
+				//doubles[i] = new double;
+			}
+
+
+			//for (int i = 0; i < 100000; ++i)
+			//{
+			//	delete doubles[i];
+			//}
+
+			_engine.getFrameAllocator().reset();
+		}
+	}
+	auto time2 = glfwGetTime();
+
+	auto len = time2 - time1;
+	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+	*/
+
+	
+	//double * doubles[100000];
+	JEngine::PoolAllocator<double, 11> poolAllocator;
+	JEngine::pool_alloc_pointer<double> doubles[10];
+	double * doublesP[10];
+	//double * doubles[1000];
+
+	poolAllocator.initialise();
+
+	auto time1 = glfwGetTime();
+	{
+		for (int i = 0; i < 1000; ++i)
+		{
+			for (int j = 0; j < 10; ++j)
+			{
+				doubles[j] = poolAllocator.allocate();
+				//doublesP[j] = new double;
+			}
+
+			//for (int j = 0; j < 10; ++j)
+			//{
+			//	delete doublesP[j];
+			//}
+		}
+	}
+	auto time2 = glfwGetTime();
+	poolAllocator.cleanUp();
+
+	auto len = time2 - time1;
+	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)

@@ -94,7 +94,7 @@ namespace JEngine
 	bool JobManager::initialise()
 	{
 		//Set up workers
-		numWorkers = std::thread::hardware_concurrency() - 2u;
+		numWorkers = std::thread::hardware_concurrency() - 1u;
 
 		workers.resize(numWorkers);
 		for (unsigned int i = 0; i < numWorkers; ++i)

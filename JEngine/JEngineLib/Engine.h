@@ -14,6 +14,7 @@ namespace JEngine
 	class EngineTime;
 	class SceneManager;
 	class JobManager;
+	class FrameAllocator;
 
 	class Engine
 	{
@@ -34,6 +35,7 @@ namespace JEngine
 		std::unique_ptr<EngineTime> engineTime;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<JobManager> jobManager;
+		std::unique_ptr<FrameAllocator> frameAllocator;
 
 		ivec2 windowSize;
 
@@ -49,6 +51,7 @@ namespace JEngine
 		EngineTime & getGameTime();
 		SceneManager & getSceneManager();
 		JobManager & getJobManager();
+		FrameAllocator & getFrameAllocator();
 
 		const ivec2 & getWindowSize() const;
 

@@ -5,6 +5,7 @@
 #include "EngineTime.h"
 #include "SceneManagement.h"
 #include "JobManagement.h"
+#include "FrameAllocator.h"
 #include "Logger.h"
 #include "Input.h"
 #include "Util.h"
@@ -29,6 +30,7 @@ namespace JEngine
 		engineTime = std::make_unique<EngineTime>();
 		sceneManager = std::make_unique<SceneManager>();
 		jobManager = std::make_unique<JobManager>();
+		frameAllocator = std::make_unique<FrameAllocator>();
 	}
 
 	Engine::~Engine()
@@ -58,6 +60,11 @@ namespace JEngine
 	JobManager & Engine::getJobManager()
 	{
 		return *jobManager;
+	}
+
+	FrameAllocator & Engine::getFrameAllocator()
+	{
+		return *frameAllocator;
 	}
 
 	const ivec2 & Engine::getWindowSize() const
@@ -90,6 +97,7 @@ namespace JEngine
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
+		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");\
 
 		Logger::getLogger().log("Engine initialised successfully");
 
@@ -119,6 +127,7 @@ namespace JEngine
 	void Engine::cleanUp()
 	{
 		//Clean up/Shut down engine systems
+		frameAllocator->cleanUp();
 		jobManager->stop();
 
 		Logger::getLogger().cleanUp();
@@ -164,6 +173,8 @@ namespace JEngine
 		//Post-render for current scene
 		currentScene->postSceneRender(*this);
 
+		//Reset frame allocator
+		frameAllocator->reset();
 	}
 
 	void Engine::render() const
