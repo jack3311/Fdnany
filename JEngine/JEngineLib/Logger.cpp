@@ -17,11 +17,6 @@ namespace JEngine
 
 	Logger::~Logger()
 	{
-		if (fileStream.is_open())
-		{
-			fileStream.flush();
-			fileStream.close();
-		}
 	}
 
 	Logger & Logger::getLogger()
@@ -67,10 +62,20 @@ namespace JEngine
 			fileStream << ss.str() << _a << std::endl;
 		loggingMutex.unlock();
 	}
+
 	bool Logger::initialise(const std::string & _filePath)
 	{
-		fileStream = std::ofstream(_filePath);
+		fileStream = std::ofstream(_filePath, std::ios_base::out);
 
 		return fileStream.is_open();
+	}
+
+	void Logger::cleanUp()
+	{
+		if (fileStream.is_open())
+		{
+			fileStream.flush();
+			fileStream.close();
+		}
 	}
 }

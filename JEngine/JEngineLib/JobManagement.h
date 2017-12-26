@@ -6,10 +6,10 @@
 #include <mutex>
 #include <thread>
 
+#include "JEvent.h"
+
 namespace JEngine
 {
-	class Job;
-	class Worker;
 	class JobManager;
 
 	class Job
@@ -74,5 +74,8 @@ namespace JEngine
 		void waitForJobOrShutdown();
 
 		bool hasJobs() const;
+
+		unsigned int getJobCount() const;
+		unsigned int getNumWorkers() const;
 	};
 }

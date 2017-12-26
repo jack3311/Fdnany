@@ -38,5 +38,6 @@ namespace JEngine
 		void log(const std::string &, LogLevel = LogLevel::INFO);
 
 		bool initialise(const std::string & _filePath);
+		void cleanUp();
 	};
 }

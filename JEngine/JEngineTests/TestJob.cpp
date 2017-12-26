@@ -18,7 +18,7 @@ void TestJob::execute()
 	{
 		if (num % i == 0) {
 			isThisNumberPrimeData = NOT_PRIME;
-			//JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
+			JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
 			return;
 		}
 	}
@@ -26,5 +26,5 @@ void TestJob::execute()
 	isThisNumberPrimeData = PRIME;
 	
 
-	//JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
+	JEngine::Logger::getLogger().log(strJoinConvert(num, " result: ", isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
 }

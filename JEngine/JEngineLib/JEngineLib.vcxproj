@@ -24,6 +24,7 @@
     <ClInclude Include="IInputListeners.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="JEvent.h" />
     <ClInclude Include="JobManagement.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Maths.h" />

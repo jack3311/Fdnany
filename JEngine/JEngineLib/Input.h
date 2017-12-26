@@ -44,7 +44,7 @@ namespace JEngine
 		/// Sets up keyboard and mouse input with OpenGL
 		/// _window - a pointer to the relevant window
 		///
-		void setCallbackFunctions(GLFWwindow * _window);
+		static void setCallbackFunctions(GLFWwindow * _window);
 
 		/// 
 		/// isKeyDown:
@@ -75,8 +75,9 @@ namespace JEngine
 		///
 		/// initialise:
 		/// initialises input
+		/// _window: a pointer to the relevant window
 		///
-		static bool initialise();
+		static bool initialise(GLFWwindow * _window);
 
 	private:
 		Input() = delete;

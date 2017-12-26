@@ -160,4 +160,14 @@ namespace JEngine
 	{
 		return _hasJobsOrShutdown;
 	}
+
+	unsigned int JobManager::getJobCount() const
+	{
+		return static_cast<unsigned int>(jobs.size());
+	}
+
+	unsigned int JobManager::getNumWorkers() const
+	{
+		return numWorkers;
+	}
 }

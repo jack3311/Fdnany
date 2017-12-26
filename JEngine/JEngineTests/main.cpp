@@ -18,7 +18,25 @@ int main()
 
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
-	
+
+
+	engine.start();
+
+	engine.cleanUp();
+
+	return 0;
+}
+
+void testJobs()
+{
+	JEngine::Engine::startup();
+	JEngine::Engine & engine = JEngine::Engine::getEngine();
+
+	engine.initialise("Test Game", "log.txt");
+
+	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
+	engine.getSceneManager().pushScene(sceneID);
+
 
 	std::thread t([&]() {
 		std::vector<std::shared_ptr<TestJob>> jobs(5000000);
@@ -49,6 +67,4 @@ int main()
 
 
 	engine.cleanUp();
-
-	return 0;
 }

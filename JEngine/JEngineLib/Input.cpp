@@ -48,7 +48,7 @@ namespace JEngine
 		statesAreA = !statesAreA;
 	}
 
-	bool Input::initialise()
+	bool Input::initialise(GLFWwindow * _window)
 	{
 		for (int i = 0; i < NUM_KEYS; ++i)
 		{
@@ -61,6 +61,8 @@ namespace JEngine
 			mouseStatesA[i] = MouseState::MOUSE_RELEASED;
 			mouseStatesB[i] = MouseState::MOUSE_RELEASED;
 		}
+
+		Input::setCallbackFunctions(_window);
 
 		return true;
 	}

@@ -87,7 +87,7 @@ namespace JEngine
 		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW");
 
 		//Initialise engine systems
-		ERR_IF(!Input::initialise(), "Failed to initialise input system");
+		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
 
@@ -120,6 +120,8 @@ namespace JEngine
 	{
 		//Clean up/Shut down engine systems
 		jobManager->stop();
+
+		Logger::getLogger().cleanUp();
 
 		glfwTerminate();
 	}
