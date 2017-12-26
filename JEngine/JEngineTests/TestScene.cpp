@@ -70,12 +70,12 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	
 	//double * doubles[100000];
-	JEngine::PoolAllocator<double, 11> poolAllocator;
-	JEngine::pool_alloc_pointer<double> doubles[10];
+	JEngine::RcPoolAllocator<double, 11> RawPoolAllocator;
+	JEngine::pool_alloc_pointer<double, 11> doubles[10];
 	double * doublesP[10];
 	//double * doubles[1000];
 
-	poolAllocator.initialise();
+	RawPoolAllocator.initialise();
 
 	auto time1 = glfwGetTime();
 	{
@@ -83,7 +83,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				doubles[j] = poolAllocator.allocate();
+				doubles[j] = RawPoolAllocator.allocate();
 				//doublesP[j] = new double;
 			}
 
@@ -94,7 +94,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 		}
 	}
 	auto time2 = glfwGetTime();
-	poolAllocator.cleanUp();
+	RawPoolAllocator.cleanUp();
 
 	auto len = time2 - time1;
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));

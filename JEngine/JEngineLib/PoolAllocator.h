@@ -6,17 +6,14 @@
 
 namespace JEngine
 {
-	template <typename T>
-	__interface PoolAllocatorParent //Use this to avoid pool_alloc_pointer having a maxCount template param
-	{
-		void deallocate(T *);
-	};
+	template <typename T, unsigned int maxCount>
+	class RcPoolAllocator;
 
-	template <typename T>
+	template <typename T, unsigned int maxCount>
 	class pool_alloc_pointer
 	{
 	private:
-		PoolAllocatorParent<T> * poolAllocator;
+		RcPoolAllocator<T, maxCount> * rcPoolAllocator;
 		unsigned int * refCount;
 		T * allocated;
 
@@ -24,58 +21,71 @@ namespace JEngine
 
 	public:
 		pool_alloc_pointer(); //Unassigned
-		pool_alloc_pointer(T *, PoolAllocatorParent<T> *); //New
-		pool_alloc_pointer(const pool_alloc_pointer<T> &);
+		pool_alloc_pointer(T *, RcPoolAllocator<T, maxCount> *); //New
+		pool_alloc_pointer(const pool_alloc_pointer<T, maxCount> &);
 		~pool_alloc_pointer();
 
 		T & operator*();
-		pool_alloc_pointer<T> * operator->();
+		pool_alloc_pointer<T, maxCount> * operator->();
 
-		pool_alloc_pointer<T> & operator=(const pool_alloc_pointer<T> &); //Copy assignment
-		pool_alloc_pointer<T> & operator=(const pool_alloc_pointer<T> &&); //Move assignment
+		pool_alloc_pointer<T, maxCount> & operator=(const pool_alloc_pointer<T, maxCount> &); //Copy assignment
+		pool_alloc_pointer<T, maxCount> & operator=(const pool_alloc_pointer<T, maxCount> &&); //Move assignment
 	};
 
 	template <typename T, unsigned int maxCount>
-	class PoolAllocator : public PoolAllocatorParent<T>
+	class RawPoolAllocator
 	{
 	private:
 		char * memStart;
 
 		std::queue<char *> availableAllocationQueue;
 
-		std::shared_ptr<PoolAllocator<unsigned int, maxCount> refCounterPool; //Creates ref counters for child pointers
-
 	public:
-		PoolAllocator();
-		PoolAllocator(const PoolAllocator &) = delete;
-		~PoolAllocator();
+		RawPoolAllocator();
+		RawPoolAllocator(const RawPoolAllocator &) = delete;
+		~RawPoolAllocator();
 
 		bool initialise();
 		void cleanUp();
 
 		T * allocateRaw();
-		pool_alloc_pointer<T> allocate();
-
-
 		void deallocate(T *);
+	};
 
-		//void reset();
+	template <typename T, unsigned int maxCount>
+	class RcPoolAllocator : public RawPoolAllocator<T, maxCount>
+	{
+	private:
+	public: //TODO: <-- WHY ISN'T THE GETTER BEING INLINED!?!?!?!?
+		std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> refCounterPool; //Creates ref counters for child pointers
+
+	public:
+		RcPoolAllocator();
+		RcPoolAllocator(const RcPoolAllocator &) = delete;
+		~RcPoolAllocator();
+
+		bool initialise();
+		void cleanUp();
+
+		pool_alloc_pointer<T, maxCount> allocate();
+
+		std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> getRefCounterPool();
 	};
 
 
 
 	template<typename T, unsigned int maxCount>
-	PoolAllocator<T, maxCount>::PoolAllocator()
+	RawPoolAllocator<T, maxCount>::RawPoolAllocator()
 	{
 	}
 
 	template<typename T, unsigned int maxCount>
-	PoolAllocator<T, maxCount>::~PoolAllocator()
+	RawPoolAllocator<T, maxCount>::~RawPoolAllocator()
 	{
 	}
 
 	template<typename T, unsigned int maxCount>
-	bool PoolAllocator<T, maxCount>::initialise()
+	bool RawPoolAllocator<T, maxCount>::initialise()
 	{
 		//Allocate once
 		void * mallocRes = malloc(maxCount * sizeof(T));
@@ -93,24 +103,18 @@ namespace JEngine
 			availableAllocationQueue.push(memStart + i * sizeof(T));
 		}
 
-		//Initialise ref counter pool
-		ERR_IF(!refCounterPool.initialise(), "Could not initialise ref counter pool");
-
 		return true;
 	}
 
 	template<typename T, unsigned int maxCount>
-	void PoolAllocator<T, maxCount>::cleanUp()
+	void RawPoolAllocator<T, maxCount>::cleanUp()
 	{
-		//Clean up ref counter pool
-		refCounterPool.cleanUp();
-
 		//Clean up this pool
 		free(memStart);
 	}
 
 	template<typename T, unsigned int maxCount>
-	inline T * PoolAllocator<T, maxCount>::allocateRaw()
+	inline T * RawPoolAllocator<T, maxCount>::allocateRaw()
 	{
 		if (availableAllocationQueue.empty())
 		{
@@ -127,13 +131,7 @@ namespace JEngine
 	}
 
 	template<typename T, unsigned int maxCount>
-	inline pool_alloc_pointer<T> PoolAllocator<T, maxCount>::allocate()
-	{
-		return pool_alloc_pointer<T>(allocateRaw(), this);
-	}
-
-	template<typename T, unsigned int maxCount>
-	inline void PoolAllocator<T, maxCount>::deallocate(T * _allocated)
+	inline void RawPoolAllocator<T, maxCount>::deallocate(T * _allocated)
 	{
 		_allocated->~T();
 		availableAllocationQueue.push(reinterpret_cast<char *>(_allocated));
@@ -141,51 +139,101 @@ namespace JEngine
 
 
 
-	
 
-	template<typename T>
-	inline void pool_alloc_pointer<T>::checkRefCount()
+	template<typename T, unsigned int maxCount>
+	inline RcPoolAllocator<T, maxCount>::RcPoolAllocator()
+	{
+		refCounterPool = std::make_shared<RawPoolAllocator<unsigned int, maxCount>>();
+	}
+
+	template<typename T, unsigned int maxCount>
+	inline RcPoolAllocator<T, maxCount>::~RcPoolAllocator()
+	{
+		//RawPoolAllocator::~RawPoolAllocator();
+	}
+
+	template<typename T, unsigned int maxCount>
+	inline bool RcPoolAllocator<T, maxCount>::initialise()
+	{
+		//Initialise ref counter pool
+		ERR_IF(!refCounterPool->initialise(), "Could not initialise ref counter pool");
+		return RawPoolAllocator::initialise();
+	}
+
+	template<typename T, unsigned int maxCount>
+	inline void RcPoolAllocator<T, maxCount>::cleanUp()
+	{
+		//Clean up ref counter pool
+		refCounterPool->cleanUp();
+
+		//Clean up this pool
+		RawPoolAllocator::cleanUp();
+	}
+
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount> RcPoolAllocator<T, maxCount>::allocate()
+	{
+		return pool_alloc_pointer<T, maxCount>(allocateRaw(), this);
+	}
+
+	template<typename T, unsigned int maxCount>
+	inline std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> RcPoolAllocator<T, maxCount>::getRefCounterPool()
+	{
+		return refCounterPool;
+	}
+
+
+
+	
+	template<typename T, unsigned int maxCount>
+	inline void pool_alloc_pointer<T, maxCount>::checkRefCount()
 	{
 		if (allocated && --(*refCount) == 0)
 		{
 			//Deallocate
-			poolAllocator->deallocate(allocated);
-			delete refCount;
+			rcPoolAllocator->deallocate(allocated);
+			rcPoolAllocator->refCounterPool->deallocate(refCount);
+			//rcPoolAllocator->getRefCounterPool()->deallocate(refCount);
+			//delete refCount;
 		}
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T>::pool_alloc_pointer() : 
-		poolAllocator(nullptr), refCount(nullptr), allocated(nullptr)
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount>::pool_alloc_pointer() :
+		rcPoolAllocator(nullptr), refCount(nullptr), allocated(nullptr)
 	{
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T>::pool_alloc_pointer(T * _allocated, PoolAllocatorParent<T> * _poolAllocator) : //New
-		allocated(_allocated), poolAllocator(_poolAllocator)
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount>::pool_alloc_pointer(T * _allocated, RcPoolAllocator<T, maxCount> * _rcPoolAllocator) : //New
+		allocated(_allocated), rcPoolAllocator(_rcPoolAllocator)
 	{
-		refCount = new unsigned int(1);
+		//refCount = new unsigned int(1);
+		//refCount = rcPoolAllocator->getRefCounterPool()->allocateRaw();
+		refCount = rcPoolAllocator->refCounterPool->allocateRaw();
+		*refCount = 1;
+
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T>::pool_alloc_pointer(const pool_alloc_pointer<T> & _other)
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount>::pool_alloc_pointer(const pool_alloc_pointer<T, maxCount> & _other)
 	{
 		allocated = _other.allocated;
 		refCount = _other.refCount;
-		poolAllocator = _other.poolAllocator;
+		rcPoolAllocator = _other.rcPoolAllocator;
 
 		//Increment ref counter
 		++(*refCount);
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T>::~pool_alloc_pointer()
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount>::~pool_alloc_pointer()
 	{
 		checkRefCount();
 	}
 
-	template<typename T>
-	inline T & pool_alloc_pointer<T>::operator*()
+	template<typename T, unsigned int maxCount>
+	inline T & pool_alloc_pointer<T, maxCount>::operator*()
 	{
 		if (allocated)
 			return *allocated;
@@ -193,8 +241,8 @@ namespace JEngine
 			throw new std::exception("Error: cannot dereference an unassigned pool_alloc_pointer");
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T> * pool_alloc_pointer<T>::operator->()
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount> * pool_alloc_pointer<T, maxCount>::operator->()
 	{
 		if (allocated)
 			return allocated;
@@ -202,8 +250,8 @@ namespace JEngine
 			throw new std::exception("Error: cannot dereference an unassigned pool_alloc_pointer");
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T> & pool_alloc_pointer<T>::operator=(const pool_alloc_pointer<T> & _other) //Copy assignment
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount> & pool_alloc_pointer<T, maxCount>::operator=(const pool_alloc_pointer<T, maxCount> & _other) //Copy assignment
 	{
 		if (allocated != _other.allocated)
 		{
@@ -211,7 +259,7 @@ namespace JEngine
 
 			allocated = _other.allocated;
 			refCount = _other.refCount;
-			poolAllocator = _other.poolAllocator;
+			rcPoolAllocator = _other.rcPoolAllocator;
 
 			//Increment ref counter
 			++(*refCount);
@@ -220,8 +268,8 @@ namespace JEngine
 		return *this;
 	}
 
-	template<typename T>
-	inline pool_alloc_pointer<T> & pool_alloc_pointer<T>::operator=(const pool_alloc_pointer<T> && _other) //Move assignment
+	template<typename T, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxCount> & pool_alloc_pointer<T, maxCount>::operator=(const pool_alloc_pointer<T, maxCount> && _other) //Move assignment
 	{
 		if (allocated != _other.allocated)
 		{
@@ -229,7 +277,7 @@ namespace JEngine
 
 			allocated = _other.allocated;
 			refCount = _other.refCount;
-			poolAllocator = _other.poolAllocator;
+			rcPoolAllocator = _other.rcPoolAllocator;
 
 			//Increment ref counter
 			++(*refCount);
