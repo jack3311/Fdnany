@@ -48,15 +48,15 @@ namespace JEngine
 		bool initialise();
 		void cleanUp();
 
-		T * allocateRaw();
+		template <typename... Ts>
+		T * allocateRaw(Ts...);
 		void deallocate(T *);
 	};
 
 	template <typename T, unsigned int maxCount>
 	class RcPoolAllocator : public RawPoolAllocator<T, maxCount>
 	{
-	private:
-	public: //TODO: <-- WHY ISN'T THE GETTER BEING INLINED!?!?!?!?
+	public:
 		std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> refCounterPool; //Creates ref counters for child pointers
 
 	public:
@@ -67,9 +67,8 @@ namespace JEngine
 		bool initialise();
 		void cleanUp();
 
-		pool_alloc_pointer<T, maxCount> allocate();
-
-		std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> getRefCounterPool();
+		template<typename ...Ts>
+		pool_alloc_pointer<T, maxCount> allocate(Ts...);
 	};
 
 
@@ -114,7 +113,8 @@ namespace JEngine
 	}
 
 	template<typename T, unsigned int maxCount>
-	inline T * RawPoolAllocator<T, maxCount>::allocateRaw()
+	template<typename ...Ts>
+	inline T * RawPoolAllocator<T, maxCount>::allocateRaw(Ts... _args)
 	{
 		if (availableAllocationQueue.empty())
 		{
@@ -125,7 +125,7 @@ namespace JEngine
 		availableAllocationQueue.pop();
 
 		//Call constructor manually
-		new (allocated) T();
+		new (allocated) T(_args...);
 
 		return reinterpret_cast<T *>(allocated);
 	}
@@ -149,7 +149,7 @@ namespace JEngine
 	template<typename T, unsigned int maxCount>
 	inline RcPoolAllocator<T, maxCount>::~RcPoolAllocator()
 	{
-		//RawPoolAllocator::~RawPoolAllocator();
+		RawPoolAllocator::~RawPoolAllocator();
 	}
 
 	template<typename T, unsigned int maxCount>
@@ -171,15 +171,10 @@ namespace JEngine
 	}
 
 	template<typename T, unsigned int maxCount>
-	inline pool_alloc_pointer<T, maxCount> RcPoolAllocator<T, maxCount>::allocate()
+	template<typename ...Ts>
+	inline pool_alloc_pointer<T, maxCount> RcPoolAllocator<T, maxCount>::allocate(Ts... _args)
 	{
-		return pool_alloc_pointer<T, maxCount>(allocateRaw(), this);
-	}
-
-	template<typename T, unsigned int maxCount>
-	inline std::shared_ptr<RawPoolAllocator<unsigned int, maxCount>> RcPoolAllocator<T, maxCount>::getRefCounterPool()
-	{
-		return refCounterPool;
+		return pool_alloc_pointer<T, maxCount>(allocateRaw(_args...), this);
 	}
 
 
@@ -193,8 +188,6 @@ namespace JEngine
 			//Deallocate
 			rcPoolAllocator->deallocate(allocated);
 			rcPoolAllocator->refCounterPool->deallocate(refCount);
-			//rcPoolAllocator->getRefCounterPool()->deallocate(refCount);
-			//delete refCount;
 		}
 	}
 
@@ -208,10 +201,8 @@ namespace JEngine
 	inline pool_alloc_pointer<T, maxCount>::pool_alloc_pointer(T * _allocated, RcPoolAllocator<T, maxCount> * _rcPoolAllocator) : //New
 		allocated(_allocated), rcPoolAllocator(_rcPoolAllocator)
 	{
-		//refCount = new unsigned int(1);
-		//refCount = rcPoolAllocator->getRefCounterPool()->allocateRaw();
-		refCount = rcPoolAllocator->refCounterPool->allocateRaw();
-		*refCount = 1;
+		refCount = rcPoolAllocator->refCounterPool->allocateRaw(1u);
+		//*refCount = 1;
 
 	}
 
