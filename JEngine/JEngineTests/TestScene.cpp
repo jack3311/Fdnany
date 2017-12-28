@@ -75,8 +75,9 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	*/
 
 	/* Pool Allocator tests */
-	JEngine::RcPoolAllocator<sizeof(float), 11> rcPoolAllocator;
-	JEngine::raw_pool_alloc_pointer<sizeof(float), 11> constructs[10];
+	JEngine::RcPoolAllocator<sizeof(float), 21> rcPoolAllocator;
+	JEngine::pool_alloc_pointer<float, sizeof(float), 21> floats[10];
+	JEngine::pool_alloc_pointer<int, sizeof(float), 21> ints[10];
 	double * doublesP[10];
 
 	rcPoolAllocator.initialise();
@@ -91,11 +92,11 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 			{
 				if (rand() % 2 == 0)
 				{
-					constructs[j] = rcPoolAllocator.allocate<float>(13.37f);
+					floats[j] = rcPoolAllocator.allocate<float>(13.37f);
 				}
 				else
 				{
-					constructs[j] = rcPoolAllocator.allocate<int>(11);
+					ints[j] = rcPoolAllocator.allocate<int>(11);
 				}
 				//doublesP[j] = new double;
 			}
@@ -106,6 +107,16 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 			//}
 		}
 	}
+
+	for (int i = 0; i < 10; ++i)
+	{
+		std::cout << *floats[i] << std::endl;
+	}
+	for (int i = 0; i < 10; ++i)
+	{
+		std::cout << *ints[i] << std::endl;
+	}
+
 	auto time2 = glfwGetTime();
 	rcPoolAllocator.cleanUp();
 

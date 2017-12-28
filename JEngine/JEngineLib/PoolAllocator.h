@@ -8,15 +8,9 @@ namespace JEngine
 {
 	template <unsigned int maxSize, unsigned int maxCount>
 	class RcPoolAllocator;
-
-	template <unsigned int maxSize, unsigned int maxCount>
-	class raw_pool_alloc_pointer
-	{
-	};
-
-
+	
 	template <typename T, unsigned int maxSize, unsigned int maxCount>
-	class pool_alloc_pointer : public raw_pool_alloc_pointer<maxSize, maxCount>
+	class pool_alloc_pointer
 	{
 	private:
 		RcPoolAllocator<maxSize, maxCount> * rcPoolAllocator;
