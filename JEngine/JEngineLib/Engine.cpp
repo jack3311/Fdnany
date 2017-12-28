@@ -97,7 +97,7 @@ namespace JEngine
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
-		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");\
+		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
 
 		Logger::getLogger().log("Engine initialised successfully");
 

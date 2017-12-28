@@ -74,7 +74,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
 	*/
 
-	/* Pool Allocator tests */
+	/* Pool Allocator tests 
 	JEngine::RcPoolAllocator<double, 11> rcPoolAllocator;
 	JEngine::pool_alloc_pointer<double, 11> doubles[10];
 	double * doublesP[10];
@@ -102,6 +102,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	auto len = time2 - time1;
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+	*/
 	
 }
 

@@ -32,6 +32,7 @@
     <ClInclude Include="PoolAllocator.h" />
     <ClInclude Include="SceneManagement.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="SceneManagement.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B8061746-52B4-4FC0-9A7A-D906CF4DA041}</ProjectGuid>
