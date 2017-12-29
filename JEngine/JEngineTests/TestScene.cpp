@@ -13,21 +13,57 @@
 #include <iostream>
 
 
-
-TestScene::TestScene()
+class Parent
 {
-}
+public:
+	Parent() : a(6) {}
 
+	int a;
 
-TestScene::~TestScene()
+	virtual void print()
+	{
+		std::cout << a << std::endl;
+	}
+};
+class Child1 : public Parent
 {
-}
+public:
+	Child1() : b(5.f) {}
+
+	float b;
+
+	virtual void print()
+	{
+		std::cout << b << std::endl;
+	}
+};
+class Child2 : public Parent
+{
+public:
+	Child2() : c(7.f) {}
+
+	double c;
+
+	virtual void print()
+	{
+		std::cout << c << std::endl;
+	}
+};
 
 struct TS
 {
 	float a, b;
 	TS(float _a, float _b) : a(_a), b(_b) {}
 };
+
+
+TestScene::TestScene()
+{
+}
+
+TestScene::~TestScene()
+{
+}
 
 void TestScene::preSceneRender(JEngine::Engine & _engine)
 {
@@ -74,10 +110,11 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
 	*/
 
-	/* Pool Allocator tests */
-	JEngine::RcPoolAllocator<sizeof(float), 21> rcPoolAllocator;
-	JEngine::pool_alloc_pointer<float, sizeof(float), 21> floats[10];
-	JEngine::pool_alloc_pointer<int, sizeof(float), 21> ints[10];
+	/* Pool Allocator tests 
+	JEngine::RcPoolAllocator<sizeof(Child1), 21> rcPoolAllocator;
+	//JEngine::pool_alloc_pointer<float, sizeof(float), 21> floats[10];
+	//JEngine::pool_alloc_pointer<int, sizeof(float), 21> ints[10];
+	JEngine::pool_alloc_pointer<Parent, sizeof(Child1), 21> instances[10];
 	double * doublesP[10];
 
 	rcPoolAllocator.initialise();
@@ -92,11 +129,11 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 			{
 				if (rand() % 2 == 0)
 				{
-					floats[j] = rcPoolAllocator.allocate<float>(13.37f);
+					instances[j] = rcPoolAllocator.allocate<Child1>();
 				}
 				else
 				{
-					ints[j] = rcPoolAllocator.allocate<int>(11);
+					instances[j] = rcPoolAllocator.allocate<Child2>();
 				}
 				//doublesP[j] = new double;
 			}
@@ -110,11 +147,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	for (int i = 0; i < 10; ++i)
 	{
-		std::cout << *floats[i] << std::endl;
-	}
-	for (int i = 0; i < 10; ++i)
-	{
-		std::cout << *ints[i] << std::endl;
+		(*instances[i]).print();
 	}
 
 	auto time2 = glfwGetTime();
@@ -122,7 +155,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	auto len = time2 - time1;
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
-	
+	*/
 	
 }
 

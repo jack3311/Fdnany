@@ -23,6 +23,7 @@ namespace JEngine
 		pool_alloc_pointer(); //Unassigned
 		pool_alloc_pointer(T *, RcPoolAllocator<maxSize, maxCount> *); //New
 		pool_alloc_pointer(const pool_alloc_pointer<T, maxSize, maxCount> &);
+		pool_alloc_pointer(T *, RcPoolAllocator<maxSize, maxCount> *, unsigned int *);
 		~pool_alloc_pointer();
 
 		T & operator*();
@@ -30,6 +31,9 @@ namespace JEngine
 
 		pool_alloc_pointer<T, maxSize, maxCount> & operator=(const pool_alloc_pointer<T, maxSize, maxCount> &); //Copy assignment
 		pool_alloc_pointer<T, maxSize, maxCount> & operator=(const pool_alloc_pointer<T, maxSize, maxCount> &&); //Move assignment
+
+		template <typename Tar>
+		operator pool_alloc_pointer<Tar, maxSize, maxCount>();
 	};
 
 	template <unsigned int maxSize, unsigned int maxCount>
@@ -223,6 +227,12 @@ namespace JEngine
 	}
 
 	template<typename T, unsigned int maxSize, unsigned int maxCount>
+	inline pool_alloc_pointer<T, maxSize, maxCount>::pool_alloc_pointer(T * _allocated, RcPoolAllocator<maxSize, maxCount> * _rcPoolAllocator, unsigned int * _refCount) :
+		allocated(_allocated), rcPoolAllocator(_rcPoolAllocator), refCount(_refCount)
+	{
+	}
+
+	template<typename T, unsigned int maxSize, unsigned int maxCount>
 	inline pool_alloc_pointer<T, maxSize, maxCount>::~pool_alloc_pointer()
 	{
 		checkRefCount();
@@ -280,5 +290,22 @@ namespace JEngine
 		}
 
 		return *this;
+	}
+	
+	template<typename T, unsigned int maxSize, unsigned int maxCount>
+	template<typename Tar>
+	inline pool_alloc_pointer<T, maxSize, maxCount>::operator pool_alloc_pointer<Tar, maxSize, maxCount>()
+	{
+		static_assert(std::is_base_of<Tar, T>::value, "Cannot convert pool_alloc_pointer to non-parent type");
+
+		pool_alloc_pointer<Tar, maxSize, maxCount> converted{
+			dynamic_cast<Tar *>(allocated),
+			rcPoolAllocator,
+			refCount
+		};
+
+		++(*refCount);
+
+		return converted;
 	}
 }
