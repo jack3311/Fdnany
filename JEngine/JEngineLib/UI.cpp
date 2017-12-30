@@ -49,7 +49,7 @@ namespace JEngine
 	void UIPanelSwitcher::setCurrentPanel(unsigned int _panel)
 	{
 		assert(0u <= _panel);
-		assert(_scene < panels.size());
+		assert(_panel < panels.size());
 
 		for (auto & panel : panels)
 		{

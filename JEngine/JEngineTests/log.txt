@@ -1,3 +1,0 @@
-31-12-2017 09-50-45:	INFO:	Engine initialised successfully
-31-12-2017 09-50-45:	INFO:	Registered scene: class TestScene
-31-12-2017 09-50-45:	INFO:	Pushed static scene: class TestScene

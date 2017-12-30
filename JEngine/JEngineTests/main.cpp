@@ -20,9 +20,14 @@ int main()
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
 
+	auto myPanel = std::make_shared<JEngine::UIPanel>();
+	auto myPanelID = engine.getUI().getUIBase().addPanel(myPanel);
+	engine.getUI().getUIBase().setCurrentPanel(myPanelID);
 
-	auto panelID = engine.getUI().getUIBase().addPanel(std::make_shared<JEngine::UIPanel>());
-	engine.getUI().getUIBase().setCurrentPanel(panelID);
+	myPanel->elements.push_back(std::make_shared<JEngine::UIElement>());
+	myPanel->elements.push_back(std::make_shared<JEngine::UIElement>());
+
+	engine.getUI().getUIBase().setActive(false);
 
 
 	engine.start();

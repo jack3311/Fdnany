@@ -32,6 +32,7 @@ namespace JEngine
 		sceneManager = std::make_unique<SceneManager>();
 		jobManager = std::make_unique<JobManager>();
 		frameAllocator = std::make_unique<FrameAllocator>();
+		ui = std::make_unique<UI>();
 	}
 
 	Engine::~Engine()
