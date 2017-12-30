@@ -75,7 +75,7 @@ namespace JEngine
 		lk.unlock();
 	}
 
-	JEventParameterised<const Job *> & Job::getEvent()
+	JEvent<const Job *> & Job::getEvent()
 	{
 		return jEvent;
 	}

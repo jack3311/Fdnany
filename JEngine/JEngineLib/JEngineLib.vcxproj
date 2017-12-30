@@ -31,6 +31,7 @@
     <ClInclude Include="Maths.h" />
     <ClInclude Include="PoolAllocator.h" />
     <ClInclude Include="SceneManagement.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -39,9 +40,11 @@
     <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="FrameAllocator.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="IScene.cpp" />
     <ClCompile Include="JobManagement.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="SceneManagement.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "Input.h"
 #include "Util.h"
+#include "UI.h"
 
 namespace JEngine
 {
@@ -67,6 +68,11 @@ namespace JEngine
 		return *frameAllocator;
 	}
 
+	UI & Engine::getUI()
+	{
+		return *ui;
+	}
+
 	const ivec2 & Engine::getWindowSize() const
 	{
 		return windowSize;
@@ -98,6 +104,13 @@ namespace JEngine
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
 		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
+
+		//Setup blocking input events
+		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };
+		Input::keyUp += [this](int _key) { keyUpBlockable.triggerEvent(_key); };
+		Input::mouseDown += [this](int _key) { mouseDownBlockable.triggerEvent(_key); };
+		Input::mouseUp += [this](int _key) { mouseUpBlockable.triggerEvent(_key); };
+		
 
 		Logger::getLogger().log("Engine initialised successfully");
 
@@ -140,7 +153,7 @@ namespace JEngine
 		//PRE-RENDER:
 
 		//Get current scene
-		if (sceneManager->hasNoScenes())
+		if (sceneManager->hasNoCurrentScenes())
 		{
 			//No scene, stop engine
 			stop();

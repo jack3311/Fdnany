@@ -11,8 +11,8 @@ namespace JEngine
 	class SceneManager
 	{
 	private:
-		std::stack<std::shared_ptr<IScene>> currentScenes;
-		std::vector<std::shared_ptr<IScene>> scenes;
+		std::stack<std::shared_ptr<Scene>> currentScenes;
+		std::vector<std::shared_ptr<Scene>> scenes;
 
 	public:
 		SceneManager();
@@ -21,7 +21,7 @@ namespace JEngine
 
 		bool initialise();
 
-		unsigned int registerScene(const std::shared_ptr<IScene> & _scene);
+		unsigned int registerScene(const std::shared_ptr<Scene> & _scene);
 
 		///
 		/// pushScene:
@@ -35,7 +35,7 @@ namespace JEngine
 		/// adds a temporary scene to the stack
 		/// _scene: the scene
 		///
-		void pushScene(const std::shared_ptr<IScene> & _scene);
+		void pushScene(const std::shared_ptr<Scene> & _scene);
 
 		///
 		/// popScene:
@@ -43,8 +43,8 @@ namespace JEngine
 		///
 		void popScene();
 
-		std::shared_ptr<IScene> getCurrentScene();
+		std::shared_ptr<Scene> getCurrentScene();
 
-		bool hasNoScenes() const;
+		bool hasNoCurrentScenes() const;
 	};
 }

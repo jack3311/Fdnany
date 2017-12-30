@@ -2,7 +2,7 @@
 
 namespace JEngine
 {
-	__interface IKeyboardListener
+	/*__interface IKeyboardListener
 	{
 		bool keyDown(int _key);
 		bool keyUp(int _key);
@@ -12,5 +12,5 @@ namespace JEngine
 	{
 		bool mouseDown(int _button);
 		bool mouseUp(int _button);
-	};
+	};*/
 }

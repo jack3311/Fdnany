@@ -56,9 +56,15 @@ struct TS
 	TS(float _a, float _b) : a(_a), b(_b) {}
 };
 
-
 TestScene::TestScene()
 {
+	JEngine::Input::keyDown += [](int _key) {
+
+	};
+	JEngine::Input::keyUp += [](int _key) {
+		if (_key == GLFW_KEY_Q)
+			JEngine::Engine::getEngine().stop();
+	};
 }
 
 TestScene::~TestScene()
@@ -161,8 +167,4 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	if (JEngine::Input::isKeyDown(GLFW_KEY_Q) == JEngine::KeyState::KEY_PRESSED)
-	{
-		_engine.stop();
-	}
 }

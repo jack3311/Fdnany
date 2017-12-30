@@ -7,8 +7,7 @@
 #include <memory>
 
 #include "Maths.h"
-
-#include "IInputListeners.h"
+#include "JEvent.h"
 
 namespace JEngine
 {
@@ -38,6 +37,8 @@ namespace JEngine
 	class Input
 	{
 	public:
+		static JEvent<int> mouseUp, mouseDown;
+		static JEvent<int> keyUp, keyDown;
 
 		/// 
 		/// setCallbackFunctions:
@@ -90,9 +91,6 @@ namespace JEngine
 		static MouseState mouseStatesB[NUM_MOUSE_BUTTONS];
 		static KeyState keyStatesA[NUM_KEYS];
 		static KeyState keyStatesB[NUM_KEYS];
-
-		static std::vector<std::shared_ptr<IKeyboardListener>> keyboardListeners;
-		static std::vector<std::shared_ptr<IMouseListener>> mouseListeners;
 
 		static void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mods);
 		static void mousePosCallback(GLFWwindow * _window, double _xpos, double _ypos);

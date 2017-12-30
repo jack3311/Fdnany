@@ -4,6 +4,7 @@
 #include <GLFW\glfw3.h>
 
 #include "Maths.h"
+#include "JEvent.h"
 
 #include <memory>
 #include <string>
@@ -15,6 +16,7 @@ namespace JEngine
 	class SceneManager;
 	class JobManager;
 	class FrameAllocator;
+	class UI;
 
 	class Engine
 	{
@@ -36,6 +38,7 @@ namespace JEngine
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<JobManager> jobManager;
 		std::unique_ptr<FrameAllocator> frameAllocator;
+		std::unique_ptr<UI> ui;
 
 		ivec2 windowSize;
 
@@ -52,6 +55,10 @@ namespace JEngine
 		SceneManager & getSceneManager();
 		JobManager & getJobManager();
 		FrameAllocator & getFrameAllocator();
+		UI & getUI();
+
+		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
+		JEventBlockable<int> keyDownBlockable, keyUpBlockable;
 
 		const ivec2 & getWindowSize() const;
 

@@ -20,7 +20,7 @@ namespace JEngine
 		return true;
 	}
 
-	unsigned int SceneManager::registerScene(const std::shared_ptr<IScene> & _scene)
+	unsigned int SceneManager::registerScene(const std::shared_ptr<Scene> & _scene)
 	{
 		scenes.push_back(_scene);
 		
@@ -41,7 +41,7 @@ namespace JEngine
 		Logger::getLogger().log(strJoin({ "Pushed static scene: ", typeid(*scene).name() }));
 	}
 
-	void SceneManager::pushScene(const std::shared_ptr<IScene> & _scene)
+	void SceneManager::pushScene(const std::shared_ptr<Scene> & _scene)
 	{
 		currentScenes.push(_scene);
 
@@ -58,12 +58,12 @@ namespace JEngine
 		Logger::getLogger().log(strJoin({ "Popped scene: ", typeid(*topScene).name() }));
 	}
 
-	std::shared_ptr<IScene> SceneManager::getCurrentScene()
+	std::shared_ptr<Scene> SceneManager::getCurrentScene()
 	{
 		return currentScenes.top();
 	}
 
-	bool SceneManager::hasNoScenes() const
+	bool SceneManager::hasNoCurrentScenes() const
 	{
 		return currentScenes.empty();
 	}

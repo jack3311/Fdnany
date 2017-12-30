@@ -4,9 +4,14 @@ namespace JEngine
 {
 	class Engine;
 
-	__interface IScene
+	class Scene
 	{
-		void preSceneRender(Engine &);
-		void postSceneRender(Engine &);
+	public:
+		Scene();
+		Scene(const Scene &) = delete;
+		~Scene();
+
+		virtual void preSceneRender(Engine &) = 0;
+		virtual void postSceneRender(Engine &) = 0;
 	};
 }

@@ -3,7 +3,7 @@
 #include <JEngineLib\Engine.h>
 
 class TestScene :
-	public JEngine::IScene
+	public JEngine::Scene
 {
 public:
 	TestScene();

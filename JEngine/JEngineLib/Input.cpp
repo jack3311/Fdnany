@@ -11,8 +11,8 @@ namespace JEngine
 	bool Input::statesAreA = false;
 	dvec2 Input::mousePosition;
 
-	std::vector<std::shared_ptr<IKeyboardListener>> Input::keyboardListeners;
-	std::vector<std::shared_ptr<IMouseListener>> Input::mouseListeners;
+	JEvent<int> Input::mouseUp, Input::mouseDown;
+	JEvent<int> Input::keyUp, Input::keyDown;
 
 
 	void Input::setCallbackFunctions(GLFWwindow * _window)
@@ -78,22 +78,19 @@ namespace JEngine
 		{
 			keyStates[_key] = KeyState::KEY_RELEASED;
 
-			for (const auto & keyboardListener : keyboardListeners)
-				keyboardListener->keyUp(_key);
+			keyUp.triggerEvent(_key);
 		}
 		else if (_action == GLFW_PRESS)
 		{
 			keyStates[_key] = KeyState::KEY_PRESSED;
 
-			for (const auto & keyboardListener : keyboardListeners)
-				keyboardListener->keyDown(_key);
+			keyDown.triggerEvent(_key);
 		}
 		else if (_action == GLFW_REPEAT)
 		{
 			keyStates[_key] = KeyState::KEY_PRESSED;
 
-			for (const auto & keyboardListener : keyboardListeners)
-				keyboardListener->keyDown(_key);
+			keyDown.triggerEvent(_key);
 		}
 	}
 
@@ -113,15 +110,13 @@ namespace JEngine
 		{
 			mouseStates[_button] = MouseState::MOUSE_RELEASED;
 
-			for (const auto & mouseListener : mouseListeners)
-				mouseListener->mouseUp(_button);
+			mouseUp.triggerEvent(_button);
 		}
 		else if (_action == GLFW_PRESS)
 		{
 			mouseStates[_button] = MouseState::MOUSE_PRESSED;
 
-			for (const auto & mouseListener : mouseListeners)
-				mouseListener->mouseDown(_button);
+			mouseDown.triggerEvent(_button);
 		}
 	}
 }

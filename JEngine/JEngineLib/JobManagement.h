@@ -20,7 +20,7 @@ namespace JEngine
 		std::condition_variable isFinishedCV;
 		std::mutex isFinishedCVMutex;
 
-		JEventParameterised<const Job *> jEvent;
+		JEvent<const Job *> jEvent;
 
 	public:
 		virtual void execute() = 0;
@@ -28,7 +28,7 @@ namespace JEngine
 
 		void waitUntilFinished();
 
-		JEventParameterised<const Job *> & getEvent();
+		JEvent<const Job *> & getEvent();
 	};
 
 	class Worker
