@@ -15,6 +15,8 @@ namespace JEngine
 		unsigned int numFramesForFPS;
 		float cumulativeSecondsForFPS;
 
+		float lastSpf, lastFps;
+
 
 	public:
 		EngineTime();
@@ -29,5 +31,8 @@ namespace JEngine
 
 		float getTimeSinceStart() const;
 		float getTimeSinceStartUnscaled() const;
+
+		float getSpf() const;
+		float getFps() const;
 	};
 }

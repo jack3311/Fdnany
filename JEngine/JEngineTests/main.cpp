@@ -24,7 +24,7 @@ int main()
 	auto myPanelID = engine.getUI().getUIBase().addPanel(myPanel);
 	engine.getUI().getUIBase().setCurrentPanel(myPanelID);
 
-	myPanel->elements.push_back(std::make_shared<JEngine::UIElement>());
+	myPanel->elements.push_back(std::make_shared<JEngine::UILabel>("Hello World!"));
 	myPanel->elements.push_back(std::make_shared<JEngine::UIElement>());
 
 	engine.getUI().getUIBase().setActive(false);

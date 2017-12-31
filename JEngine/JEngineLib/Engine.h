@@ -51,7 +51,7 @@ namespace JEngine
 		void render() const;
 
 	public:
-		EngineTime & getGameTime();
+		EngineTime & getEngineTime();
 		SceneManager & getSceneManager();
 		JobManager & getJobManager();
 		FrameAllocator & getFrameAllocator();

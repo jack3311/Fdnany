@@ -26,3 +26,11 @@ std::string strJoinConvert(T & _first, Args ..._args)
 	strJoinConvert(ss, _args...);
 	return ss.str();
 }
+
+template <typename T>
+std::string toString(const T & _val)
+{
+	std::stringstream ss;
+	ss << _val;
+	return ss.str();
+}

@@ -9,15 +9,17 @@
 namespace JEngine
 {
 #define BASE_FRAMERATE 1.f / 60.f
-#define MAX_FRAMES_FOR_FPS_AVG 10000u
-#define MAX_SECONDS_FOR_FPS_AVG 5.f
+#define MAX_FRAMES_FOR_FPS_AVG 1000u
+#define MAX_SECONDS_FOR_FPS_AVG 1.f
 
 	EngineTime::EngineTime() :
 		timeSinceStart(0.f),
 		timeSinceStartUnscaled(0.f),
 		timeScale(1.f),
 		numFramesForFPS(0u),
-		cumulativeSecondsForFPS(0.f)
+		cumulativeSecondsForFPS(0.f),
+		lastSpf(0.f),
+		lastFps(0.f)
 	{
 		lastTime = glfwGetTime();
 	}
@@ -56,8 +58,11 @@ namespace JEngine
 			float secondsPerFrame = cumulativeSecondsForFPS / static_cast<float>(numFramesForFPS);
 			float framesPerSecond = 1.f / secondsPerFrame;
 
-			Logger::getLogger().log(strJoinConvert("s/f:", secondsPerFrame));
-			Logger::getLogger().log(strJoinConvert("f/s:", framesPerSecond));
+			//Logger::getLogger().log(strJoinConvert("s/f:", secondsPerFrame));
+			//Logger::getLogger().log(strJoinConvert("f/s:", framesPerSecond));
+
+			lastSpf = secondsPerFrame;
+			lastFps = framesPerSecond;
 
 			numFramesForFPS = 0u;
 			cumulativeSecondsForFPS = 0.f;
@@ -77,5 +82,15 @@ namespace JEngine
 	float EngineTime::getTimeSinceStartUnscaled() const
 	{
 		return timeSinceStartUnscaled;
+	}
+
+	float EngineTime::getSpf() const
+	{
+		return lastSpf;
+	}
+
+	float EngineTime::getFps() const
+	{
+		return lastFps;
 	}
 }

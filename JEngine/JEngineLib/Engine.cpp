@@ -49,7 +49,7 @@ namespace JEngine
 		engine = new Engine();
 	}
 
-	EngineTime & Engine::getGameTime()
+	EngineTime & Engine::getEngineTime()
 	{
 		return *engineTime;
 	}
@@ -105,6 +105,7 @@ namespace JEngine
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
 		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
+		ERR_IF(!ui->initialise(), "Failed to initialise UI");
 
 		//Setup blocking input events
 		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };
@@ -173,6 +174,7 @@ namespace JEngine
 		//Update systems
 		engineTime->update();
 		Input::update();
+		ui->update();
 
 		//Pre-render for current scene
 		currentScene->preSceneRender(*this);
@@ -195,5 +197,7 @@ namespace JEngine
 	{
 		glClearColor(1.f, 0.f, 1.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		ui->render();
 	}
 }

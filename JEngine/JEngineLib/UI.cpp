@@ -1,16 +1,59 @@
 #include "UI.h"
 
+#include "Logger.h"
+#include "Util.h"
+#include "EngineTime.h"
+#include "Engine.h"
+
 #include <cassert>
 
 namespace JEngine
 {
+	bool UI::setupDebugUI()
+	{
+		//s/f, f/s
+		uiDebug->elements.push_back(uiDebugTable.spf = std::make_shared<UILabel>("s/f: "));
+		uiDebug->elements.push_back(uiDebugTable.fps = std::make_shared<UILabel>("f/s: "));
+
+		return true;
+	}
+
+	void UI::updateDebugUI()
+	{
+		//s/f, f/s
+		uiDebugTable.spf->text = toString(Engine::getEngine().getEngineTime().getSpf());
+		uiDebugTable.fps->text = toString(Engine::getEngine().getEngineTime().getFps());
+	}
+
 	UI::UI()
 	{
 		uiBase = std::make_unique<UIPanelSwitcher>();
+		uiDebug = std::make_shared<UIPanel>();
 	}
 
 	UI::~UI()
 	{
+	}
+
+	void UI::render() const
+	{
+		uiBase->render();
+		uiDebug->render();
+	}
+
+	void UI::update()
+	{
+		uiBase->update();
+		uiDebug->update();
+
+		updateDebugUI();
+	}
+
+	bool UI::initialise()
+	{
+		ERR_IF(!setupDebugUI(), "Could not set up debug UI");
+
+		return true;
 	}
 
 	UIPanelSwitcher & UI::getUIBase()
@@ -31,8 +74,9 @@ namespace JEngine
 		isActive = _active;
 	}
 
-	void UIElement::render()
+	void UIElement::render() const
 	{
+		
 	}
 
 	void UIElement::update()
@@ -78,6 +122,11 @@ namespace JEngine
 		UIElement::setActive(_active);
 	}
 
+	void UIPanelSwitcher::render() const
+	{
+		currentPanel->render();
+	}
+
 	void UIPanel::setActive(bool _active)
 	{
 		for (auto & element : elements)
@@ -86,5 +135,24 @@ namespace JEngine
 		}
 
 		UIElement::setActive(_active);
+	}
+
+	void UIPanel::render() const
+	{
+		for (auto & element : elements)
+		{
+			element->render();
+		}
+	}
+
+	UILabel::UILabel(std::string _text) : text(_text), UIElement()
+	{
+	}
+	
+	void UILabel::render() const
+	{
+		Logger::getLogger().log(text);
+
+		UIElement::render();
 	}
 }
