@@ -5,6 +5,7 @@
 #include <JEngineLib\Logger.h>
 #include <JEngineLib\Util.h>
 #include <JEngineLib\UI.h>
+#include <JEngineLib\ResourceManagement.h>
 
 #include "TestScene.h"
 #include "TestJob.h"
@@ -12,13 +13,15 @@
 
 int main()
 {
-	JEngine::Engine::startup();
+	JEngine::Engine::create();
 	JEngine::Engine & engine = JEngine::Engine::getEngine();
 
 	engine.initialise("Test Game", "log.txt");
 
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
+
+
 
 	auto myPanel = std::make_shared<JEngine::UIPanel>();
 	auto myPanelID = engine.getUI().getUIBase().addPanel(myPanel);
@@ -30,6 +33,12 @@ int main()
 	engine.getUI().getUIBase().setActive(false);
 
 
+	auto job = std::make_shared<JEngine::JobLoadResourceTexture>(
+		JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\grassblades.png"));
+	engine.getJobManager().enqueueJob(job);
+
+
+
 	engine.start();
 
 	engine.cleanUp();
@@ -39,7 +48,7 @@ int main()
 
 //void testJobs()
 //{
-//	JEngine::Engine::startup();
+//	JEngine::Engine::create();
 //	JEngine::Engine & engine = JEngine::Engine::getEngine();
 //
 //	engine.initialise("Test Game", "log.txt");

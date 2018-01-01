@@ -4,7 +4,7 @@
 #include <JEngineLib\Input.h>
 #include <JEngineLib\Logger.h>
 #include <JEngineLib\Util.h>
-#include <JEngineLib\FrameAllocator.h>
+#include <JEngineLib\StackAllocator.h>
 #include <JEngineLib\PoolAllocator.h>
 
 #include "TestJob.h"

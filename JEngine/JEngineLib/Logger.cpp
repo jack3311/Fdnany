@@ -4,6 +4,7 @@
 #include <chrono>
 #include <time.h>
 #include <sstream>
+#include <cassert>
 
 #include "Logger.h"
 
@@ -21,11 +22,13 @@ namespace JEngine
 
 	Logger & Logger::getLogger()
 	{
-		if (logger == nullptr)
-		{
-			logger = new Logger();
-		}
+		return *logger;
+	}
 
+	Logger & Logger::create()
+	{
+		assert(logger == nullptr);
+		logger = new Logger();
 		return *logger;
 	}
 

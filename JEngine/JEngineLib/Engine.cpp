@@ -5,11 +5,12 @@
 #include "EngineTime.h"
 #include "SceneManagement.h"
 #include "JobManagement.h"
-#include "FrameAllocator.h"
+#include "StackAllocator.h"
+#include "UI.h"
+#include "ResourceManagement.h"
 #include "Logger.h"
 #include "Input.h"
 #include "Util.h"
-#include "UI.h"
 
 namespace JEngine
 {
@@ -31,7 +32,7 @@ namespace JEngine
 		engineTime = std::make_unique<EngineTime>();
 		sceneManager = std::make_unique<SceneManager>();
 		jobManager = std::make_unique<JobManager>();
-		frameAllocator = std::make_unique<FrameAllocator>();
+		frameAllocator = std::make_unique<StackAllocator>();
 		ui = std::make_unique<UI>();
 	}
 
@@ -44,7 +45,7 @@ namespace JEngine
 		return *engine;
 	}
 
-	void Engine::startup()
+	void Engine::create()
 	{
 		engine = new Engine();
 	}
@@ -64,7 +65,7 @@ namespace JEngine
 		return *jobManager;
 	}
 
-	FrameAllocator & Engine::getFrameAllocator()
+	StackAllocator & Engine::getFrameAllocator()
 	{
 		return *frameAllocator;
 	}
@@ -82,6 +83,7 @@ namespace JEngine
 	bool Engine::initialise(std::string _title, std::string _logFile)
 	{
 		//Initialise Logger
+		Logger::create();
 		ERR_IF(!Logger::getLogger().initialise("log.txt"), "Failed to initialise logger");
 
 		//Initialise GLFW
@@ -105,6 +107,7 @@ namespace JEngine
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
 		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
+		ERR_IF(!ResourceManager::create().initialise(), "Failed to initialise resource manager");
 		ERR_IF(!ui->initialise(), "Failed to initialise UI");
 
 		//Setup blocking input events
@@ -142,6 +145,7 @@ namespace JEngine
 	void Engine::cleanUp()
 	{
 		//Clean up/Shut down engine systems
+		ResourceManager::getResourceManager().cleanUp();
 		frameAllocator->cleanUp();
 		jobManager->stop();
 

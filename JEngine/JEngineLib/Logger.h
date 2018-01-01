@@ -23,6 +23,7 @@ namespace JEngine
 		~Logger();
 	public:
 		static Logger & getLogger();
+		static Logger & create();
 
 
 	private:

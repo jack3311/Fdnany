@@ -15,7 +15,7 @@ namespace JEngine
 	class EngineTime;
 	class SceneManager;
 	class JobManager;
-	class FrameAllocator;
+	class StackAllocator;
 	class UI;
 
 	class Engine
@@ -24,7 +24,7 @@ namespace JEngine
 		static Engine * engine;
 	public:
 		static Engine & getEngine();
-		static void startup();
+		static void create();
 
 
 	private:
@@ -37,7 +37,7 @@ namespace JEngine
 		std::unique_ptr<EngineTime> engineTime;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<JobManager> jobManager;
-		std::unique_ptr<FrameAllocator> frameAllocator;
+		std::unique_ptr<StackAllocator> frameAllocator;
 		std::unique_ptr<UI> ui;
 
 		ivec2 windowSize;
@@ -54,7 +54,7 @@ namespace JEngine
 		EngineTime & getEngineTime();
 		SceneManager & getSceneManager();
 		JobManager & getJobManager();
-		FrameAllocator & getFrameAllocator();
+		StackAllocator & getFrameAllocator();
 		UI & getUI();
 
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
