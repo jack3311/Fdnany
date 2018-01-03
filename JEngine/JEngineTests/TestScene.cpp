@@ -6,6 +6,7 @@
 #include <JEngineLib\Util.h>
 #include <JEngineLib\StackAllocator.h>
 #include <JEngineLib\PoolAllocator.h>
+#include <JEngineLib\ResourceManagement.h>
 
 #include "TestJob.h"
 
@@ -73,6 +74,14 @@ TestScene::~TestScene()
 
 void TestScene::preSceneRender(JEngine::Engine & _engine)
 {
+	auto job = std::make_shared<JEngine::JobLoadResourceTexture>(
+		JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\grassblades.png"));
+	_engine.getJobManager().enqueueJob(job);
+	job->waitUntilFinished();
+	job->texture->initialise();
+	JEngine::Logger::getLogger().log("Job finished");
+
+
 	/* JOBS/THREADING TESTS
 	static int currentNum = 0;
 	if (_engine.getJobManager().getJobCount() < _engine.getJobManager().getNumWorkers())

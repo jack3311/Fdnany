@@ -33,9 +33,7 @@ int main()
 	engine.getUI().getUIBase().setActive(false);
 
 
-	auto job = std::make_shared<JEngine::JobLoadResourceTexture>(
-		JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\grassblades.png"));
-	engine.getJobManager().enqueueJob(job);
+	
 
 
 
