@@ -3,7 +3,6 @@
 
 #define ERR_IF(exp, msg) { if (exp) { Logger::getLogger().log(msg, LogLevel::ERROR); return false; } }
 
-
 std::string getWorkingDirectory();
 
 std::string strJoin(std::initializer_list<std::string> _elements);

@@ -5,13 +5,10 @@
 
 #include "Util.h"
 #include "Logger.h"
+#include "Engine.h"
 
 namespace JEngine
 {
-	void Resource::cleanUp()
-	{
-	}
-
 	ResourceManager * ResourceManager::resourceManager = nullptr;
 	
 	ResourceManager & ResourceManager::getResourceManager()
@@ -49,49 +46,62 @@ namespace JEngine
 		FreeImage_DeInitialise();
 	}
 
-	std::string ResourceManager::constructFullPath(const std::string & _relToInstall)
+	std::string ResourceManager::constructFullPath(const std::string & _relToInstall) const
 	{
 		return strJoin({ installPath, _relToInstall });
-	} 
-
-	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _filename) : 
-		filename(_filename), loadSuccessful(false)
-	{
-
 	}
 
-	void JobLoadResourceTexture::execute()
+	void ResourceManager::beginResourceCaching()
 	{
+		cachingResources = true;
+	}
+
+	void ResourceManager::endResourceCaching()
+	{
+		cachingResources = false;
+
+		//Clean up current cache
+		resourcesCache.clear();
+	}
+
+	bool ResourceManager::loadResourceTexture(std::shared_ptr<ResourceTexture> & _resource, const std::string & _name)
+	{
+		//Check cache
+		if (cachingResources && checkCache(_resource, _name))
+		{
+			return true;
+		}
+
 		//Load from disk
 
 #ifdef _DEBUG
 		{
-			std::ifstream filecheck(filename);
+			std::ifstream filecheck(_name);
 			auto ok = filecheck.good();
 			filecheck.close();
 
 			if (!ok)
 			{
-				Logger::getLogger().log(strJoin({ "Image not found: ", filename }), JEngine::LogLevel::ERROR);
-				return;
+				Logger::getLogger().log(strJoin({ "Image not found: ", _name }), JEngine::LogLevel::WARNING);
+				return false;
 			}
 		}
 #endif
 
-		FREE_IMAGE_FORMAT fformat = FreeImage_GetFileType(filename.c_str());
-		FIBITMAP * image = FreeImage_Load(fformat, filename.c_str());
+		FREE_IMAGE_FORMAT fformat = FreeImage_GetFileType(_name.c_str());
+		FIBITMAP * image = FreeImage_Load(fformat, _name.c_str());
 
 		if (image == nullptr)
 		{
-			Logger::getLogger().log(strJoin({ "Could not load image: ", filename }), JEngine::LogLevel::WARNING);
-			return;
+			Logger::getLogger().log(strJoin({ "Could not load image: ", _name }), JEngine::LogLevel::WARNING);
+			return false;
 		}
 
 
 		FREE_IMAGE_COLOR_TYPE colourType = FreeImage_GetColorType(image);
 
 		ResourceTexture::ResourceTextureFormat format = ResourceTexture::ResourceTextureFormat::NONE;
-		
+
 		if (colourType == FREE_IMAGE_COLOR_TYPE::FIC_RGB)
 		{
 			format = ResourceTexture::ResourceTextureFormat::RGB;
@@ -103,13 +113,32 @@ namespace JEngine
 		else
 		{
 			Logger::getLogger().log(strJoinConvert("Unrecognised colour type: ", colourType), JEngine::LogLevel::WARNING);
-			return;
+			return false;
 		}
 
-		unsigned int	width = FreeImage_GetWidth(image),
-						height = FreeImage_GetHeight(image);
+		unsigned int width = FreeImage_GetWidth(image),
+			height = FreeImage_GetHeight(image);
 
-		texture = std::make_shared<ResourceTexture>(image->data, width, height, format, image);
+		_resource = std::make_shared<ResourceTexture>(image->data, width, height, format, image);
+
+		//Add to cache
+		if (cachingResources)
+		{
+			resourcesCache[_name] = _resource;
+		}
+
+		return true;
+	}
+
+	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _filename) : 
+		filename(_filename), loadSuccessful(false)
+	{
+
+	}
+
+	void JobLoadResourceTexture::execute()
+	{
+		
 
 		//Image loading to GPU is delayed to main thread
 		
@@ -118,6 +147,8 @@ namespace JEngine
 
 	bool ResourceTexture::initialise()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		//Load to GPU
 		glGenTextures(1, &glTextureID);
 		glBindTexture(GL_TEXTURE_2D, glTextureID);
@@ -145,7 +176,7 @@ namespace JEngine
 	{
 	}
 
-	void ResourceTexture::cleanUp()
+	ResourceTexture::~ResourceTexture()
 	{
 		glDeleteTextures(1, &glTextureID);
 	}

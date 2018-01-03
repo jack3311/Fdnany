@@ -44,6 +44,8 @@ namespace JEngine
 
 		bool shouldQuit = false;
 
+		std::thread::id mainThreadID;
+
 
 		//Frame functions
 		void executeOneFrame();
@@ -69,5 +71,8 @@ namespace JEngine
 
 		void start();
 		void stop();
+
+		const std::thread::id & getMainThreadID() const;
+		bool isCurrentThreadMain() const;
 	};
 }

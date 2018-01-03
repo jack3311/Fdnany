@@ -6,6 +6,8 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <cassert>
 
 #include "JobManagement.h"
 
@@ -13,8 +15,6 @@ namespace JEngine
 {
 	class Resource
 	{
-	public:
-		virtual void cleanUp();
 	};
 
 	class ResourceTexture : public Resource
@@ -35,10 +35,9 @@ namespace JEngine
 		unsigned int width, height;
 
 		ResourceTexture(void * _data, unsigned int _width, unsigned int _height, ResourceTextureFormat _format, FIBITMAP * _fBitmap = nullptr);
+		~ResourceTexture();
 
 		bool initialise();
-	
-		virtual void cleanUp();
 	};
 
 	class JobLoadResourceTexture : public Job
@@ -56,15 +55,6 @@ namespace JEngine
 	};
 
 
-
-
-
-	class ResourcePackage
-	{
-	public:
-		std::vector<Resource> resources;
-	};
-
 	class ResourceManager //FOR BATCHING RESOURCE LOADS INTO ResourcePackages
 	{
 	private:
@@ -76,6 +66,14 @@ namespace JEngine
 
 	private:
 		std::string installPath;
+		bool cachingResources;
+
+		std::unordered_map<std::string, std::shared_ptr<Resource>> resourcesCache;
+
+		std::string constructFullPath(const std::string & _relToInstall) const;
+
+		template <typename T>
+		bool checkCache(std::shared_ptr<T> & _resource, const std::string & _name) const;
 
 	public:
 		ResourceManager();
@@ -84,6 +82,35 @@ namespace JEngine
 		bool initialise();
 		void cleanUp();
 
-		std::string constructFullPath(const std::string & _relToInstall);
+
+		void beginResourceCaching();
+		void endResourceCaching();
+
+		bool loadResourceTexture(std::shared_ptr<ResourceTexture> & _resource, const std::string & _name);
+		void loadResourceTextureAsync(std::shared_ptr<JobLoadResourceTexture> & _job, const std::string & _name);
 	};
+
+	template <typename T>
+	inline bool ResourceManager::checkCache(std::shared_ptr<T> & _resource, const std::string & _name) const
+	{
+		if ((auto itr = resourcesCache.find(_name)) != resourcesCache.end())
+		{
+			//Resource is cached
+
+			auto resourcePtr = *itr;
+
+			//Verify resource type
+			if (typeid(T) != typeid(*resourcePtr))
+			{
+				Logger::getLogger().log(strJoin({ "Cached resource type for resource: '", _name, "' is '", 
+					typeid(*resourcePtr).name(), "', but expected '", typeid(T).name(), "'" }), LogLevel::WARNING);
+				return false;
+			}
+
+			_resource = resourcePtr;
+			return true;
+		}
+
+		return false;
+	}
 }

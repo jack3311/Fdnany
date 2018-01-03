@@ -82,6 +82,9 @@ namespace JEngine
 
 	bool Engine::initialise(std::string _title, std::string _logFile)
 	{
+		//Misc
+		mainThreadID = std::this_thread::get_id();
+
 		//Initialise Logger
 		Logger::create();
 		ERR_IF(!Logger::getLogger().initialise("log.txt"), "Failed to initialise logger");
@@ -140,6 +143,16 @@ namespace JEngine
 	void Engine::stop()
 	{
 		shouldQuit = true;
+	}
+
+	const std::thread::id & Engine::getMainThreadID() const
+	{
+		return mainThreadID;
+	}
+
+	bool Engine::isCurrentThreadMain() const
+	{
+		return std::this_thread::get_id() == mainThreadID;
 	}
 
 	void Engine::cleanUp()
