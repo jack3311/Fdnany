@@ -74,17 +74,17 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Dependencies\FreeImage\Wrapper\FreeImagePlus\dist\x64;$(SolutionDir)Dependencies\tue-master\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\Debug;$(SolutionDir)Dependencies\FreeImage\Wrapper\FreeImagePlus\dist\x64;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\lib-vc2015</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Dependencies\FreeImage\Dist\x64;$(SolutionDir)Dependencies\tue-master\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)Dependencies\FreeImage\Dist\x64;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Dependencies\FreeImage\Wrapper\FreeImagePlus\dist\x64;$(SolutionDir)Dependencies\tue-master\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Dependencies\FreeImage\Dist\x64;$(SolutionDir)Dependencies\tue-master\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
-    <LibraryPath>$(SolutionDir)x64\Debug;$(SolutionDir)Dependencies\FreeImage\Wrapper\FreeImagePlus\dist\x64;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\lib-vc2015</LibraryPath>
+    <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)Dependencies\FreeImage\Dist\x64;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.2.1.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -2,12 +2,13 @@
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
-#include <FreeImagePlus.h>
+#include <FreeImage.h>
 
 #include <cassert>
 #include <fstream>
 
 #include "Util.h"
+#include "Logger.h"
 
 namespace JEngine
 {
@@ -40,7 +41,7 @@ namespace JEngine
 
 		installPath = getWorkingDirectory() + "\\";
 
-		return false;
+		return true;
 	}
 
 	void ResourceManager::cleanUp()
@@ -53,7 +54,8 @@ namespace JEngine
 		return strJoin({ installPath, _relToInstall });
 	} 
 
-	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _filename) : filename(_filename)
+	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _filename) : 
+		filename(_filename), loadSuccessful(false)
 	{
 
 	}
@@ -65,6 +67,13 @@ namespace JEngine
 
 		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename.c_str());
 		FIBITMAP * image = FreeImage_Load(format, filename.c_str());
+
 		FREE_IMAGE_COLOR_TYPE colourType = FreeImage_GetColorType(image);
+		
+		if (colourType != FREE_IMAGE_COLOR_TYPE::FIC_RGB && 
+			colourType != FREE_IMAGE_COLOR_TYPE::FIC_RGBALPHA)
+		{
+			Logger::getLogger().log(strJoinConvert("Unrecognised colour type", colourType));
+		}
 	}
 }

@@ -28,6 +28,8 @@ namespace JEngine
 		std::string filename;
 
 	public:
+		bool loadSuccessful;
+
 		JobLoadResourceTexture(const std::string &);
 
 		virtual void execute();
