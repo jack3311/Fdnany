@@ -161,6 +161,14 @@ namespace JEngine
 	bool ResourceTexture::initialise()
 	{
 		assert(Engine::getEngine().isCurrentThreadMain());
+#ifdef _DEBUG
+		if (initialised)
+		{
+			Logger::getLogger().log("Texture already initialised!", LogLevel::ERROR);
+			return false;
+		}
+		initialised = true;
+#endif
 
 		//Load to GPU
 		glGenTextures(1, &glTextureID);
@@ -188,6 +196,9 @@ namespace JEngine
 	ResourceTexture::ResourceTexture(void * _data, unsigned int _width, unsigned int _height, ResourceTextureFormat _format, FIBITMAP * _fBitmap) :
 		data(_data), width(_width), height(_height), format(_format), fBitmap(_fBitmap)
 	{
+#ifdef _DEBUG
+		initialised = false;
+#endif
 	}
 
 	ResourceTexture::~ResourceTexture()

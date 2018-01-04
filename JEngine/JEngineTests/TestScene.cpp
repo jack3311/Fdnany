@@ -85,22 +85,31 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	resourceManager.beginResourceCaching();
 
-	std::shared_ptr<JEngine::JobLoadResourceTexture> job, job1, job2;
+	std::shared_ptr<JEngine::JobLoadResourceTexture> job, job1, job2, job3;
 
-	resourceManager.loadResourceTextureAsync(job, "Assets\\grassblades.png");
+	resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
 
-	resourceManager.loadResourceTextureAsync(job1, "Assets\\grassblades.png");
+	resourceManager.loadResourceTextureAsync(job1, "Assets\\image2.png");
 
-	resourceManager.loadResourceTextureAsync(job2, "Assets\\grassblades.png");
+	resourceManager.loadResourceTextureAsync(job2, "Assets\\image3.png");
+
+	resourceManager.loadResourceTextureAsync(job3, "Assets\\image1.png");
 
 	job->waitUntilFinished();
 	JEngine::Logger::getLogger().log("Loaded texture 0");
+	job->texture->initialise();
 
 	job1->waitUntilFinished();
 	JEngine::Logger::getLogger().log("Loaded texture 1");
+	job1->texture->initialise();
 
 	job2->waitUntilFinished();
 	JEngine::Logger::getLogger().log("Loaded texture 2");
+	job2->texture->initialise();
+
+	job3->waitUntilFinished();
+	JEngine::Logger::getLogger().log("Loaded texture 3");
+	job3->texture->initialise();
 
 	resourceManager.endResourceCaching();
 

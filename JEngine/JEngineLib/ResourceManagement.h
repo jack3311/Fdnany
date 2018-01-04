@@ -26,6 +26,10 @@ namespace JEngine
 		FIBITMAP * fBitmap;
 		void * data;
 
+#ifdef _DEBUG
+		bool initialised;
+#endif
+
 	public:
 		enum ResourceTextureFormat 
 		{

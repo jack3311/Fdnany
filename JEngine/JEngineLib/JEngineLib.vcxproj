@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="StackAllocator.h" />
     <ClInclude Include="IInputListeners.h" />
     <ClInclude Include="Input.h" />

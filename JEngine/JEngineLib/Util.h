@@ -1,7 +1,10 @@
 #include <string>
 #include <sstream>
+#include <vector>
 
 #define ERR_IF(exp, msg) { if (exp) { Logger::getLogger().log(msg, LogLevel::ERROR); return false; } }
+
+std::vector<std::string> getFilesInDirectory(const std::string & _directory);
 
 std::string getWorkingDirectory();
 

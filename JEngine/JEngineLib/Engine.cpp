@@ -105,6 +105,10 @@ namespace JEngine
 		//Initialise GLEW
 		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW");
 
+		//OpenGL config
+		glFrontFace(GL_CCW);
+		glCullFace(GL_BACK);
+
 		//Initialise engine systems
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
