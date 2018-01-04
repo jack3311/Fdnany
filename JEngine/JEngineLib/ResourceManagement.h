@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <cassert>
+#include <mutex>
 
 #include "JobManagement.h"
 
@@ -15,6 +16,8 @@ namespace JEngine
 {
 	class Resource
 	{
+	public:
+		virtual ~Resource();
 	};
 
 	class ResourceTexture : public Resource
@@ -35,7 +38,7 @@ namespace JEngine
 		unsigned int width, height;
 
 		ResourceTexture(void * _data, unsigned int _width, unsigned int _height, ResourceTextureFormat _format, FIBITMAP * _fBitmap = nullptr);
-		~ResourceTexture();
+		virtual ~ResourceTexture();
 
 		bool initialise();
 	};
@@ -43,7 +46,7 @@ namespace JEngine
 	class JobLoadResourceTexture : public Job
 	{
 	private:
-		std::string filename;
+		std::string name;
 
 	public:
 		bool loadSuccessful;
@@ -68,16 +71,19 @@ namespace JEngine
 		std::string installPath;
 		bool cachingResources;
 
+		std::mutex resourcesCacheMutex;
 		std::unordered_map<std::string, std::shared_ptr<Resource>> resourcesCache;
 
 		std::string constructFullPath(const std::string & _relToInstall) const;
 
 		template <typename T>
-		bool checkCache(std::shared_ptr<T> & _resource, const std::string & _name) const;
+		bool checkCache(std::shared_ptr<T> & _resource, const std::string & _name);
 
 	public:
 		ResourceManager();
+		ResourceManager(const ResourceManager &) = delete;
 		~ResourceManager();
+		ResourceManager & operator=(const ResourceManager &) = delete;
 
 		bool initialise();
 		void cleanUp();
@@ -91,23 +97,28 @@ namespace JEngine
 	};
 
 	template <typename T>
-	inline bool ResourceManager::checkCache(std::shared_ptr<T> & _resource, const std::string & _name) const
+	inline bool ResourceManager::checkCache(std::shared_ptr<T> & _resource, const std::string & _name)
 	{
-		if ((auto itr = resourcesCache.find(_name)) != resourcesCache.end())
+		std::lock_guard<std::mutex> guard(resourcesCacheMutex);
+
+		auto itr = resourcesCache.find(_name);
+		if (itr != resourcesCache.end())
 		{
 			//Resource is cached
 
-			auto resourcePtr = *itr;
+			auto resourcePtr = itr->second;
+
+			Logger::getLogger().log(strJoin({ "Found cached resource: ", _name }));
+
+			_resource = std::dynamic_pointer_cast<T>(resourcePtr);
 
 			//Verify resource type
-			if (typeid(T) != typeid(*resourcePtr))
+			if (!_resource)
 			{
-				Logger::getLogger().log(strJoin({ "Cached resource type for resource: '", _name, "' is '", 
-					typeid(*resourcePtr).name(), "', but expected '", typeid(T).name(), "'" }), LogLevel::WARNING);
+				Logger::getLogger().log(strJoin({ "Cached resource type for resource: '", _name, "' does not match expected" }), LogLevel::WARNING);
 				return false;
 			}
 
-			_resource = resourcePtr;
 			return true;
 		}
 

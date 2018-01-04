@@ -23,7 +23,8 @@ namespace JEngine
 		return *resourceManager;
 	}
 
-	ResourceManager::ResourceManager()
+	ResourceManager::ResourceManager() :
+		installPath(), cachingResources(false)
 	{
 	}
 
@@ -53,11 +54,15 @@ namespace JEngine
 
 	void ResourceManager::beginResourceCaching()
 	{
+		std::lock_guard<std::mutex> guard(resourcesCacheMutex);
+
 		cachingResources = true;
 	}
 
 	void ResourceManager::endResourceCaching()
 	{
+		std::lock_guard<std::mutex> guard(resourcesCacheMutex);
+
 		cachingResources = false;
 
 		//Clean up current cache
@@ -65,7 +70,9 @@ namespace JEngine
 	}
 
 	bool ResourceManager::loadResourceTexture(std::shared_ptr<ResourceTexture> & _resource, const std::string & _name)
-	{
+	{ 
+		std::string path = constructFullPath(_name);
+
 		//Check cache
 		if (cachingResources && checkCache(_resource, _name))
 		{
@@ -76,20 +83,20 @@ namespace JEngine
 
 #ifdef _DEBUG
 		{
-			std::ifstream filecheck(_name);
+			std::ifstream filecheck(path);
 			auto ok = filecheck.good();
 			filecheck.close();
 
 			if (!ok)
 			{
-				Logger::getLogger().log(strJoin({ "Image not found: ", _name }), JEngine::LogLevel::WARNING);
+				Logger::getLogger().log(strJoin({ "Image not found: ", path }), JEngine::LogLevel::WARNING);
 				return false;
 			}
 		}
 #endif
 
-		FREE_IMAGE_FORMAT fformat = FreeImage_GetFileType(_name.c_str());
-		FIBITMAP * image = FreeImage_Load(fformat, _name.c_str());
+		FREE_IMAGE_FORMAT fformat = FreeImage_GetFileType(path.c_str());
+		FIBITMAP * image = FreeImage_Load(fformat, path.c_str());
 
 		if (image == nullptr)
 		{
@@ -124,26 +131,32 @@ namespace JEngine
 		//Add to cache
 		if (cachingResources)
 		{
+			std::lock_guard<std::mutex> guard(resourcesCacheMutex);
 			resourcesCache[_name] = _resource;
 		}
 
 		return true;
 	}
 
-	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _filename) : 
-		filename(_filename), loadSuccessful(false)
+	void ResourceManager::loadResourceTextureAsync(std::shared_ptr<JobLoadResourceTexture> & _job, const std::string & _name)
 	{
+		_job = std::make_shared<JobLoadResourceTexture>(_name);
+		Engine::getEngine().getJobManager().enqueueJob(_job);
+	}
 
+
+
+	JobLoadResourceTexture::JobLoadResourceTexture(const std::string & _name) : 
+		name(_name), loadSuccessful(false)
+	{
 	}
 
 	void JobLoadResourceTexture::execute()
 	{
-		
-
-		//Image loading to GPU is delayed to main thread
-		
-		loadSuccessful = true;
+		loadSuccessful = ResourceManager::getResourceManager().loadResourceTexture(texture, name);
 	}
+
+
 
 	bool ResourceTexture::initialise()
 	{
@@ -166,6 +179,7 @@ namespace JEngine
 		{
 			FreeImage_Unload(fBitmap); //Clears data too
 			data = nullptr;
+			fBitmap = nullptr;
 		}
 
 		return true;
@@ -178,6 +192,19 @@ namespace JEngine
 
 	ResourceTexture::~ResourceTexture()
 	{
+		if (fBitmap != nullptr)
+		{
+			FreeImage_Unload(fBitmap); //Clears data too
+			data = nullptr;
+			fBitmap = nullptr;
+		}
+
 		glDeleteTextures(1, &glTextureID);
+	}
+
+
+
+	Resource::~Resource()
+	{
 	}
 }

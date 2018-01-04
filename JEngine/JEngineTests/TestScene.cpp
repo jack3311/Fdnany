@@ -74,12 +74,35 @@ TestScene::~TestScene()
 
 void TestScene::preSceneRender(JEngine::Engine & _engine)
 {
-	auto job = std::make_shared<JEngine::JobLoadResourceTexture>(
-		JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\grassblades.png"));
-	_engine.getJobManager().enqueueJob(job);
+	//auto job = std::make_shared<JEngine::JobLoadResourceTexture>(
+	//	JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\grassblades.png"));
+	//_engine.getJobManager().enqueueJob(job);
+	//job->waitUntilFinished();
+	//job->texture->initialise();
+	//JEngine::Logger::getLogger().log("Job finished");
+
+	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
+
+	resourceManager.beginResourceCaching();
+
+	std::shared_ptr<JEngine::JobLoadResourceTexture> job, job1, job2;
+
+	resourceManager.loadResourceTextureAsync(job, "Assets\\grassblades.png");
+
+	resourceManager.loadResourceTextureAsync(job1, "Assets\\grassblades.png");
+
+	resourceManager.loadResourceTextureAsync(job2, "Assets\\grassblades.png");
+
 	job->waitUntilFinished();
-	job->texture->initialise();
-	JEngine::Logger::getLogger().log("Job finished");
+	JEngine::Logger::getLogger().log("Loaded texture 0");
+
+	job1->waitUntilFinished();
+	JEngine::Logger::getLogger().log("Loaded texture 1");
+
+	job2->waitUntilFinished();
+	JEngine::Logger::getLogger().log("Loaded texture 2");
+
+	resourceManager.endResourceCaching();
 
 
 	/* JOBS/THREADING TESTS
