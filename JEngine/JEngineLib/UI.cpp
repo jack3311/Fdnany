@@ -124,7 +124,10 @@ namespace JEngine
 
 	void UIPanelSwitcher::render() const
 	{
-		currentPanel->render();
+		if (currentPanel)
+		{
+			currentPanel->render();
+		}
 	}
 
 	void UIPanel::setActive(bool _active)

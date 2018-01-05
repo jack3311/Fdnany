@@ -81,6 +81,8 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	//job->texture->initialise();
 	//JEngine::Logger::getLogger().log("Job finished");
 
+	/* TEXTURE RESOURCE LOADING
+	
 	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
 
 	resourceManager.beginResourceCaching();
@@ -111,7 +113,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	JEngine::Logger::getLogger().log("Loaded texture 3");
 	job3->texture->initialise();
 
-	resourceManager.endResourceCaching();
+	resourceManager.endResourceCaching();*/
 
 
 	/* JOBS/THREADING TESTS

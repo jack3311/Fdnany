@@ -22,6 +22,9 @@ namespace JEngine
 
 		JEvent<const Job *> jEvent;
 
+	protected:
+		bool successful = false;
+
 	public:
 		virtual void execute() = 0;
 		void setComplete();
@@ -29,6 +32,8 @@ namespace JEngine
 		void waitUntilFinished();
 
 		JEvent<const Job *> & getEvent();
+
+		bool wasSuccessful() const;
 	};
 
 	class Worker
@@ -81,5 +86,16 @@ namespace JEngine
 
 		unsigned int getJobCount() const;
 		unsigned int getNumWorkers() const;
+	};
+
+	class JobCallFunction : public Job
+	{
+	private:
+		std::function<bool()> function;
+
+	public:
+		JobCallFunction(std::function<bool()>);
+
+		virtual void execute();
 	};
 }

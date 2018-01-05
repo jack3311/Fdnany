@@ -80,6 +80,11 @@ namespace JEngine
 		return jEvent;
 	}
 
+	bool Job::wasSuccessful() const
+	{
+		return successful;
+	}
+
 
 
 	JobManager::JobManager() :
@@ -176,5 +181,13 @@ namespace JEngine
 	unsigned int JobManager::getNumWorkers() const
 	{
 		return numWorkers;
+	}
+	JobCallFunction::JobCallFunction(std::function<bool()> _function) :
+		function(_function)
+	{
+	}
+	void JobCallFunction::execute()
+	{
+		successful = function();
 	}
 }

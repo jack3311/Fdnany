@@ -4,6 +4,7 @@
 
 #define ERR_IF(exp, msg) { if (exp) { Logger::getLogger().log(msg, LogLevel::ERROR); return false; } }
 
+bool readAllFile(std::string & _out, const std::string & _path);
 std::vector<std::string> getFilesInDirectory(const std::string & _directory);
 
 std::string getWorkingDirectory();

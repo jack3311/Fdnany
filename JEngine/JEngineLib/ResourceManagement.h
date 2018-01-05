@@ -53,7 +53,7 @@ namespace JEngine
 		std::string name;
 
 	public:
-		bool loadSuccessful;
+		bool loadSuccessful; //TODO: change to parent
 		std::shared_ptr<ResourceTexture> texture;
 
 		JobLoadResourceTexture(const std::string &);
@@ -78,8 +78,7 @@ namespace JEngine
 		std::mutex resourcesCacheMutex;
 		std::unordered_map<std::string, std::shared_ptr<Resource>> resourcesCache;
 
-		std::string constructFullPath(const std::string & _relToInstall) const;
-
+		
 		template <typename T>
 		bool checkCache(std::shared_ptr<T> & _resource, const std::string & _name);
 
@@ -98,6 +97,8 @@ namespace JEngine
 
 		bool loadResourceTexture(std::shared_ptr<ResourceTexture> & _resource, const std::string & _name);
 		void loadResourceTextureAsync(std::shared_ptr<JobLoadResourceTexture> & _job, const std::string & _name);
+	
+		std::string constructFullPath(const std::string & _relToInstall) const;
 	};
 
 	template <typename T>

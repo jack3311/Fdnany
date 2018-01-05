@@ -3,7 +3,26 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <thread>
+#include <fstream>
 
+
+bool readAllFile(std::string & _out, const std::string & _path)
+{
+	std::ifstream file(_path, std::ios::in);
+
+	if (!file.good())
+	{
+		return false;
+	}
+
+	file.seekg(0, std::ios::end);
+	_out.resize((unsigned int)file.tellg());
+	file.seekg(0, std::ios::beg);
+	file.read(&_out[0], _out.size());
+	file.close();
+
+	return true;
+}
 
 std::vector<std::string> getFilesInDirectory(const std::string & _directory)
 {
