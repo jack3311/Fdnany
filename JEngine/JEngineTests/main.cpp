@@ -24,35 +24,6 @@ int main()
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
 
-	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
-
-	JEngine::Shader testShader({
-		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\skyboxShader.vert") },
-		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\skyboxShader.frag") }
-	});
-
-	//if (!testShader.loadFromDisk())
-	//{
-	//	std::cout << "Could not load." << std::endl;
-	//}
-
-	auto job = testShader.loadFromDiskAsync();
-	job->waitUntilFinished();
-
-	if (!job->wasSuccessful())
-	{
-		std::cout << "Could not load." << std::endl;
-	}
-
-	if (!testShader.initialise())
-	{
-		std::cout << "Could not initialise." << std::endl;
-	}
-
-	testShader.bind();
-
-	JEngine::Shader::unbind();
-
 
 
 	engine.start();

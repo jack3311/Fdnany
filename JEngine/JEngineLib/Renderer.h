@@ -95,12 +95,12 @@ namespace JEngine
 		}
 
 
-		glBindVertexArray(m_QuadVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_QuadVBO);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 		if (enableIndices)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadEBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glDrawElements(drawMode, indices.size(), GL_UNSIGNED_INT, (void*)(0));
 		}
 		else

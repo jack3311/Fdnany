@@ -34,10 +34,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\skyboxShader.frag">
+    <None Include="Assets\testShader.frag">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="Assets\skyboxShader.vert">
+    <None Include="Assets\testShader.vert">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

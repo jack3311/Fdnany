@@ -7,6 +7,8 @@
 #include <JEngineLib\StackAllocator.h>
 #include <JEngineLib\PoolAllocator.h>
 #include <JEngineLib\ResourceManagement.h>
+#include <JEngineLib\Shader.h>
+#include <JEngineLib\Renderer.h>
 
 #include "TestJob.h"
 
@@ -66,6 +68,47 @@ TestScene::TestScene()
 		if (_key == GLFW_KEY_Q)
 			JEngine::Engine::getEngine().stop();
 	};
+
+
+
+
+	std::vector<MyVertexFormat> vertices = {
+		MyVertexFormat{ JEngine::fvec3{ -0.5f, -0.5f, 1.f } },
+		MyVertexFormat{ JEngine::fvec3{ 0.5f, -0.5f, 1.f } },
+		MyVertexFormat{ JEngine::fvec3{ -0.5f, 0.5f, 1.f } },
+		MyVertexFormat{ JEngine::fvec3{ 0.5f, 0.5f, 1.f } },
+	};
+
+	std::vector<GLuint> indices = {
+		0, 1, 2,
+		1, 3, 2
+	};
+
+	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>(vertices, indices);
+	renderer->initialise();
+
+
+
+
+	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
+
+	testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
+		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
+		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
+	}));
+
+	auto job = testShader->loadFromDiskAsync();
+	job->waitUntilFinished();
+
+	if (!job->wasSuccessful())
+	{
+		std::cout << "Could not load shader" << std::endl;
+	}
+
+	if (!testShader->initialise())
+	{
+		std::cout << "Could not initialise shader" << std::endl;
+	}
 }
 
 TestScene::~TestScene()
@@ -209,5 +252,20 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
+{
+	testShader->bind();
+
+	renderer->draw(JEngine::fmat4x4());
+
+	testShader->unbind();
+}
+
+void MyVertexFormat::setupVertexAttributes()
+{
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertexFormat), (GLvoid *)offsetof(MyVertexFormat, MyVertexFormat::position));
+	glEnableVertexAttribArray(0);
+}
+
+MyVertexFormat::MyVertexFormat(JEngine::fvec3 _pos) : position(_pos)
 {
 }
