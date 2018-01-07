@@ -9,6 +9,7 @@
 #include <JEngineLib\ResourceManagement.h>
 #include <JEngineLib\Shader.h>
 #include <JEngineLib\Renderer.h>
+#include <JEngineLib\ResourceFont.h>
 
 #include "TestJob.h"
 
@@ -109,6 +110,18 @@ TestScene::TestScene()
 	{
 		std::cout << "Could not initialise shader" << std::endl;
 	}
+
+
+
+
+
+	JEngine::ResourceFont font{ JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf") };
+	if (!font.initialise())
+	{
+		JEngine::Logger::getLogger().log("Could not initialise font");
+	}
+	JEngine::Logger::getLogger().log("Font loaded successfully");
+	
 }
 
 TestScene::~TestScene()

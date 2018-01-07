@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "JEvent.h"
+#include "Renderer.h"
+#include "Maths.h"
 
 namespace JEngine
 {
@@ -60,11 +62,23 @@ namespace JEngine
 		void render() const;
 	};
 
+	struct UITexturedVertexFormat
+	{
+		fvec2 position;
+		fvec2 texCoords;
+
+		static void setupVertexAttributes();
+
+		UITexturedVertexFormat(fvec2, fvec2);
+	};
+
 	class UI
 	{
 	private:
 		std::unique_ptr<UIPanelSwitcher> uiBase;
 		std::shared_ptr<UIPanel> uiDebug;
+
+		std::unique_ptr<Renderer<UITexturedVertexFormat, true>> texturedRectRenderer;
 
 		bool setupDebugUI();
 		void updateDebugUI();

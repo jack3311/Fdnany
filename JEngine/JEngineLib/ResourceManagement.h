@@ -35,7 +35,8 @@ namespace JEngine
 		{
 			NONE = GL_NONE,
 			RGB = GL_RGB,
-			RGBA = GL_RGBA
+			RGBA = GL_RGBA,
+			R = GL_RED
 		} format;
 
 		unsigned int glTextureID;
@@ -62,7 +63,7 @@ namespace JEngine
 	};
 
 
-	class ResourceManager //FOR BATCHING RESOURCE LOADS INTO ResourcePackages
+	class ResourceManager
 	{
 	private:
 		static ResourceManager * resourceManager;
