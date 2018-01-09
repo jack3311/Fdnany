@@ -266,11 +266,11 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	testShader->bind();
+	testShader->begin();
 
 	renderer->draw(JEngine::fmat4x4());
 
-	testShader->unbind();
+	testShader->end();
 }
 
 void MyVertexFormat::setupVertexAttributes()

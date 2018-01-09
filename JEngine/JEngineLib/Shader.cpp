@@ -150,12 +150,12 @@ namespace JEngine
 		return true;
 	}
 
-	void Shader::bind() const
+	void Shader::begin() const
 	{
 		glUseProgram(program);
 	}
 
-	void Shader::unbind()
+	void Shader::end()
 	{
 		glUseProgram(0);
 	}

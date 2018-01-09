@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
+    <ClInclude Include="RAIIGL.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="Shader.h" />
@@ -35,11 +37,13 @@
     <ClInclude Include="PoolAllocator.h" />
     <ClInclude Include="ResourceManagement.h" />
     <ClInclude Include="SceneManagement.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="ResourceFont.cpp" />
@@ -51,6 +55,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="ResourceManagement.cpp" />
     <ClCompile Include="SceneManagement.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="World.cpp" />

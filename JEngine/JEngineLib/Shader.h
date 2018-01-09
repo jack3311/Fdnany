@@ -33,8 +33,8 @@ namespace JEngine
 		bool loadFromDisk();
 		bool initialise();
 
-		void bind() const;
-		static void unbind();
+		void begin() const;
+		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync();
 	};

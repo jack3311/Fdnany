@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Maths.h"
+#include "RAIIGL.h"
 
 namespace JEngine
 {
@@ -87,11 +88,7 @@ namespace JEngine
 	{
 		if (enableCullFace)
 		{
-			glEnable(GL_CULL_FACE);
-		}
-		else
-		{
-			glDisable(GL_CULL_FACE);
+			RAIIGL::_EnableCullFace::begin();
 		}
 
 
@@ -111,7 +108,7 @@ namespace JEngine
 
 		if (enableCullFace)
 		{
-			glDisable(GL_CULL_FACE);
+			RAIIGL::_EnableCullFace::end();
 		}
 	}
 }

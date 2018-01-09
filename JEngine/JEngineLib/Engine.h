@@ -62,9 +62,10 @@ namespace JEngine
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
 		JEventBlockable<int> keyDownBlockable, keyUpBlockable;
 
-		const ivec2 & getWindowSize() const;
+		const ivec2 & getWindowSizeInt() const;
+		const fvec2 & getWindowSizeFloat() const;
 
-		bool initialise(std::string _title, std::string _logFile);
+		bool initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize);
 
 		void cleanUp();
 

@@ -5,6 +5,7 @@
 
 #include "Logger.h"
 #include "Util.h"
+#include "RAIIGL.h"
 
 namespace JEngine
 {
@@ -70,6 +71,14 @@ namespace JEngine
 		FT_Done_FreeType(ft);
 
 		return true;
+	}
+
+	void ResourceFont::draw(const fvec2 & _position, const float & _scale, const std::string & _text)
+	{
+		EnableCullFace;
+		EnableBlend;
+
+
 	}
 
 }

@@ -75,12 +75,17 @@ namespace JEngine
 		return *ui;
 	}
 
-	const ivec2 & Engine::getWindowSize() const
+	const ivec2 & Engine::getWindowSizeInt() const
 	{
 		return windowSize;
 	}
 
-	bool Engine::initialise(std::string _title, std::string _logFile)
+	const fvec2 & Engine::getWindowSizeFloat() const
+	{
+		return static_cast<fvec2>(windowSize);
+	}
+
+	bool Engine::initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize)
 	{
 		//Misc
 		mainThreadID = std::this_thread::get_id();
@@ -96,7 +101,8 @@ namespace JEngine
 		glfwSetErrorCallback(errorCallback);
 
 		//Create window
-		window = glfwCreateWindow(1280, 800, "My Title", NULL, NULL);
+		windowSize = _windowSize;
+		window = glfwCreateWindow(_windowSize.x, _windowSize.y, "My Title", NULL, NULL);
 		ERR_IF(!window, "Failed to create window");
 
 		//Set current context

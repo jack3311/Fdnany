@@ -8,6 +8,8 @@
 #include <JEngineLib\ResourceManagement.h>
 #include <JEngineLib\Shader.h>
 
+#include <GL\glew.h>
+
 #include "TestScene.h"
 #include "TestJob.h"
 
@@ -21,6 +23,7 @@ int main()
 
 	engine.initialise("Test Game", "log.txt");
 
+
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
 
@@ -32,6 +35,8 @@ int main()
 
 	return 0;
 }
+
+
 
 void testUI()
 {
