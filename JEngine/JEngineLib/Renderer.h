@@ -35,7 +35,7 @@ namespace JEngine
 
 		bool initialise();
 
-		void draw(const fmat4x4 & _model) const;
+		void draw(const mat4 & _model) const;
 	};
 
 	template <typename VertexFormat, bool enableIndices>
@@ -55,6 +55,8 @@ namespace JEngine
 	template<typename VertexFormat, bool enableIndices>
 	inline Renderer<VertexFormat, enableIndices>::~Renderer()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
@@ -63,6 +65,8 @@ namespace JEngine
 	template<typename VertexFormat, bool enableIndices>
 	inline bool Renderer<VertexFormat, enableIndices>::initialise()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		//Setup VAO
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
@@ -84,8 +88,10 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::draw(const fmat4x4 & _model) const
+	inline void Renderer<VertexFormat, enableIndices>::draw(const mat4 & _model) const
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		if (enableCullFace)
 		{
 			RAIIGL::_EnableCullFace::begin();
@@ -98,11 +104,11 @@ namespace JEngine
 		if (enableIndices)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glDrawElements(drawMode, indices.size(), GL_UNSIGNED_INT, (void*)(0));
+			glDrawElements(drawMode, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, (void*)(0));
 		}
 		else
 		{
-			glDrawArrays(drawMode, 0, vertices.size());
+			glDrawArrays(drawMode, 0, static_cast<GLsizei>(vertices.size()));
 		}
 
 

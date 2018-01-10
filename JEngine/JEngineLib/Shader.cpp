@@ -86,6 +86,8 @@ namespace JEngine
 
 	bool Shader::initialise()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		std::vector<GLuint> componentsCompiled(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS, 0u);
 		
 		//Compile each component
@@ -152,11 +154,15 @@ namespace JEngine
 
 	void Shader::begin() const
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		glUseProgram(program);
 	}
 
 	void Shader::end()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		glUseProgram(0);
 	}
 

@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "Util.h"
 #include "RAIIGL.h"
+#include "Engine.h"
 
 namespace JEngine
 {
@@ -29,6 +30,8 @@ namespace JEngine
 
 	bool ResourceFont::initialise()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		//FreeType
 		FT_Library ft;
 
@@ -61,8 +64,8 @@ namespace JEngine
 
 			ERR_IF(!character.texture->initialise(), strJoinConvert("Could not load texture for character: ", c));
 
-			character.size.set_xy(face->glyph->bitmap.width, face->glyph->bitmap.rows);
-			character.bearing.set_xy(face->glyph->bitmap_left, face->glyph->bitmap_top);
+			character.size = { face->glyph->bitmap.width, face->glyph->bitmap.rows };
+			character.bearing = { face->glyph->bitmap_left, face->glyph->bitmap_top };
 			character.advance = static_cast<unsigned int>(face->glyph->advance.x);
 		}
 
@@ -75,6 +78,8 @@ namespace JEngine
 
 	void ResourceFont::draw(const fvec2 & _position, const float & _scale, const std::string & _text)
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		EnableCullFace;
 		EnableBlend;
 

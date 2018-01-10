@@ -10,6 +10,7 @@
 #include <JEngineLib\Shader.h>
 #include <JEngineLib\Renderer.h>
 #include <JEngineLib\ResourceFont.h>
+#include <JEngineLib\Maths.h>
 
 #include "TestJob.h"
 
@@ -74,10 +75,10 @@ TestScene::TestScene()
 
 
 	std::vector<MyVertexFormat> vertices = {
-		MyVertexFormat{ JEngine::fvec3{ -0.5f, -0.5f, 1.f } },
-		MyVertexFormat{ JEngine::fvec3{ 0.5f, -0.5f, 1.f } },
-		MyVertexFormat{ JEngine::fvec3{ -0.5f, 0.5f, 1.f } },
-		MyVertexFormat{ JEngine::fvec3{ 0.5f, 0.5f, 1.f } },
+		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f } },
+		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f } },
+		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f } },
+		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f } },
 	};
 
 	std::vector<GLuint> indices = {
@@ -268,7 +269,7 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
 	testShader->begin();
 
-	renderer->draw(JEngine::fmat4x4());
+	renderer->draw(mat4());
 
 	testShader->end();
 }
@@ -279,6 +280,6 @@ void MyVertexFormat::setupVertexAttributes()
 	glEnableVertexAttribArray(0);
 }
 
-MyVertexFormat::MyVertexFormat(JEngine::fvec3 _pos) : position(_pos)
+MyVertexFormat::MyVertexFormat(vec3 _pos) : position(_pos)
 {
 }

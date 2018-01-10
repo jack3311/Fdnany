@@ -17,6 +17,7 @@ namespace JEngine
 	class JobManager;
 	class StackAllocator;
 	class UI;
+	class Camera;
 
 	class Engine
 	{
@@ -39,6 +40,7 @@ namespace JEngine
 		std::unique_ptr<JobManager> jobManager;
 		std::unique_ptr<StackAllocator> frameAllocator;
 		std::unique_ptr<UI> ui;
+		std::unique_ptr<Camera> camera;
 
 		ivec2 windowSize;
 
@@ -58,12 +60,13 @@ namespace JEngine
 		JobManager & getJobManager();
 		StackAllocator & getFrameAllocator();
 		UI & getUI();
+		Camera & getCamera();
 
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
 		JEventBlockable<int> keyDownBlockable, keyUpBlockable;
 
 		const ivec2 & getWindowSizeInt() const;
-		const fvec2 & getWindowSizeFloat() const;
+		const vec2 getWindowSizeFloat() const;
 
 		bool initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize);
 

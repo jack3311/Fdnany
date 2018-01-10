@@ -7,11 +7,11 @@
 
 struct MyVertexFormat
 {
-	JEngine::fvec3 position;
+	vec3 position;
 
 	static void setupVertexAttributes();
 
-	MyVertexFormat(JEngine::fvec3);
+	MyVertexFormat(vec3);
 };
 
 class TestScene :

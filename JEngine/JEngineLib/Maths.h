@@ -1,28 +1,29 @@
 #pragma once
 
-#include <tue/mat.hpp>
-#include <tue/math.hpp>
-#include <tue/nocopy_cast.hpp>
-#include <tue/quat.hpp>
-#include <tue/simd.hpp>
-#include <tue/sized_bool.hpp>
-#include <tue/transform.hpp>
-#include <tue/vec.hpp>
+#include <glm.hpp>
+#include <gtc\matrix_transform.hpp>
+#include <gtc\matrix_inverse.hpp>
+#include <gtx\euler_angles.hpp>
+
+using namespace glm;
 
 namespace JEngine
 {
-	using namespace tue;
-
 	class MatrixUtil
 	{
 	public:
-		static fmat4x4 gen(const fvec3 & _position, const fvec3 & _rotation, const fvec3 & _scale)
+		static mat4 gen(const vec3 & _position, const vec3 & _rotation, const vec3 & _scale)
 		{
-			fmat4x4 translate = transform::translation_mat<float>(_position);
-			fmat4x4 rotate = transform::rotation_mat<float>(_rotation);
-			fmat4x4 scale = transform::scale_mat<float>(_scale);
+			mat4 result;
 
-			return translate * rotate * scale;
+			result = translate(result, _position);
+
+			mat4 eulerRotationMatrix = eulerAngleXYZ(_rotation.x, _rotation.y, _rotation.z);
+			result *= eulerRotationMatrix;
+
+			scale(result, _scale);
+
+			return result;
 		}
 	};
 }

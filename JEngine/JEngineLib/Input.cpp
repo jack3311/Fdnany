@@ -1,6 +1,7 @@
 #include <cassert>
 
 #include "Input.h"
+#include "Engine.h"
 
 namespace JEngine
 {
@@ -17,6 +18,8 @@ namespace JEngine
 
 	void Input::setCallbackFunctions(GLFWwindow * _window)
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		glfwSetKeyCallback(_window, Input::keyCallback);
 		glfwSetCursorPosCallback(_window, mousePosCallback);
 	}
@@ -96,7 +99,7 @@ namespace JEngine
 
 	void Input::mousePosCallback(GLFWwindow * _window, double _x, double _y)
 	{
-		mousePosition.set_xy(_x, _y);
+		mousePosition = { _x, _y };
 	}
 
 	void Input::mouseButtonCallback(GLFWwindow * _window, int _button, int _action, int _mods)

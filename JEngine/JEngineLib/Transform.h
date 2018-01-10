@@ -6,12 +6,12 @@ namespace JEngine
 {
 	class Transform
 	{
-	private:
-		fvec3 position;
-		fvec3 eulerAngles;
-		fvec3 scale;
+	protected:
+		vec3 position;
+		vec3 eulerAngles;
+		vec3 scale;
 
-		fmat4x4 localTransformMatrix;
+		mat4 localTransformMatrix;
 
 		//std::vector<Transform &> children;
 
@@ -21,19 +21,19 @@ namespace JEngine
 
 		void flush();
 
-		const fvec3 & getLocalPosition() const;
-		const fvec3 & getLocalEulerAngles() const;
-		const fvec3 & getLocalScale() const;
+		const vec3 & getLocalPosition() const;
+		const vec3 & getLocalEulerAngles() const;
+		const vec3 & getLocalScale() const;
 
-		const fmat4x4 & getLocalTransformMatrix() const;
+		const mat4 & getLocalTransformMatrix() const;
 
 
-		Transform & localMove(const fvec3 & _delta);
-		Transform & localRotateEulerAngles(const fvec3 & _delta);
-		Transform & localScale(const fvec3 & _multiplier);
+		Transform & localMove(const vec3 & _delta);
+		Transform & localRotateEulerAngles(const vec3 & _delta);
+		Transform & localScale(const vec3 & _multiplier);
 
-		Transform & localSetPosition(const fvec3 & _value);
-		Transform & localSetEulerAngles(const fvec3 & _value);
-		Transform & localSetScale(const fvec3 & _value);
+		Transform & localSetPosition(const vec3 & _value);
+		Transform & localSetEulerAngles(const vec3 & _value);
+		Transform & localSetScale(const vec3 & _value);
 	};
 }

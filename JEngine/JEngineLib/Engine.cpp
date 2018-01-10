@@ -11,9 +11,14 @@
 #include "Logger.h"
 #include "Input.h"
 #include "Util.h"
+#include "Camera.h"
 
 namespace JEngine
 {
+#define DEFAULT_FOV glm::pi<float>() * 0.5f
+#define DEFAULT_Z_NEAR 0.1f
+#define DEFAULT_Z_FAR 100.f
+
 	namespace
 	{
 		void errorCallback(int _error, const char * _description)
@@ -34,6 +39,7 @@ namespace JEngine
 		jobManager = std::make_unique<JobManager>();
 		frameAllocator = std::make_unique<StackAllocator>();
 		ui = std::make_unique<UI>();
+		camera = std::make_unique<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR);
 	}
 
 	Engine::~Engine()
@@ -75,14 +81,19 @@ namespace JEngine
 		return *ui;
 	}
 
+	Camera & Engine::getCamera()
+	{
+		return *camera;
+	}
+
 	const ivec2 & Engine::getWindowSizeInt() const
 	{
 		return windowSize;
 	}
 
-	const fvec2 & Engine::getWindowSizeFloat() const
+	const vec2 Engine::getWindowSizeFloat() const
 	{
-		return static_cast<fvec2>(windowSize);
+		return static_cast<vec2>(windowSize);
 	}
 
 	bool Engine::initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize)
@@ -116,6 +127,7 @@ namespace JEngine
 		glCullFace(GL_BACK);
 
 		//Initialise engine systems
+		camera->flush();
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
@@ -193,7 +205,7 @@ namespace JEngine
 		//Get window size
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
-		windowSize.set_xy(width, height);
+		windowSize = { width, height };
 
 		//Set GL viewport
 		glViewport(0, 0, width, height);
