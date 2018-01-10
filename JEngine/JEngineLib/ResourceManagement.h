@@ -39,7 +39,7 @@ namespace JEngine
 			R = GL_RED
 		} format;
 
-		unsigned int glTextureID;
+		GLuint glTextureID;
 		unsigned int width, height;
 
 		ResourceTexture(void * _data, unsigned int _width, unsigned int _height, ResourceTextureFormat _format, FIBITMAP * _fBitmap = nullptr);

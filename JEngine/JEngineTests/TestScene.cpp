@@ -18,6 +18,19 @@
 #include <iostream>
 
 
+void MyVertexFormat::setupVertexAttributes()
+{
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertexFormat), (GLvoid *)offsetof(MyVertexFormat, MyVertexFormat::position));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(MyVertexFormat), (GLvoid *)offsetof(MyVertexFormat, MyVertexFormat::texCoords));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+}
+
+MyVertexFormat::MyVertexFormat(vec3 _pos, vec2 _texCoords) : position(_pos), texCoords(_texCoords)
+{
+}
+
+
 //class Parent
 //{
 //public:
@@ -75,10 +88,10 @@ TestScene::TestScene()
 
 
 	std::vector<MyVertexFormat> vertices = {
-		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f } },
-		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f } },
-		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f } },
-		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f } },
+		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
+		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
+		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
+		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
 	};
 
 	std::vector<GLuint> indices = {
@@ -91,8 +104,29 @@ TestScene::TestScene()
 
 
 
-
+	
 	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
+
+	resourceManager.beginResourceCaching();
+	{
+		std::shared_ptr<JEngine::JobLoadResourceTexture> job;
+
+		resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
+
+		job->waitUntilFinished();
+		if (!job->texture->initialise())
+		{
+			JEngine::Logger::getLogger().log("Could not initialise test texture");
+		}
+		testTexture = job->texture;
+		JEngine::Logger::getLogger().log("Loaded test texture");
+	}
+	resourceManager.endResourceCaching();
+
+
+
+
+
 
 	{
 		testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
@@ -118,15 +152,15 @@ TestScene::TestScene()
 			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
 			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\text.frag") }
 		}));
-
+	
 		auto job = textShader->loadFromDiskAsync();
 		job->waitUntilFinished();
-
+	
 		if (!job->wasSuccessful())
 		{
 			std::cout << "Could not load text shader" << std::endl;
 		}
-
+	
 		if (!textShader->initialise())
 		{
 			std::cout << "Could not initialise text shader" << std::endl;
@@ -142,16 +176,16 @@ TestScene::TestScene()
 		JEngine::Logger::getLogger().log("Could not initialise font");
 	}
 	JEngine::Logger::getLogger().log("Font loaded successfully");
-
-
+	
+	
 	rendererText = std::make_shared<JEngine::RendererText>();
 	if (!rendererText->initialise())
 	{
 		JEngine::Logger::getLogger().log("Could not initialise text renderer");
 	}
-
-
-
+	
+	
+	
 	testCamera = std::make_shared<JEngine::Camera>(JEngine::ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f);
 	testCamera->flush();
 	textShader->setAssociatedCamera(testCamera);
@@ -159,21 +193,7 @@ TestScene::TestScene()
 
 
 
-	resourceManager.beginResourceCaching();
-
-	std::shared_ptr<JEngine::JobLoadResourceTexture> job;
-
-	resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
-
-	job->waitUntilFinished();
-	JEngine::Logger::getLogger().log("Loaded texture 0");
-	if (!job->texture->initialise())
-	{
-		JEngine::Logger::getLogger().log("Could not initialise test texture");
-	}
-	testTexture = job->texture;
-
-	resourceManager.endResourceCaching();
+	
 
 }
 
@@ -321,9 +341,13 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
 	//testShader->begin();
 	//
+	//testTexture->bind(GL_TEXTURE0);
 	//
+	//RAIIGL::_EnableBlend<>::begin();
 	//
 	//renderer->draw(mat4());
+	//
+	//RAIIGL::_EnableBlend<>::end();
 	//
 	//testShader->end();
 
@@ -332,14 +356,4 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Hello World");
 	
 	textShader->end();
-}
-
-void MyVertexFormat::setupVertexAttributes()
-{
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertexFormat), (GLvoid *)offsetof(MyVertexFormat, MyVertexFormat::position));
-	glEnableVertexAttribArray(0);
-}
-
-MyVertexFormat::MyVertexFormat(vec3 _pos) : position(_pos)
-{
 }

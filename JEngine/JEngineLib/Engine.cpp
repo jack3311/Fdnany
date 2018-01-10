@@ -21,10 +21,15 @@ namespace JEngine
 
 	namespace
 	{
-		void errorCallback(int _error, const char * _description)
+		void errorCallbackGLFW(int _error, const char * _description)
 		{
-			Logger::getLogger().log(_description);
+			Logger::getLogger().log(_description, LogLevel::ERROR);
 			Engine::getEngine().stop();
+		}
+		void APIENTRY errorCallbackGL(GLenum _source, GLenum _type, GLuint _id, GLenum _severity, 
+			GLsizei _length, const GLchar * _message, const void * _userParam)
+		{
+			Logger::getLogger().log(strJoin({ "GL: ", _message }), LogLevel::ERROR);
 		}
 	}
 
@@ -108,8 +113,8 @@ namespace JEngine
 		//Initialise GLFW
 		ERR_IF(!glfwInit(), "Failed to initialise GLFW");
 		
-		//Set error callback
-		glfwSetErrorCallback(errorCallback);
+		//Set GLFW error callback
+		glfwSetErrorCallback(errorCallbackGLFW);
 
 		//Create window
 		windowSize = _windowSize;
@@ -122,7 +127,14 @@ namespace JEngine
 		//Initialise GLEW
 		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW");
 
+		//Set OpenGL error callback
+#if _DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(errorCallbackGL, nullptr);
+#endif
+
 		//OpenGL config
+		glEnable(GL_TEXTURE_2D);
 		glFrontFace(GL_CCW);
 		glCullFace(GL_BACK);
 

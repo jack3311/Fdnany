@@ -11,10 +11,11 @@
 struct MyVertexFormat
 {
 	vec3 position;
+	vec2 texCoords;
 
 	static void setupVertexAttributes();
 
-	MyVertexFormat(vec3);
+	MyVertexFormat(vec3, vec2);
 };
 
 class TestScene :
