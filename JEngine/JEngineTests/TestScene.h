@@ -30,6 +30,8 @@ private:
 
 	std::shared_ptr<JEngine::Camera> testCamera;
 
+	std::shared_ptr<JEngine::ResourceTexture> testTexture;
+
 public:
 	TestScene();
 	~TestScene();

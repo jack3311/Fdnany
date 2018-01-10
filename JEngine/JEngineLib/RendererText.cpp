@@ -50,52 +50,21 @@ namespace JEngine
 					height = fc.size.y * _scale;
 
 			//Update VBO with this character's vertices
-			//std::vector<VertexFormatText> verticesNew{
-			//	VertexFormatText{ vec2{ x, y + height },			vec2{ 0.f, 0.f } }, //0
-			//	VertexFormatText{ vec2{ x + width, y + height },	vec2{ 1.f, 0.f } }, //1
-			//	VertexFormatText{ vec2{ x, y },						vec2{ 0.f, 1.f } }, //2
-			//
-			//	VertexFormatText{ vec2{ x + width, y + height },	vec2{ 1.f, 0.f } }, //1
-			//	VertexFormatText{ vec2{ x + width, y },				vec2{ 1.f, 1.f } }, //3
-			//	VertexFormatText{ vec2{ x, y },						vec2{ 0.f, 1.f } }  //2
-			//};
-
-			GLfloat vertices1[6][4] = {
-				{ x, y - height,				0.0, 0.0 },
-				{ x + width, y - height,		1.0, 0.0 },
-				{ x, y + height,				0.0, 1.0 },
-
-				{ x + width, y - height,		1.0, 0.0 },
-				{ x + width, y + height,		1.0, 1.0 },
-				{ x, y + height,				0.0, 1.0 }
-			};
-
 			std::vector<VertexFormatText> verticesNew{
-				{ {x, y - height},				{0.0, 0.0} },
-				{ {x + width, y - height},		{1.0, 0.0} },
-				{ {x, y + height},				{0.0, 1.0} },
-	
-				{ {x + width, y - height},		{1.0, 0.0} },
-				{ {x + width, y + height},		{1.0, 1.0} },
-				{ {x, y + height},				{0.0, 1.0} }
-			};
-			
-			/*GLfloat vertices1[6][4] = {
-				{ x, y + height,		0.0, 0.0 },
-				{ x, y,			0.0, 1.0 },
-				{ x + width, y,		1.0, 1.0 },
+				{ {x, y - height},				{0.0f, 0.0f} },
+				{ {x + width, y - height},		{1.0f, 0.0f} },
+				{ {x, y + height},				{0.0f, 1.0f} },
 
-				{ x, y + height,		0.0, 0.0 },
-				{ x + width, y,		1.0, 1.0 },
-				{ x + width, y + height,	1.0, 0.0 }
-			};*/
+				{ {x + width, y - height},		{1.0f, 0.0f} },
+				{ {x + width, y + height},		{1.0f, 1.0f} },
+				{ {x, y + height},				{0.0f, 1.0f} }
+			};
 
 			glBindVertexArray(VAO);
 
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNew.size() * sizeof(VertexFormatText), &verticesNew[0]); //TODO: can be glBufferData?
-			//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices1), vertices1); // Be sure to use glBufferSubData and not glBufferData
-
+			
 			fc.texture->bind(GL_TEXTURE0);
 			
 			//Actually draw

@@ -156,6 +156,25 @@ TestScene::TestScene()
 	testCamera->flush();
 	textShader->setAssociatedCamera(testCamera);
 
+
+
+
+	resourceManager.beginResourceCaching();
+
+	std::shared_ptr<JEngine::JobLoadResourceTexture> job;
+
+	resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
+
+	job->waitUntilFinished();
+	JEngine::Logger::getLogger().log("Loaded texture 0");
+	if (!job->texture->initialise())
+	{
+		JEngine::Logger::getLogger().log("Could not initialise test texture");
+	}
+	testTexture = job->texture;
+
+	resourceManager.endResourceCaching();
+
 }
 
 TestScene::~TestScene()
@@ -300,16 +319,18 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	/*testShader->begin();
-
-	renderer->draw(mat4());
-
-	testShader->end();*/
+	//testShader->begin();
+	//
+	//
+	//
+	//renderer->draw(mat4());
+	//
+	//testShader->end();
 
 	textShader->begin();
-
+	
 	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Hello World");
-
+	
 	textShader->end();
 }
 
