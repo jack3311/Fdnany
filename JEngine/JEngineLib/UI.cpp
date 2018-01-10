@@ -28,6 +28,7 @@ namespace JEngine
 
 	UI::UI()
 	{
+		//uiCamera = std::make_unique<Camera>(ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f); //TODO: FIX THIS
 		uiBase = std::make_unique<UIPanelSwitcher>();
 		uiDebug = std::make_shared<UIPanel>();
 

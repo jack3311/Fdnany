@@ -40,5 +40,11 @@
     <None Include="Assets\testShader.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Assets\text.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Assets\text.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

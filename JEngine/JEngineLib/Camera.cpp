@@ -17,7 +17,7 @@ namespace JEngine
 		}
 		else if (projectionType == ProjectionType::ORTHOGRAPHIC)
 		{
-			projectionMatrix = ortho(0.f, windowSize.x, 0.f, windowSize.y, zNear, zFar);
+			projectionMatrix = ortho(0.f, windowSize.x, 0.f, windowSize.y/*, zNear, zFar*/);
 		}
 
 		//Update view matrix

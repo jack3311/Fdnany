@@ -46,6 +46,8 @@ namespace JEngine
 		virtual ~ResourceTexture();
 
 		bool initialise();
+
+		void bind(GLenum _unit) const;
 	};
 
 	class JobLoadResourceTexture : public Job

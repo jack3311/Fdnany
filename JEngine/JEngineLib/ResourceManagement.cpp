@@ -193,6 +193,14 @@ namespace JEngine
 		return true;
 	}
 
+	void ResourceTexture::bind(GLenum _unit) const
+	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+		
+		glActiveTexture(_unit);
+		glBindTexture(GL_TEXTURE_2D, glTextureID);
+	}
+
 	ResourceTexture::ResourceTexture(void * _data, unsigned int _width, unsigned int _height, ResourceTextureFormat _format, FIBITMAP * _fBitmap) :
 		data(_data), width(_width), height(_height), format(_format), fBitmap(_fBitmap)
 	{

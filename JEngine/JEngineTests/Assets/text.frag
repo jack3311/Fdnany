@@ -9,8 +9,13 @@ uniform sampler2D texture0;
 //uniform vec3 textColor;
 
 void main(){
-	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture0, vs_fs_texCoords).r);
-	color = sampled;
+	//vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture0, vs_fs_texCoords).r);
+	//color = sampled;
+
+	//color = vec4(texture(texture0, vs_fs_texCoords).r, 0.f, 0.f, 1.f);
+
+	//color = vec4(0.f, 0.f, 1.f, 1.f);
+	color = vec4(vs_fs_texCoords, 0.f, 1.f);
 
 	//color = vec4(textColor, 1.0) * sampled;
 }

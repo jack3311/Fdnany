@@ -203,8 +203,11 @@ namespace JEngine
 
 	void Shader::setFrameUniforms() const
 	{
-		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(associatedCamera->getViewMatrix()));
-		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(associatedCamera->getProjectionMatrix()));
-		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(associatedCamera->getViewProjectionMatrix()));
+		if (associatedCamera)
+		{
+			glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(associatedCamera->getViewMatrix()));
+			glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(associatedCamera->getProjectionMatrix()));
+			glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(associatedCamera->getViewProjectionMatrix()));
+		}
 	}
 }

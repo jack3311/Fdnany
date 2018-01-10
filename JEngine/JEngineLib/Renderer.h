@@ -16,7 +16,7 @@ namespace JEngine
 	template <typename VertexFormat, bool enableIndices>
 	class Renderer
 	{
-	private:
+	protected:
 		GLuint VAO;
 		GLuint VBO;
 		GLuint EBO;
@@ -43,22 +43,20 @@ namespace JEngine
 		vertices(_vertices), drawMode(_drawMode), enableCullFace(_enableCullFace)
 	{
 		static_assert(!enableIndices, "Cannot instantiate index-enabled renderer without indices array");
-		
-		assert(Engine::getEngine().isCurrentThreadMain());
 	}
 
 	template <typename VertexFormat, bool enableIndices>
 	inline Renderer<VertexFormat, enableIndices>::Renderer(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, GLenum _drawMode, bool _enableCullFace) :
 		vertices(_vertices), indices(_indices), drawMode(_drawMode), enableCullFace(_enableCullFace)
 	{
-		static_assert(enableIndices, "Cannot instantiate index-disabled renderer with indices array");
-	
-		assert(Engine::getEngine().isCurrentThreadMain());
+		static_assert(enableIndices, "Cannot instantiate index-disabled renderer with indices array");		
 	}
 
 	template<typename VertexFormat, bool enableIndices>
 	inline Renderer<VertexFormat, enableIndices>::~Renderer()
 	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 

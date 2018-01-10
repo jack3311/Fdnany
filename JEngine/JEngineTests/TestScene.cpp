@@ -18,48 +18,48 @@
 #include <iostream>
 
 
-class Parent
-{
-public:
-	Parent() : a(6) {}
-
-	int a;
-
-	virtual void print()
-	{
-		std::cout << a << std::endl;
-	}
-};
-class Child1 : public Parent
-{
-public:
-	Child1() : b(5.f) {}
-
-	float b;
-
-	virtual void print()
-	{
-		std::cout << b << std::endl;
-	}
-};
-class Child2 : public Parent
-{
-public:
-	Child2() : c(7.f) {}
-
-	double c;
-
-	virtual void print()
-	{
-		std::cout << c << std::endl;
-	}
-};
-
-struct TS
-{
-	float a, b;
-	TS(float _a, float _b) : a(_a), b(_b) {}
-};
+//class Parent
+//{
+//public:
+//	Parent() : a(6) {}
+//
+//	int a;
+//
+//	virtual void print()
+//	{
+//		std::cout << a << std::endl;
+//	}
+//};
+//class Child1 : public Parent
+//{
+//public:
+//	Child1() : b(5.f) {}
+//
+//	float b;
+//
+//	virtual void print()
+//	{
+//		std::cout << b << std::endl;
+//	}
+//};
+//class Child2 : public Parent
+//{
+//public:
+//	Child2() : c(7.f) {}
+//
+//	double c;
+//
+//	virtual void print()
+//	{
+//		std::cout << c << std::endl;
+//	}
+//};
+//
+//struct TS
+//{
+//	float a, b;
+//	TS(float _a, float _b) : a(_a), b(_b) {}
+//};
 
 TestScene::TestScene()
 {
@@ -94,35 +94,68 @@ TestScene::TestScene()
 
 	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
 
-	testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
-		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
-		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
-	}));
-
-	auto job = testShader->loadFromDiskAsync();
-	job->waitUntilFinished();
-
-	if (!job->wasSuccessful())
 	{
-		std::cout << "Could not load shader" << std::endl;
+		testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
+			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
+			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
+		}));
+
+		auto job = testShader->loadFromDiskAsync();
+		job->waitUntilFinished();
+
+		if (!job->wasSuccessful())
+		{
+			std::cout << "Could not load test shader" << std::endl;
+		}
+
+		if (!testShader->initialise())
+		{
+			std::cout << "Could not initialise test shader" << std::endl;
+		}
+	}
+	{
+		textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
+			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
+			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\text.frag") }
+		}));
+
+		auto job = textShader->loadFromDiskAsync();
+		job->waitUntilFinished();
+
+		if (!job->wasSuccessful())
+		{
+			std::cout << "Could not load text shader" << std::endl;
+		}
+
+		if (!textShader->initialise())
+		{
+			std::cout << "Could not initialise text shader" << std::endl;
+		}
 	}
 
-	if (!testShader->initialise())
-	{
-		std::cout << "Could not initialise shader" << std::endl;
-	}
 
 
 
-
-
-	JEngine::ResourceFont font{ JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf") };
-	if (!font.initialise())
+	testFont = std::make_shared<JEngine::ResourceFont>(JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf"));
+	if (!testFont->initialise())
 	{
 		JEngine::Logger::getLogger().log("Could not initialise font");
 	}
 	JEngine::Logger::getLogger().log("Font loaded successfully");
-	
+
+
+	rendererText = std::make_shared<JEngine::RendererText>();
+	if (!rendererText->initialise())
+	{
+		JEngine::Logger::getLogger().log("Could not initialise text renderer");
+	}
+
+
+
+	testCamera = std::make_shared<JEngine::Camera>(JEngine::ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f);
+	testCamera->flush();
+	textShader->setAssociatedCamera(testCamera);
+
 }
 
 TestScene::~TestScene()
@@ -267,11 +300,17 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	testShader->begin();
+	/*testShader->begin();
 
 	renderer->draw(mat4());
 
-	testShader->end();
+	testShader->end();*/
+
+	textShader->begin();
+
+	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Hello World");
+
+	textShader->end();
 }
 
 void MyVertexFormat::setupVertexAttributes()
