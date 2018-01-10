@@ -24,6 +24,7 @@
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="RAIIGL.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RendererText.h" />
     <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="StackAllocator.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
+    <ClCompile Include="RendererText.cpp" />
     <ClCompile Include="ResourceFont.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="StackAllocator.cpp" />

@@ -35,6 +35,6 @@ namespace JEngine
 
 		bool initialise();
 
-		void draw(const fvec2 & _position, const float & _scale, const std::string & _text);
+		const std::vector<FontCharacter> & getCharacters() const;
 	};
 }

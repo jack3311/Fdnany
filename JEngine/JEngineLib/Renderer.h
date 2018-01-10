@@ -43,6 +43,8 @@ namespace JEngine
 		vertices(_vertices), drawMode(_drawMode), enableCullFace(_enableCullFace)
 	{
 		static_assert(!enableIndices, "Cannot instantiate index-enabled renderer without indices array");
+		
+		assert(Engine::getEngine().isCurrentThreadMain());
 	}
 
 	template <typename VertexFormat, bool enableIndices>
@@ -50,16 +52,20 @@ namespace JEngine
 		vertices(_vertices), indices(_indices), drawMode(_drawMode), enableCullFace(_enableCullFace)
 	{
 		static_assert(enableIndices, "Cannot instantiate index-disabled renderer with indices array");
+	
+		assert(Engine::getEngine().isCurrentThreadMain());
 	}
 
 	template<typename VertexFormat, bool enableIndices>
 	inline Renderer<VertexFormat, enableIndices>::~Renderer()
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
-
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
+
+		if (enableIndices)
+		{
+			glDeleteBuffers(1, &EBO);
+		}
 	}
 
 	template<typename VertexFormat, bool enableIndices>
@@ -77,9 +83,12 @@ namespace JEngine
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexFormat), &vertices.front(), GL_STATIC_DRAW);
 
 		//Setup EBO
-		glGenBuffers(1, &EBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
+		if (enableIndices)
+		{
+			glGenBuffers(1, &EBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
+		}
 
 		//Setup Vertex Attributes
 		VertexFormat::setupVertexAttributes();

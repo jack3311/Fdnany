@@ -3,6 +3,8 @@
 #include "Util.h"
 #include "Logger.h"
 #include "Engine.h"
+#include "Camera.h"
+#include "Maths.h"
 
 namespace JEngine
 {
@@ -149,6 +151,9 @@ namespace JEngine
 
 		componentSources.clear();
 
+		//Load uniform locations
+		loadUniformLocations();
+
 		return true;
 	}
 
@@ -157,6 +162,8 @@ namespace JEngine
 		assert(Engine::getEngine().isCurrentThreadMain());
 
 		glUseProgram(program);
+
+		setFrameUniforms();
 	}
 
 	void Shader::end()
@@ -175,5 +182,29 @@ namespace JEngine
 		Engine::getEngine().getJobManager().enqueueJob(job);
 
 		return job;
+	}
+
+	void Shader::setAssociatedCamera(std::shared_ptr<const Camera> _camera)
+	{
+		associatedCamera = _camera;
+	}
+
+	GLuint Shader::getProgramID() const
+	{
+		return program;
+	}
+
+	void Shader::loadUniformLocations()
+	{
+		uniformLocations.viewLocation = glGetUniformLocation(program, "viewMatrix");
+		uniformLocations.projectionLocation = glGetUniformLocation(program, "projectionMatrix");
+		uniformLocations.viewProjectionLocation = glGetUniformLocation(program, "viewProjectionMatrix");
+	}
+
+	void Shader::setFrameUniforms() const
+	{
+		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(associatedCamera->getViewMatrix()));
+		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(associatedCamera->getProjectionMatrix()));
+		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(associatedCamera->getViewProjectionMatrix()));
 	}
 }

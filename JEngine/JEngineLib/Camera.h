@@ -31,5 +31,10 @@ namespace JEngine
 		~Camera();
 
 		void flush();
+
+		const mat4 & getViewMatrix() const;
+		const mat4 & getProjectionMatrix() const;
+		const mat4 & getViewProjectionMatrix() const;
+
 	};
 }

@@ -4,6 +4,7 @@
 #include <gtc\matrix_transform.hpp>
 #include <gtc\matrix_inverse.hpp>
 #include <gtx\euler_angles.hpp>
+#include <gtc\type_ptr.hpp>
 
 using namespace glm;
 

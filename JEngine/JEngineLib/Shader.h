@@ -4,6 +4,8 @@
 
 namespace JEngine
 {
+	class Camera;
+
 	class Shader : public Resource
 	{
 	public:
@@ -24,6 +26,17 @@ namespace JEngine
 		std::vector<std::string> componentPaths;
 		std::vector<std::string> componentSources;
 
+		std::shared_ptr<const Camera> associatedCamera;
+
+		struct
+		{
+			GLint
+				projectionLocation,
+				viewLocation,
+				viewProjectionLocation;
+		} uniformLocations;
+
+
 		bool compileComponent(GLuint & _result, int _componentType) const;
 
 	public:
@@ -37,5 +50,12 @@ namespace JEngine
 		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync();
+
+		void setAssociatedCamera(std::shared_ptr<const Camera> _camera);
+
+		GLuint getProgramID() const;
+
+		void loadUniformLocations();
+		void setFrameUniforms() const;
 	};
 }

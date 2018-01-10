@@ -4,6 +4,7 @@
 #include "Util.h"
 #include "EngineTime.h"
 #include "Engine.h"
+#include "Camera.h"
 
 #include <cassert>
 
@@ -78,6 +79,11 @@ namespace JEngine
 	UIPanelSwitcher & UI::getUIBase()
 	{
 		return *uiBase;
+	}
+
+	Camera & UI::getUICamera()
+	{
+		return *uiCamera;
 	}
 
 	UIElement::UIElement()

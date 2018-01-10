@@ -72,18 +72,12 @@ namespace JEngine
 		//Clean up
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
-
+		
 		return true;
 	}
 
-	void ResourceFont::draw(const fvec2 & _position, const float & _scale, const std::string & _text)
+	const std::vector<FontCharacter> & ResourceFont::getCharacters() const
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
-
-		EnableCullFace;
-		EnableBlend;
-
-
+		return characters;
 	}
-
 }

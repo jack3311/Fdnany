@@ -26,6 +26,7 @@ namespace JEngine
 		//Update VP matrix
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 	}
+
 	Camera::Camera(ProjectionType _projectionType, float _zNear, float _zFar) :
 		Transform(),
 		projectionType(_projectionType),
@@ -33,6 +34,7 @@ namespace JEngine
 		zFar(_zFar)
 	{
 	}
+
 	Camera::Camera(ProjectionType _projectionType, float _fov, float _zNear, float _zFar) :
 		Transform(),
 		fov(_fov),
@@ -41,12 +43,26 @@ namespace JEngine
 		zFar(_zFar)
 	{
 	}
+
 	Camera::~Camera()
 	{
 	}
+
 	void Camera::flush()
 	{
 		Transform::flush();
 		cameraFlush();
+	}
+	const mat4 & Camera::getViewMatrix() const
+	{
+		return viewMatrix;
+	}
+	const mat4 & Camera::getProjectionMatrix() const
+	{
+		return projectionMatrix;
+	}
+	const mat4 & Camera::getViewProjectionMatrix() const
+	{
+		return viewProjectionMatrix;
 	}
 }

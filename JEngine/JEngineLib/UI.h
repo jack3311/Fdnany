@@ -9,6 +9,8 @@
 
 namespace JEngine
 {
+	class Camera;
+
 	class UIElement
 	{
 	public:
@@ -78,6 +80,8 @@ namespace JEngine
 		std::unique_ptr<UIPanelSwitcher> uiBase;
 		std::shared_ptr<UIPanel> uiDebug;
 
+		std::shared_ptr<Camera> uiCamera;
+
 		std::unique_ptr<Renderer<UITexturedVertexFormat, true>> texturedRectRenderer;
 
 		bool setupDebugUI();
@@ -98,5 +102,7 @@ namespace JEngine
 		bool initialise();
 
 		UIPanelSwitcher & getUIBase();
+
+		Camera & getUICamera();
 	};
 }
