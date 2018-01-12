@@ -51,13 +51,13 @@ namespace JEngine
 
 			//Update VBO with this character's vertices
 			std::vector<VertexFormatText> verticesNew{
-				{ {x, y - height},				{0.0f, 0.0f} },
-				{ {x + width, y - height},		{1.0f, 0.0f} },
-				{ {x, y + height},				{0.0f, 1.0f} },
+				{ {x, y},					{0.0f, 1.0f} }, //0
+				{ {x + width, y},			{1.0f, 1.0f} }, //1
+				{ {x, y + height},			{0.0f, 0.0f} }, //2
 
-				{ {x + width, y - height},		{1.0f, 0.0f} },
-				{ {x + width, y + height},		{1.0f, 1.0f} },
-				{ {x, y + height},				{0.0f, 1.0f} }
+				{ {x + width, y},			{1.0f, 1.0f} }, //1
+				{ {x + width, y + height},	{1.0f, 0.0f} }, //2
+				{ {x, y + height},			{0.0f, 0.0f} } //3
 			};
 
 			glBindVertexArray(VAO);

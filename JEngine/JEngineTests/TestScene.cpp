@@ -353,7 +353,7 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 
 	textShader->begin();
 	
-	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Hello World");
+	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Test text");
 	
 	textShader->end();
 }
