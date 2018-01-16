@@ -40,6 +40,7 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="View.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +60,7 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="View.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

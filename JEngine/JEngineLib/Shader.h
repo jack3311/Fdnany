@@ -5,6 +5,7 @@
 namespace JEngine
 {
 	class Camera;
+	class View;
 
 	class Shader : public Resource
 	{
@@ -26,8 +27,6 @@ namespace JEngine
 		std::vector<std::string> componentPaths;
 		std::vector<std::string> componentSources;
 
-		std::shared_ptr<const Camera> associatedCamera;
-
 		struct
 		{
 			GLint
@@ -39,6 +38,11 @@ namespace JEngine
 
 		bool compileComponent(GLuint & _result, int _componentType) const;
 
+
+		void loadUniformLocations();
+		void setFrameUniforms() const;
+		void setFrameViewUniforms(const View & _view) const;
+
 	public:
 		Shader(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 		~Shader();
@@ -47,15 +51,11 @@ namespace JEngine
 		bool initialise();
 
 		void begin() const;
+		void begin(const View & _view) const;
 		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync();
 
-		void setAssociatedCamera(std::shared_ptr<const Camera> _camera);
-
 		GLuint getProgramID() const;
-
-		void loadUniformLocations();
-		void setFrameUniforms() const;
 	};
 }

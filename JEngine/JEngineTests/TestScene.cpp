@@ -188,7 +188,7 @@ TestScene::TestScene()
 	
 	testCamera = std::make_shared<JEngine::Camera>(JEngine::ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f);
 	testCamera->flush();
-	textShader->setAssociatedCamera(testCamera);
+	//textShader->setAssociatedCamera(testCamera);
 
 
 

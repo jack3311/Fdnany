@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "Util.h"
 #include "Camera.h"
+#include "View.h"
 
 namespace JEngine
 {
@@ -44,7 +45,9 @@ namespace JEngine
 		jobManager = std::make_unique<JobManager>();
 		frameAllocator = std::make_unique<StackAllocator>();
 		ui = std::make_unique<UI>();
-		camera = std::make_unique<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR);
+		standardView = std::make_unique<View>(
+			std::make_shared<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR)
+		);
 	}
 
 	Engine::~Engine()
@@ -86,9 +89,9 @@ namespace JEngine
 		return *ui;
 	}
 
-	Camera & Engine::getCamera()
+	View & Engine::getView()
 	{
-		return *camera;
+		return *standardView;
 	}
 
 	const ivec2 & Engine::getWindowSizeInt() const
@@ -139,7 +142,7 @@ namespace JEngine
 		glCullFace(GL_BACK);
 
 		//Initialise engine systems
-		camera->flush();
+		ERR_IF(!standardView->initialise(), "Failed to initialise standard view");
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");

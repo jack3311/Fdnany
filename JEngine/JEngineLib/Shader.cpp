@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Camera.h"
 #include "Maths.h"
+#include "View.h"
 
 namespace JEngine
 {
@@ -166,6 +167,16 @@ namespace JEngine
 		setFrameUniforms();
 	}
 
+	void Shader::begin(const View & _view) const
+	{
+		assert(Engine::getEngine().isCurrentThreadMain());
+
+		glUseProgram(program);
+
+		setFrameUniforms();
+		setFrameViewUniforms(_view);
+	}
+
 	void Shader::end()
 	{
 		assert(Engine::getEngine().isCurrentThreadMain());
@@ -184,11 +195,6 @@ namespace JEngine
 		return job;
 	}
 
-	void Shader::setAssociatedCamera(std::shared_ptr<const Camera> _camera)
-	{
-		associatedCamera = _camera;
-	}
-
 	GLuint Shader::getProgramID() const
 	{
 		return program;
@@ -203,11 +209,15 @@ namespace JEngine
 
 	void Shader::setFrameUniforms() const
 	{
-		if (associatedCamera)
-		{
-			glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(associatedCamera->getViewMatrix()));
-			glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(associatedCamera->getProjectionMatrix()));
-			glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(associatedCamera->getViewProjectionMatrix()));
-		}
+		//Below is example
+	}
+
+	void Shader::setFrameViewUniforms(const View & _view) const
+	{
+		const std::shared_ptr<Camera> & camera = _view.getCamera();
+
+		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(camera->getViewMatrix()));
+		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(camera->getProjectionMatrix()));
+		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(camera->getViewProjectionMatrix()));
 	}
 }
