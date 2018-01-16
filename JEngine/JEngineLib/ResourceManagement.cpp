@@ -141,7 +141,7 @@ namespace JEngine
 	void ResourceManager::loadResourceTextureAsync(std::shared_ptr<JobLoadResourceTexture> & _job, const std::string & _name)
 	{
 		_job = std::make_shared<JobLoadResourceTexture>(_name);
-		Engine::getEngine().getJobManager().enqueueJob(_job);
+		Engine::get().getJobManager().enqueueJob(_job);
 	}
 
 
@@ -160,7 +160,7 @@ namespace JEngine
 
 	bool ResourceTexture::initialise()
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 #ifdef _DEBUG
 		if (initialised)
 		{
@@ -195,7 +195,7 @@ namespace JEngine
 
 	void ResourceTexture::bind(GLenum _unit) const
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 		
 		glActiveTexture(_unit);
 		glBindTexture(GL_TEXTURE_2D, glTextureID);

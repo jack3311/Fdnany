@@ -6,7 +6,7 @@ namespace JEngine
 {
 	void Camera::cameraFlush()
 	{
-		auto & engine = Engine::getEngine();
+		auto & engine = Engine::get();
 		auto & windowSize = engine.getWindowSizeFloat();
 
 		//Update projection matrix

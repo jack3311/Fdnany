@@ -18,7 +18,7 @@ namespace JEngine
 
 	void Input::setCallbackFunctions(GLFWwindow * _window)
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		glfwSetKeyCallback(_window, Input::keyCallback);
 		glfwSetCursorPosCallback(_window, mousePosCallback);

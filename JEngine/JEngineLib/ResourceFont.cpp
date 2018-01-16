@@ -30,7 +30,7 @@ namespace JEngine
 
 	bool ResourceFont::initialise()
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		//FreeType
 		FT_Library ft;

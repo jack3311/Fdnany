@@ -25,7 +25,7 @@ namespace JEngine
 		void errorCallbackGLFW(int _error, const char * _description)
 		{
 			Logger::getLogger().log(_description, LogLevel::ERROR);
-			Engine::getEngine().stop();
+			Engine::get().stop();
 		}
 		void APIENTRY errorCallbackGL(GLenum _source, GLenum _type, GLuint _id, GLenum _severity, 
 			GLsizei _length, const GLchar * _message, const void * _userParam)
@@ -35,7 +35,7 @@ namespace JEngine
 	}
 
 
-	Engine * Engine::engine;
+	Engine * Engine::engine = nullptr;
 
 	Engine::Engine()
 	{
@@ -54,7 +54,7 @@ namespace JEngine
 	{
 	}
 
-	Engine & Engine::getEngine()
+	Engine & Engine::get()
 	{
 		return *engine;
 	}
@@ -63,6 +63,7 @@ namespace JEngine
 	{
 		engine = new Engine();
 	}
+
 
 	EngineTime & Engine::getEngineTime()
 	{
@@ -89,7 +90,7 @@ namespace JEngine
 		return *ui;
 	}
 
-	View & Engine::getView()
+	View & Engine::getStandardView()
 	{
 		return *standardView;
 	}

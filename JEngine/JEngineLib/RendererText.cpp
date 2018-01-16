@@ -32,7 +32,7 @@ namespace JEngine
 
 	void RendererText::draw(const ResourceFont & _font, const vec2 & _position, const float & _scale, const std::string & _text, const glm::mat4 & _model) const
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		EnableBlend;
 

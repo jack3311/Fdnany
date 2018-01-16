@@ -19,7 +19,7 @@
 int main()
 {
 	JEngine::Engine::create();
-	JEngine::Engine & engine = JEngine::Engine::getEngine();
+	JEngine::Engine & engine = JEngine::Engine::get();
 
 	engine.initialise("Test Game", "log.txt", ivec2{ 1280, 800 });
 
@@ -39,7 +39,7 @@ int main()
 //void testUI()
 //{
 //	JEngine::Engine::create();
-//	JEngine::Engine & engine = JEngine::Engine::getEngine();
+//	JEngine::Engine & engine = JEngine::Engine::get();
 //
 //	engine.initialise("Test Game", "log.txt");
 //
@@ -69,7 +69,7 @@ int main()
 //void testJobs()
 //{
 //	JEngine::Engine::create();
-//	JEngine::Engine & engine = JEngine::Engine::getEngine();
+//	JEngine::Engine & engine = JEngine::Engine::get();
 //
 //	engine.initialise("Test Game", "log.txt");
 //

@@ -24,7 +24,7 @@ namespace JEngine
 	private:
 		static Engine * engine;
 	public:
-		static Engine & getEngine();
+		static Engine & get();
 		static void create();
 
 
@@ -32,6 +32,7 @@ namespace JEngine
 		Engine();
 		~Engine();
 		Engine(const Engine &) = delete;
+		const Engine & operator=(const Engine &) = delete;
 
 		GLFWwindow * window = nullptr;
 
@@ -60,7 +61,7 @@ namespace JEngine
 		JobManager & getJobManager();
 		StackAllocator & getFrameAllocator();
 		UI & getUI();
-		View & getView();
+		View & getStandardView();
 
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
 		JEventBlockable<int> keyDownBlockable, keyUpBlockable;

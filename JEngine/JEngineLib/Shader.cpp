@@ -89,7 +89,7 @@ namespace JEngine
 
 	bool Shader::initialise()
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		std::vector<GLuint> componentsCompiled(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS, 0u);
 		
@@ -160,7 +160,7 @@ namespace JEngine
 
 	void Shader::begin() const
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		glUseProgram(program);
 
@@ -169,7 +169,7 @@ namespace JEngine
 
 	void Shader::begin(const View & _view) const
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		glUseProgram(program);
 
@@ -179,7 +179,7 @@ namespace JEngine
 
 	void Shader::end()
 	{
-		assert(Engine::getEngine().isCurrentThreadMain());
+		assert(Engine::get().isCurrentThreadMain());
 
 		glUseProgram(0);
 	}
@@ -190,7 +190,7 @@ namespace JEngine
 			return loadFromDisk();
 		});
 		
-		Engine::getEngine().getJobManager().enqueueJob(job);
+		Engine::get().getJobManager().enqueueJob(job);
 
 		return job;
 	}

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugRendering.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="RAIIGL.h" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugRendering.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="RendererText.cpp" />

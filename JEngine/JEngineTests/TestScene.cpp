@@ -81,7 +81,7 @@ TestScene::TestScene()
 	};
 	JEngine::Input::keyUp += [](int _key) {
 		if (_key == GLFW_KEY_Q)
-			JEngine::Engine::getEngine().stop();
+			JEngine::Engine::get().stop();
 	};
 
 
@@ -101,7 +101,6 @@ TestScene::TestScene()
 
 	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>(vertices, indices);
 	renderer->initialise();
-
 
 
 	

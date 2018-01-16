@@ -22,8 +22,8 @@ namespace JEngine
 	void UI::updateDebugUI()
 	{
 		//s/f, f/s
-		uiDebugTable.spf->text = toString(Engine::getEngine().getEngineTime().getSpf());
-		uiDebugTable.fps->text = toString(Engine::getEngine().getEngineTime().getFps());
+		uiDebugTable.spf->text = toString(Engine::get().getEngineTime().getSpf());
+		uiDebugTable.fps->text = toString(Engine::get().getEngineTime().getFps());
 	}
 
 	UI::UI()
