@@ -32,23 +32,7 @@ namespace JEngine
 		uiBase = std::make_unique<UIPanelSwitcher>();
 		uiDebug = std::make_shared<UIPanel>();
 
-
-		//Create textured rect renderer
-		{
-			std::vector<UITexturedVertexFormat> vertices{
-				UITexturedVertexFormat{ fvec2{ -1.f, -1.f }, fvec2{ 0.f, 0.f } },
-				UITexturedVertexFormat{ fvec2{ 1.f, -1.f }, fvec2{ 1.f, 0.f } },
-				UITexturedVertexFormat{ fvec2{ -1.f, 1.f }, fvec2{ 0.f, 1.f } },
-				UITexturedVertexFormat{ fvec2{ 1.f, 1.f }, fvec2{ 1.f, 1.f } }
-			};
-
-			std::vector<GLuint> indices{
-				1, 2, 3,
-				2, 3, 1
-			};
-
-			texturedRectRenderer = std::make_unique<Renderer<UITexturedVertexFormat, true>>(vertices, indices);
-		}
+		texturedRectRenderer = std::make_unique<Renderer<UITexturedVertexFormat, true>>();
 	}
 
 	UI::~UI()
@@ -72,7 +56,23 @@ namespace JEngine
 	bool UI::initialise()
 	{
 		ERR_IF(!setupDebugUI(), "Could not set up debug UI");
-		ERR_IF(!texturedRectRenderer->initialise(), "Could not initialise textured rect renderer");
+
+		//Create textured rect renderer
+		{
+			std::vector<UITexturedVertexFormat> vertices{
+				UITexturedVertexFormat{ fvec2{ -1.f, -1.f }, fvec2{ 0.f, 0.f } },
+				UITexturedVertexFormat{ fvec2{ 1.f, -1.f }, fvec2{ 1.f, 0.f } },
+				UITexturedVertexFormat{ fvec2{ -1.f, 1.f }, fvec2{ 0.f, 1.f } },
+				UITexturedVertexFormat{ fvec2{ 1.f, 1.f }, fvec2{ 1.f, 1.f } }
+			};
+
+			std::vector<GLuint> indices{
+				1, 2, 3,
+				2, 3, 1
+			};
+
+			ERR_IF(!texturedRectRenderer->initialise(vertices, indices), "Could not initialise textured rect renderer");
+		}
 
 		return true;
 	}

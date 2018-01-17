@@ -22,7 +22,7 @@ namespace JEngine
 
 
 	RendererText::RendererText() :
-		Renderer(std::vector<VertexFormatText>(6u, VertexFormatText{ vec2(), vec2() }), GL_TRIANGLES, true)
+		Renderer(GL_TRIANGLES, true)
 	{
 	}
 
@@ -68,10 +68,15 @@ namespace JEngine
 			fc.texture->bind(GL_TEXTURE0);
 			
 			//Actually draw
-			draw(_model);
+			Renderer::draw(_model);
 
 			//Move forwards for next char
 			textPosition.x += (fc.advance >> 6) * _scale;
 		}
+	}
+
+	bool RendererText::initialise()
+	{
+		return Renderer::initialise(std::vector<VertexFormatText>(6u, VertexFormatText{ vec2(), vec2() }));
 	}
 }

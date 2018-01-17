@@ -7,7 +7,6 @@
 
 #include "Maths.h"
 #include "RAIIGL.h"
-#include "Util.h"
 
 namespace JEngine
 {
@@ -29,17 +28,17 @@ namespace JEngine
 		std::vector<VertexFormat> vertices;
 		std::vector<GLuint> indices;
 
-		int maxVertices,
+		unsigned int maxVertices,
 			maxIndices;
 
-		bool initialiseBase(const std::vector<VertexFormat> & _vertices, int _maxVertices);
+		bool initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices);
 			
 	public:
 		Renderer(GLenum _drawMode = DEFAULT_DRAW_MODE, bool _enableCullFace = DEFAULT_CULL_FACE);
 		~Renderer();
 
-		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, int _maxVertices = -1, int _maxIndices = -1); //-1 gives size of arrays
-		bool initialise(const std::vector<VertexFormat> & _vertices, int _maxVertices = -1); //-1 gives size of arrays
+		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices = -1, unsigned int _maxIndices = -1); //-1 gives size of arrays
+		bool initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices = -1); //-1 gives size of arrays
 
 		void updateData();
 
@@ -53,12 +52,6 @@ namespace JEngine
 	inline Renderer<VertexFormat, enableIndices>::Renderer(GLenum _drawMode, bool _enableCullFace) :
 		drawMode(_drawMode), enableCullFace(_enableCullFace)
 	{
-	}
-
-	template <typename VertexFormat, bool enableIndices>
-	inline Renderer<VertexFormat, enableIndices>::Renderer(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, GLenum _drawMode, bool _enableCullFace) :
-		vertices(_vertices), indices(_indices), drawMode(_drawMode), enableCullFace(_enableCullFace)
-	{	
 	}
 
 	template<typename VertexFormat, bool enableIndices>
@@ -76,7 +69,7 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, int _maxVertices, int _maxIndices)
+	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices, unsigned int _maxIndices)
 	{
 		static_assert(enableIndices, "Cannot initialise index-disabled renderer with indices array");
 
@@ -92,7 +85,7 @@ namespace JEngine
 		indices = _indices;
 
 		//Setup EBO
-		maxIndices = _maxIndices == -1 ? indices.size() : _maxIndices;
+		maxIndices = _maxIndices == -1 ? static_cast<unsigned int>(indices.size()) : _maxIndices;
 
 		glGenBuffers(1, &EBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -102,7 +95,7 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, int _maxVertices)
+	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices)
 	{
 		static_assert(!enableIndices, "Cannot initialise index-enabled renderer without indices array");
 
@@ -110,7 +103,7 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline bool Renderer<VertexFormat, enableIndices>::initialiseBase(const std::vector<VertexFormat> & _vertices, int _maxVertices)
+	inline bool Renderer<VertexFormat, enableIndices>::initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices)
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -121,7 +114,7 @@ namespace JEngine
 		glBindVertexArray(VAO);
 
 		//Setup VBO
-		maxVertices = _maxVertices == -1 ? vertices.size() : _maxVertices;
+		maxVertices = _maxVertices == -1 ? static_cast<unsigned int>(vertices.size()) : _maxVertices;
 
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);

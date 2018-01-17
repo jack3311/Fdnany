@@ -99,8 +99,8 @@ TestScene::TestScene()
 		1, 3, 2
 	};
 
-	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>(vertices, indices);
-	renderer->initialise();
+	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
+	renderer->initialise(vertices, indices);
 
 
 	

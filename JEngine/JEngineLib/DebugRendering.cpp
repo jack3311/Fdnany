@@ -19,7 +19,7 @@ namespace JEngine
 	DebugRendering * DebugRendering::debugRendering = nullptr;
 
 	DebugRendering::DebugRendering() :
-		standardRenderer({})
+		standardRenderer()
 	{
 	}
 
@@ -44,7 +44,7 @@ namespace JEngine
 		return true;
 	}
 
-	void DebugRendering::drawLine(std::initializer_list<const vec3 &> _vertices)
+	void DebugRendering::drawLine(const std::vector<VertexFormatDebugRenderingStandard> & _vertices)
 	{
 
 	}

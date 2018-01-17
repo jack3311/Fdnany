@@ -34,7 +34,7 @@ namespace JEngine
 	public:
 		bool initialise();
 
-		void drawLine(std::initializer_list<const vec3 &> _vertices);
+		void drawLine(const std::vector<VertexFormatDebugRenderingStandard> & _vertices);
 
 	};
 }
