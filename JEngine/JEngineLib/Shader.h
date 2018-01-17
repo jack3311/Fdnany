@@ -44,17 +44,17 @@ namespace JEngine
 		void setFrameViewUniforms(const View & _view) const;
 
 	public:
-		Shader(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
+		Shader();
 		~Shader();
 
-		bool loadFromDisk();
+		bool loadFromDisk(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 		bool initialise();
 
 		void begin() const;
 		void begin(const View & _view) const;
 		static void end();
 
-		std::shared_ptr<JobCallFunction> loadFromDiskAsync();
+		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 
 		GLuint getProgramID() const;
 	};

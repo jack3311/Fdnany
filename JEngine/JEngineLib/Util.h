@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#define ERR_IF(exp, msg) { if (exp) { Logger::getLogger().log(msg, LogLevel::ERROR); return false; } }
+#define ERR_IF(exp, msg) { if (exp) { Logger::getLogger().log(msg, LogLevel::ERROR); return false; } else {} }
 
 bool readAllFile(std::string & _out, const std::string & _path);
 std::vector<std::string> getFilesInDirectory(const std::string & _directory);

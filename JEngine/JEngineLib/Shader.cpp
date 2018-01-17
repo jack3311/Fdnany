@@ -42,14 +42,10 @@ namespace JEngine
 		return true;
 	}
 
-	Shader::Shader(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit) :
+	Shader::Shader() :
 		componentPaths(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS),
 		componentSources(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS)
 	{
-		for (auto & item : _componentPathsInit)
-		{
-			componentPaths[item.first] = item.second;
-		}
 	}
 
 	Shader::~Shader()
@@ -57,8 +53,15 @@ namespace JEngine
 		glDeleteProgram(program);
 	}
 
-	bool Shader::loadFromDisk()
+	bool Shader::loadFromDisk(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
 	{
+		//Split the argument
+		for (auto & item : _componentPathsInit)
+		{
+			componentPaths[item.first] = item.second;
+		}
+
+		//Load the files from disk
 		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
 		{
 			auto path = componentPaths[i];
@@ -184,10 +187,10 @@ namespace JEngine
 		glUseProgram(0);
 	}
 
-	std::shared_ptr<JobCallFunction> Shader::loadFromDiskAsync()
+	std::shared_ptr<JobCallFunction> Shader::loadFromDiskAsync(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
 	{
-		auto job = std::make_shared<JobCallFunction>([this]() -> bool {
-			return loadFromDisk();
+		auto job = std::make_shared<JobCallFunction>([this, _componentPathsInit]() -> bool {
+			return loadFromDisk(_componentPathsInit);
 		});
 		
 		Engine::get().getJobManager().enqueueJob(job);

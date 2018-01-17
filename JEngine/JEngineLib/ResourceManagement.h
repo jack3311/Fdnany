@@ -100,6 +100,7 @@ namespace JEngine
 
 		bool loadResourceTexture(std::shared_ptr<ResourceTexture> & _resource, const std::string & _name);
 		void loadResourceTextureAsync(std::shared_ptr<JobLoadResourceTexture> & _job, const std::string & _name);
+
 	
 		std::string constructFullPath(const std::string & _relToInstall) const;
 	};
