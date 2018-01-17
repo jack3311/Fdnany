@@ -2,9 +2,24 @@
 
 namespace JEngine
 {
+	VertexFormatDebugRenderingStandard::VertexFormatDebugRenderingStandard(const vec3 & _position, const vec3 & _color) :
+		position(_position), color(_color)
+	{
+	}
+
+	void VertexFormatDebugRenderingStandard::setupVertexAttributes()
+	{
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatDebugRenderingStandard), (GLvoid *)offsetof(VertexFormatDebugRenderingStandard, VertexFormatDebugRenderingStandard::position));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatDebugRenderingStandard), (GLvoid *)offsetof(VertexFormatDebugRenderingStandard, VertexFormatDebugRenderingStandard::color));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+	}
+
+
 	DebugRendering * DebugRendering::debugRendering = nullptr;
 
-	DebugRendering::DebugRendering()
+	DebugRendering::DebugRendering() :
+		standardRenderer({})
 	{
 	}
 
@@ -27,5 +42,10 @@ namespace JEngine
 
 
 		return true;
+	}
+
+	void DebugRendering::drawLine(std::initializer_list<const vec3 &> _vertices)
+	{
+
 	}
 }

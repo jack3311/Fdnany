@@ -13,7 +13,7 @@ namespace JEngine
 
 		static void setupVertexAttributes();
 
-		VertexFormatText(vec2, vec2);
+		VertexFormatText(const vec2 &, const vec2 &);
 	};
 
 	class RendererText : public Renderer<VertexFormatText, false>

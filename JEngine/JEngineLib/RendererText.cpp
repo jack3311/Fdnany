@@ -15,7 +15,7 @@ namespace JEngine
 		glEnableVertexAttribArray(1);
 	}
 
-	VertexFormatText::VertexFormatText(vec2 _position, vec2 _texCoords) :
+	VertexFormatText::VertexFormatText(const vec2 & _position, const vec2 & _texCoords) :
 		position(_position), texCoords(_texCoords)
 	{
 	}

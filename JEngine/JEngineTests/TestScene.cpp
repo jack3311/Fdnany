@@ -26,7 +26,7 @@ void MyVertexFormat::setupVertexAttributes()
 	glEnableVertexAttribArray(1);
 }
 
-MyVertexFormat::MyVertexFormat(vec3 _pos, vec2 _texCoords) : position(_pos), texCoords(_texCoords)
+MyVertexFormat::MyVertexFormat(const vec3 & _pos, const vec2 & _texCoords) : position(_pos), texCoords(_texCoords)
 {
 }
 

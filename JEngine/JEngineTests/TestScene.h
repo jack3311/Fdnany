@@ -15,7 +15,7 @@ struct MyVertexFormat
 
 	static void setupVertexAttributes();
 
-	MyVertexFormat(vec3, vec2);
+	MyVertexFormat(const vec3 &, const vec2 &);
 };
 
 class TestScene :
