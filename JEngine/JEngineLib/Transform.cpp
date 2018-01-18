@@ -5,7 +5,7 @@ namespace JEngine
 	Transform::Transform() :
 		position(),
 		rotation(),
-		scale(1.f ,1.f, 1.f),
+		scale(1.f, 1.f, 1.f),
 		localTransformMatrix()
 	{
 		flush();
@@ -67,7 +67,7 @@ namespace JEngine
 		rotation = _value;
 		return *this;
 	}
-	Transform & Transform::lookAt(const vec3 & _lookDir, const vec3 & _up)
+	Transform & Transform::localLookAt(const vec3 & _lookDir, const vec3 & _up)
 	{
 		rotation = MathUtil::lookAtQuat(_lookDir, _up);
 		return *this;

@@ -36,6 +36,6 @@ namespace JEngine
 		Transform & localSetScale(const vec3 & _value);
 		Transform & localSetRotation(const quat & _value);
 
-		Transform & lookAt(const vec3 & _lookDir, const vec3 & _up = { 0.f, 1.f, 0.f });
+		Transform & localLookAt(const vec3 & _lookDir, const vec3 & _up = { 0.f, 1.f, 0.f });
 	};
 }

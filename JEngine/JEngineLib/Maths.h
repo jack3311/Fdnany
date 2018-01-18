@@ -16,15 +16,11 @@ namespace JEngine
 	class MathUtil
 	{
 	public:
-		//static mat4 gen(const vec3 & _position, const vec3 & _rotation, const vec3 & _scale)
 		static mat4 gen(const vec3 & _position, const quat & _rotation, const vec3 & _scale)
 		{
 			mat4 result;
 
 			result = translate(result, _position);
-
-			//mat4 eulerRotationMatrix = eulerAngleXYZ(_rotation.x, _rotation.y, _rotation.z);
-			//result *= eulerRotationMatrix;
 
 			result *= toMat4(_rotation);
 

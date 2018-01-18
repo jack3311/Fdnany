@@ -342,7 +342,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	_engine.getStandardView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 5.f, 2.f, cosf(time * 0.1f) * 5.f });
 	
 	auto dir = glm::vec3{ 0.f, 0.f, 0.f } -_engine.getStandardView().getCamera()->getLocalPosition();
-	_engine.getStandardView().getCamera()->lookAt(dir);
+	_engine.getStandardView().getCamera()->localLookAt(dir);
 	
 	_engine.getStandardView().getCamera()->flush();
 }
