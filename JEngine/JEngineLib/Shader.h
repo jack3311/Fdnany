@@ -47,14 +47,14 @@ namespace JEngine
 		Shader();
 		~Shader();
 
-		bool loadFromDisk(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
+		bool loadFromDisk(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 		bool initialise();
 
 		void begin() const;
 		void begin(const View & _view) const;
 		static void end();
 
-		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
+		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 
 		GLuint getProgramID() const;
 	};

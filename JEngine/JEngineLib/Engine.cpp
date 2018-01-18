@@ -13,6 +13,7 @@
 #include "Util.h"
 #include "Camera.h"
 #include "View.h"
+#include "DebugRendering.h"
 
 namespace JEngine
 {
@@ -150,6 +151,7 @@ namespace JEngine
 		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
 		ERR_IF(!ResourceManager::create().initialise(), "Failed to initialise resource manager");
 		ERR_IF(!ui->initialise(), "Failed to initialise UI");
+		ERR_IF(!DebugRendering::create().initialise(), "Failed to initialise debug renderer");
 
 		//Setup blocking input events
 		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };
@@ -244,6 +246,9 @@ namespace JEngine
 		//Post-render for current scene
 		currentScene->postSceneRender(*this);
 
+		//Render Debug
+		DebugRendering::get().flush();
+
 		//Reset frame allocator
 		frameAllocator->reset();
 	}
@@ -253,6 +258,7 @@ namespace JEngine
 		glClearColor(1.f, 0.f, 1.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//Render UI
 		ui->render();
 	}
 }

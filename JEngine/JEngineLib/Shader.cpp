@@ -53,7 +53,7 @@ namespace JEngine
 		glDeleteProgram(program);
 	}
 
-	bool Shader::loadFromDisk(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
+	bool Shader::loadFromDisk(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
 	{
 		//Split the argument
 		for (auto & item : _componentPathsInit)
@@ -187,7 +187,7 @@ namespace JEngine
 		glUseProgram(0);
 	}
 
-	std::shared_ptr<JobCallFunction> Shader::loadFromDiskAsync(const std::initializer_list<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
+	std::shared_ptr<JobCallFunction> Shader::loadFromDiskAsync(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit)
 	{
 		auto job = std::make_shared<JobCallFunction>([this, _componentPathsInit]() -> bool {
 			return loadFromDisk(_componentPathsInit);

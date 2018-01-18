@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "Renderer.h"
 
 namespace JEngine
 {
+	class Shader;
+
 	struct VertexFormatDebugRenderingStandard
 	{
 		vec3 position;
@@ -26,15 +30,19 @@ namespace JEngine
 		const DebugRendering & operator=(const DebugRendering &) = delete;
 
 		static DebugRendering & get();
-		static void create();
+		static DebugRendering & create();
 
 	private:
-		Renderer<VertexFormatDebugRenderingStandard, false> standardRenderer;
+		std::unique_ptr<Renderer<VertexFormatDebugRenderingStandard, false>> lineRenderer;
+		std::vector<BufferRange> lineRanges;
+
+		std::unique_ptr<Shader> debugShader;
 
 	public:
 		bool initialise();
 
 		void drawLine(const std::vector<VertexFormatDebugRenderingStandard> & _vertices);
 
+		void flush();
 	};
 }

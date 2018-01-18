@@ -7,6 +7,7 @@
 
 #include "Maths.h"
 #include "RAIIGL.h"
+#include "Util.h"
 
 namespace JEngine
 {
@@ -43,9 +44,10 @@ namespace JEngine
 		void updateData();
 
 		void draw(const mat4 & _model) const;
+		void draw(const mat4 & _model, const BufferRange & _range) const;
 
-		std::vector<VertexFormat> & getVertices() const;
-		std::vector<GLuint> & getIndices() const;
+		std::vector<VertexFormat> & getVertices();
+		std::vector<GLuint> & getIndices();
 	};
 
 	template <typename VertexFormat, bool enableIndices>
@@ -118,7 +120,11 @@ namespace JEngine
 
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, maxVertices * sizeof(VertexFormat), &vertices.front(), GL_STATIC_DRAW);
+
+		if (vertices.size() > 0)
+		{
+			glBufferData(GL_ARRAY_BUFFER, maxVertices * sizeof(VertexFormat), &vertices[0], GL_STATIC_DRAW);
+		}
 
 		//Setup Vertex Attributes
 		VertexFormat::setupVertexAttributes();
@@ -133,19 +139,30 @@ namespace JEngine
 
 		assert(vertices.size() <= maxVertices); //TODO: Dynamically change max vertices if size is too big (reallocate with glBufferData) CLEAR FIRST
 
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size(), &vertices[0]);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		//glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(VertexFormat), &vertices[0]);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexFormat), &vertices[0], GL_STATIC_DRAW);
 
 		if (enableIndices)
 		{
 			assert(indices.size() <= maxIndices); //TODO: Dynamically change max indices if size is too big (reallocate with glBufferData) CLEAR FIRST
-
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size(); &indices[0]);
+			
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			//glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), &indices[0]);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
 		}
 
 	}
 
 	template<typename VertexFormat, bool enableIndices>
 	inline void Renderer<VertexFormat, enableIndices>::draw(const mat4 & _model) const
+	{
+		draw(_model, BufferRange{ 0, static_cast<unsigned int>(vertices.size()) });
+	}
+
+	template<typename VertexFormat, bool enableIndices>
+	inline void Renderer<VertexFormat, enableIndices>::draw(const mat4 & _model, const BufferRange & _range) const
 	{
 		//TODO: Split to begin/draw/end
 
@@ -167,7 +184,8 @@ namespace JEngine
 		}
 		else
 		{
-			glDrawArrays(drawMode, 0, static_cast<GLsizei>(vertices.size()));
+			auto len = static_cast<GLsizei>(_range.getLength()) + 1u;
+			glDrawArrays(drawMode, _range.start, len);
 		}
 
 
@@ -176,13 +194,15 @@ namespace JEngine
 			RAIIGL::_EnableCullFace::end();
 		}
 	}
+
 	template<typename VertexFormat, bool enableIndices>
-	inline std::vector<VertexFormat> & Renderer<VertexFormat, enableIndices>::getVertices() const
+	inline std::vector<VertexFormat> & Renderer<VertexFormat, enableIndices>::getVertices()
 	{
 		return vertices;
 	}
+
 	template<typename VertexFormat, bool enableIndices>
-	inline std::vector<GLuint> & Renderer<VertexFormat, enableIndices>::getIndices() const
+	inline std::vector<GLuint> & Renderer<VertexFormat, enableIndices>::getIndices()
 	{
 		return indices;
 	}

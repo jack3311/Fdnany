@@ -167,6 +167,8 @@
     <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\debugShader.frag" />
+    <None Include="Assets\debugShader.vert" />
     <None Include="Assets\testShader.frag" />
     <None Include="Assets\testShader.vert" />
     <None Include="Assets\text.frag" />

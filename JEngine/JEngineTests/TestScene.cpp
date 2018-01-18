@@ -11,6 +11,7 @@
 #include <JEngineLib\Renderer.h>
 #include <JEngineLib\ResourceFont.h>
 #include <JEngineLib\Maths.h>
+#include <JEngineLib\DebugRendering.h>
 
 #include "TestJob.h"
 
@@ -87,107 +88,107 @@ TestScene::TestScene()
 
 
 
-	std::vector<MyVertexFormat> vertices = {
-		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
-		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
-		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
-		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
-	};
+	//std::vector<MyVertexFormat> vertices = {
+	//	MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
+	//	MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
+	//	MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
+	//	MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
+	//};
 
-	std::vector<GLuint> indices = {
-		0, 1, 2,
-		1, 3, 2
-	};
+	//std::vector<GLuint> indices = {
+	//	0, 1, 2,
+	//	1, 3, 2
+	//};
 
-	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
-	renderer->initialise(vertices, indices);
-
-
-	
-	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
-
-	resourceManager.beginResourceCaching();
-	{
-		std::shared_ptr<JEngine::JobLoadResourceTexture> job;
-
-		resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
-
-		job->waitUntilFinished();
-		if (!job->texture->initialise())
-		{
-			JEngine::Logger::getLogger().log("Could not initialise test texture");
-		}
-		testTexture = job->texture;
-		JEngine::Logger::getLogger().log("Loaded test texture");
-	}
-	resourceManager.endResourceCaching();
+	//renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
+	//renderer->initialise(vertices, indices);
 
 
+	//
+	//auto & resourceManager = JEngine::ResourceManager::getResourceManager();
+
+	//resourceManager.beginResourceCaching();
+	//{
+	//	std::shared_ptr<JEngine::JobLoadResourceTexture> job;
+
+	//	resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
+
+	//	job->waitUntilFinished();
+	//	if (!job->texture->initialise())
+	//	{
+	//		JEngine::Logger::getLogger().log("Could not initialise test texture");
+	//	}
+	//	testTexture = job->texture;
+	//	JEngine::Logger::getLogger().log("Loaded test texture");
+	//}
+	//resourceManager.endResourceCaching();
 
 
 
 
-	{
-		testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
-			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
-			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
-		}));
-
-		auto job = testShader->loadFromDiskAsync();
-		job->waitUntilFinished();
-
-		if (!job->wasSuccessful())
-		{
-			std::cout << "Could not load test shader" << std::endl;
-		}
-
-		if (!testShader->initialise())
-		{
-			std::cout << "Could not initialise test shader" << std::endl;
-		}
-	}
-	{
-		textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
-			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
-			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\text.frag") }
-		}));
-	
-		auto job = textShader->loadFromDiskAsync();
-		job->waitUntilFinished();
-	
-		if (!job->wasSuccessful())
-		{
-			std::cout << "Could not load text shader" << std::endl;
-		}
-	
-		if (!textShader->initialise())
-		{
-			std::cout << "Could not initialise text shader" << std::endl;
-		}
-	}
 
 
+	//{
+	//	testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
+	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
+	//		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
+	//	}));
+
+	//	auto job = testShader->loadFromDiskAsync();
+	//	job->waitUntilFinished();
+
+	//	if (!job->wasSuccessful())
+	//	{
+	//		std::cout << "Could not load test shader" << std::endl;
+	//	}
+
+	//	if (!testShader->initialise())
+	//	{
+	//		std::cout << "Could not initialise test shader" << std::endl;
+	//	}
+	//}
+	//{
+	//	textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
+	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
+	//		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\text.frag") }
+	//	}));
+	//
+	//	auto job = textShader->loadFromDiskAsync();
+	//	job->waitUntilFinished();
+	//
+	//	if (!job->wasSuccessful())
+	//	{
+	//		std::cout << "Could not load text shader" << std::endl;
+	//	}
+	//
+	//	if (!textShader->initialise())
+	//	{
+	//		std::cout << "Could not initialise text shader" << std::endl;
+	//	}
+	//}
 
 
-	testFont = std::make_shared<JEngine::ResourceFont>(JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf"));
-	if (!testFont->initialise())
-	{
-		JEngine::Logger::getLogger().log("Could not initialise font");
-	}
-	JEngine::Logger::getLogger().log("Font loaded successfully");
-	
-	
-	rendererText = std::make_shared<JEngine::RendererText>();
-	if (!rendererText->initialise())
-	{
-		JEngine::Logger::getLogger().log("Could not initialise text renderer");
-	}
-	
-	
-	
-	testCamera = std::make_shared<JEngine::Camera>(JEngine::ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f);
-	testCamera->flush();
-	//textShader->setAssociatedCamera(testCamera);
+
+
+	//testFont = std::make_shared<JEngine::ResourceFont>(JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf"));
+	//if (!testFont->initialise())
+	//{
+	//	JEngine::Logger::getLogger().log("Could not initialise font");
+	//}
+	//JEngine::Logger::getLogger().log("Font loaded successfully");
+	//
+	//
+	//rendererText = std::make_shared<JEngine::RendererText>();
+	//if (!rendererText->initialise())
+	//{
+	//	JEngine::Logger::getLogger().log("Could not initialise text renderer");
+	//}
+	//
+	//
+	//
+	//testCamera = std::make_shared<JEngine::Camera>(JEngine::ProjectionType::ORTHOGRAPHIC, 0.1f, 100.f);
+	//testCamera->flush();
+	////textShader->setAssociatedCamera(testCamera);
 
 
 
@@ -350,9 +351,19 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	//
 	//testShader->end();
 
-	textShader->begin();
+	/*textShader->begin();
 	
 	rendererText->draw(*testFont, vec2(100, 100), 1.f, "Test text");
 	
-	textShader->end();
+	textShader->end();*/
+
+	
+
+	//Draw a line
+	JEngine::DebugRendering::get().drawLine({
+		{ { -0.5f, -0.5f, 1.f }, { 1.f, 1.f, 1.f } },
+		{ { 0.5f, -0.5f, 1.f }, { 1.f, 1.f, 1.f } },
+		{ { 0.5f, 0.5f, 1.f }, { 1.f, 1.f, 1.f } },
+		{ { -0.5f, 0.5f, 1.f }, { 1.f, 1.f, 1.f } },
+	});
 }
