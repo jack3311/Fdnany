@@ -8,7 +8,6 @@ namespace JEngine
 	{
 	protected:
 		vec3 position;
-		//vec3 eulerAngles;
 		vec3 scale;
 		quat rotation;
 
@@ -23,7 +22,6 @@ namespace JEngine
 		void flush();
 
 		const vec3 & getLocalPosition() const;
-		//const vec3 & getLocalEulerAngles() const;
 		const vec3 & getLocalScale() const;
 		const quat & getLocalRotation() const;
 
@@ -31,12 +29,10 @@ namespace JEngine
 
 
 		Transform & localMove(const vec3 & _delta);
-		//Transform & localRotateEulerAngles(const vec3 & _delta);
 		Transform & localScale(const vec3 & _multiplier);
 		Transform & localRotate(const quat & _other);
 
 		Transform & localSetPosition(const vec3 & _value);
-		//Transform & localSetEulerAngles(const vec3 & _value);
 		Transform & localSetScale(const vec3 & _value);
 		Transform & localSetRotation(const quat & _value);
 

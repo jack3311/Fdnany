@@ -4,7 +4,6 @@ namespace JEngine
 {
 	Transform::Transform() :
 		position(),
-		//eulerAngles(),
 		rotation(),
 		scale(1.f ,1.f, 1.f),
 		localTransformMatrix()
@@ -19,7 +18,6 @@ namespace JEngine
 	void Transform::flush()
 	{
 		//Update local transform matrix
-		//localTransformMatrix = MathUtil::gen(position, eulerAngles, scale);
 		localTransformMatrix = MathUtil::gen(position, rotation, scale);
 	}
 
@@ -27,10 +25,6 @@ namespace JEngine
 	{
 		return position;
 	}
-	//const vec3 & Transform::getLocalEulerAngles() const
-	//{
-	//	return eulerAngles;
-	//}
 	const vec3 & Transform::getLocalScale() const
 	{
 		return scale;
@@ -48,11 +42,6 @@ namespace JEngine
 		position += _delta;
 		return *this;
 	}
-	//Transform & Transform::localRotateEulerAngles(const vec3 & _delta)
-	//{
-	//	eulerAngles += _delta;
-	//	return *this;
-	//}
 	Transform & Transform::localScale(const vec3 & _multiplier)
 	{
 		scale *= _multiplier;
@@ -68,11 +57,6 @@ namespace JEngine
 		position = _value;
 		return *this;
 	}
-	//Transform & Transform::localSetEulerAngles(const vec3 & _value)
-	//{
-	//	eulerAngles = _value;
-	//	return *this;
-	//}
 	Transform & Transform::localSetScale(const vec3 & _value)
 	{
 		scale = _value;
@@ -86,7 +70,6 @@ namespace JEngine
 	Transform & Transform::lookAt(const vec3 & _lookDir, const vec3 & _up)
 	{
 		rotation = MathUtil::lookAtQuat(_lookDir, _up);
-
 		return *this;
 	}
 }
