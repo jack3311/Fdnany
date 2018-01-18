@@ -80,15 +80,7 @@ namespace JEngine
 
 		//Set range start point
 		BufferRange range;
-		auto size1 = static_cast<unsigned int>(lineRendererVertices.size());
-		if (size1 == 0)
-		{
-			range.start = 0;
-		}
-		else
-		{
-			range.start = size1 - 1u;
-		}
+		range.start = static_cast<unsigned int>(lineRendererVertices.size());
 
 		//Add new vertices to the end
 		lineRendererVertices.insert(lineRendererVertices.begin(), _vertices.begin(), _vertices.end());
@@ -98,6 +90,27 @@ namespace JEngine
 
 		//Add range to ranges
 		lineRanges.emplace_back(range);
+	}
+
+	void DebugRendering::drawAxes(const vec3 & _pos, const vec3 & _u, const vec3 & _v, const vec3 & _w)
+	{
+		//u
+		drawLine({
+			{ _pos - _u, { 1.f, 0.f, 0.f } },
+			{ _pos + _u, { 1.f, 0.f, 0.f } }
+		});
+
+		//v
+		drawLine({
+			{ _pos - _v, { 0.f, 1.f, 0.f } },
+			{ _pos + _v, { 0.f, 1.f, 0.f } }
+		});
+
+		//w
+		drawLine({
+			{ _pos - _w, { 0.f, 0.f, 1.f } },
+			{ _pos + _w, { 0.f, 0.f, 1.f } }
+		});
 	}
 
 	void DebugRendering::flush()
