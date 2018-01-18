@@ -7,6 +7,7 @@
 #include <JEngineLib\ResourceFont.h>
 #include <JEngineLib\RendererText.h>
 #include <JEngineLib\Camera.h>
+#include <JEngineLib\Transform.h>
 
 struct MyVertexFormat
 {
@@ -32,6 +33,8 @@ private:
 	std::shared_ptr<JEngine::Camera> testCamera;
 
 	std::shared_ptr<JEngine::ResourceTexture> testTexture;
+
+	JEngine::Transform testTransform;
 
 public:
 	TestScene();

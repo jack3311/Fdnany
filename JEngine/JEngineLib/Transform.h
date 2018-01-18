@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "Maths.h"
 
 namespace JEngine
@@ -12,8 +15,12 @@ namespace JEngine
 		quat rotation;
 
 		mat4 localTransformMatrix;
+		mat4 globalTransformMatrix;
 
-		//std::vector<Transform &> children;
+		std::vector<std::shared_ptr<Transform>> children;
+
+	public: //TODO: make protected as above
+		void updateGlobalTransformMatrixRecursive(const mat4 & _parentGlobalTransformMatrix);
 
 	public:
 		Transform();
@@ -25,7 +32,10 @@ namespace JEngine
 		const vec3 & getLocalScale() const;
 		const quat & getLocalRotation() const;
 
+		vec3 getGlobalPosition() const;
+
 		const mat4 & getLocalTransformMatrix() const;
+		const mat4 & getGlobalTransformMatrix() const;
 
 
 		Transform & localMove(const vec3 & _delta);
@@ -37,5 +47,10 @@ namespace JEngine
 		Transform & localSetRotation(const quat & _value);
 
 		Transform & localLookAt(const vec3 & _lookDir, const vec3 & _up = { 0.f, 1.f, 0.f });
+
+		void addChild(const std::shared_ptr<Transform> & _child);
+		void removeChild(const std::shared_ptr<Transform> & _child);
+
+		const std::vector<std::shared_ptr<Transform>> & getChildren() const; //TODO: maybe remove
 	};
 }

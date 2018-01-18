@@ -1,12 +1,25 @@
 #include "Transform.h"
 
+#include "Logger.h"
+
 namespace JEngine
 {
+	void Transform::updateGlobalTransformMatrixRecursive(const mat4 & _parentGlobalTransformMatrix)
+	{
+		globalTransformMatrix = _parentGlobalTransformMatrix * localTransformMatrix;
+		
+		for (const auto & child : children)
+		{
+			child->updateGlobalTransformMatrixRecursive(globalTransformMatrix);
+		}
+	}
+
 	Transform::Transform() :
 		position(),
 		rotation(),
 		scale(1.f, 1.f, 1.f),
-		localTransformMatrix()
+		localTransformMatrix(),
+		globalTransformMatrix()
 	{
 		flush();
 	}
@@ -33,9 +46,17 @@ namespace JEngine
 	{
 		return rotation;
 	}
+	vec3 Transform::getGlobalPosition() const
+	{
+		return vec3(globalTransformMatrix * vec4{ 0.f, 0.f, 0.f, 1.f });
+	}
 	const mat4 & Transform::getLocalTransformMatrix() const
 	{
 		return localTransformMatrix;
+	}
+	const mat4 & Transform::getGlobalTransformMatrix() const
+	{
+		return globalTransformMatrix;
 	}
 	Transform & Transform::localMove(const vec3 & _delta)
 	{
@@ -71,5 +92,26 @@ namespace JEngine
 	{
 		rotation = MathUtil::lookAtQuat(_lookDir, _up);
 		return *this;
+	}
+	void Transform::addChild(const std::shared_ptr<Transform> & _child)
+	{
+		children.push_back(_child);
+	}
+	void Transform::removeChild(const std::shared_ptr<Transform> & _child)
+	{
+		auto itr = std::find(children.begin(), children.end(), _child);
+
+		if (itr != children.end())
+		{
+			children.erase(itr);
+		}
+		else
+		{
+			Logger::getLogger().log("Cannot remove transform that is not a child", LogLevel::WARNING);
+		}
+	}
+	const std::vector<std::shared_ptr<Transform>> & Transform::getChildren() const
+	{
+		return children;
 	}
 }

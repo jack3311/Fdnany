@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "ResourceManagement.h"
 #include "Engine.h"
+#include "Transform.h"
 
 namespace JEngine
 {
@@ -111,6 +112,29 @@ namespace JEngine
 			{ _pos - _w * _size, { 0.f, 0.f, 1.f } },
 			{ _pos + _w * _size, { 0.f, 0.f, 1.f } }
 		});
+	}
+
+	void DebugRendering::drawTransform(const Transform & _transform)
+	{
+		//drawAxes(_transform.getGlobalPosition());
+
+		vec4 u{ 1.f, 0.f, 0.f, 1.f },
+			v{ 0.f, 1.f, 0.f, 1.f },
+			w{ 0.f, 0.f, 1.f, 1.f };
+		
+		const auto & mat = _transform.getGlobalTransformMatrix();
+		const auto pos = _transform.getGlobalPosition();
+		const auto pos4 = vec4(pos, 1.f);
+		
+		u = mat * u;
+		v = mat * v;
+		w = mat * w;
+		
+		u -= pos4;
+		v -= pos4;
+		w -= pos4;
+		
+		drawAxes(_transform.getGlobalPosition(), vec3(u), vec3(v), vec3(w));
 	}
 
 	void DebugRendering::flush()

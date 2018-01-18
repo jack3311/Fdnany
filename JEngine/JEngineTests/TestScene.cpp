@@ -89,6 +89,21 @@ TestScene::TestScene()
 
 
 
+	testTransform.localMove({ 1.f, 1.f, 1.f });
+	testTransform.localScale({ 0.5f, 0.5f, 0.5f });
+	testTransform.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
+	testTransform.flush();
+
+	auto child1 = std::make_shared<JEngine::Transform>();
+	child1->localMove({ 1.f, 1.f, 1.f });
+	child1->flush();
+
+	testTransform.addChild(child1);
+
+	testTransform.updateGlobalTransformMatrixRecursive(glm::mat4());
+
+
+
 
 	//std::vector<MyVertexFormat> vertices = {
 	//	MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
@@ -339,7 +354,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	float time = _engine.getEngineTime().getTimeSinceStart();
 
-	_engine.getStandardView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 5.f, 2.f, cosf(time * 0.1f) * 5.f });
+	_engine.getStandardView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 8.f, 4.f, cosf(time * 0.1f) * 8.f });
 	
 	auto dir = glm::vec3{ 0.f, 0.f, 0.f } -_engine.getStandardView().getCamera()->getLocalPosition();
 	_engine.getStandardView().getCamera()->localLookAt(dir);
@@ -384,5 +399,12 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 
 	//Draw axes
 	JEngine::DebugRendering::get().drawAxes();
+
+	JEngine::DebugRendering::get().drawTransform(testTransform);
+
+	for (const auto & child : testTransform.getChildren())
+	{
+		JEngine::DebugRendering::get().drawTransform(*child);
+	}
 	
 }
