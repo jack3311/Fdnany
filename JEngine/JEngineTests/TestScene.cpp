@@ -360,10 +360,16 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	
 
 	//Draw a line
-	JEngine::DebugRendering::get().drawLine({
-		{ { -0.5f, -0.5f, 1.f }, { 1.f, 1.f, 1.f } },
-		{ { 0.5f, -0.5f, 1.f }, { 1.f, 1.f, 1.f } },
-		{ { 0.5f, 0.5f, 1.f }, { 1.f, 1.f, 1.f } },
-		{ { -0.5f, 0.5f, 1.f }, { 1.f, 1.f, 1.f } },
-	});
+	for (int offset = 0; offset < 5; ++offset)
+	{
+		auto px = offset / 20.f;
+
+		JEngine::DebugRendering::get().drawLine({
+			{ { -0.5f + px, -0.5f, 1.f },{ 1.f, 0.f, 0.f } },
+			{ { 0.5f + px, -0.5f, 1.f },{ 0.f, 1.f, 0.f } },
+			{ { 0.5f + px, 0.5f, 1.f },{ 0.f, 0.f, 1.f } },
+			{ { -0.5f + px, 0.5f, 1.f },{ 1.f, 1.f, 1.f } },
+		});
+	}
+	
 }

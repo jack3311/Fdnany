@@ -34,6 +34,13 @@ namespace JEngine
 
 	void Logger::log(const std::string & _a, LogLevel _logLevel)
 	{
+#ifndef _DEBUG
+		if (_logLevel == LogLevel::INFO)
+		{
+			return;
+		}
+#endif
+
 		auto timestamp = std::time(nullptr);
 
 		tm timeStruct;
@@ -65,13 +72,11 @@ namespace JEngine
 
 		loggingMutex.lock();
 		{
-			//std::cout << str;
 			printf(ss.str().c_str());
 
 			if (fileStream.is_open())
 			{
 				fileStream.write(ss.str().c_str(), ss.str().length());
-				//fileStream << str;
 			}
 		}
 		loggingMutex.unlock();
