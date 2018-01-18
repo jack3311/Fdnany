@@ -12,6 +12,8 @@
 #include <JEngineLib\ResourceFont.h>
 #include <JEngineLib\Maths.h>
 #include <JEngineLib\DebugRendering.h>
+#include <JEngineLib\View.h>
+#include <JEngineLib\EngineTime.h>
 
 #include "TestJob.h"
 
@@ -334,7 +336,15 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	auto len = time2 - time1;
 	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
 	*/
+
+	float time = _engine.getEngineTime().getTimeSinceStart();
+
+	_engine.getStandardView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 5.f, 2.f, cosf(time * 0.1f) * 5.f });
 	
+	auto dir = glm::vec3{ 0.f, 0.f, 0.f } -_engine.getStandardView().getCamera()->getLocalPosition();
+	_engine.getStandardView().getCamera()->lookAt(dir);
+	
+	_engine.getStandardView().getCamera()->flush();
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)

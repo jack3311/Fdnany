@@ -4,9 +4,11 @@ layout (location = 1) in vec3 color;
 
 out vec3 vs_fs_color;
 
+uniform mat4 viewProjectionMatrix;
+
 void main(void)
 {
-	gl_Position = vec4(position, 1.0f);
+	gl_Position = viewProjectionMatrix * vec4(position, 1.0f);
 
 	vs_fs_color = color;
 }

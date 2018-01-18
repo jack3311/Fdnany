@@ -72,7 +72,7 @@ namespace JEngine
 
 	void Input::keyCallback(GLFWwindow * _window, int _key, int _scancode, int _action, int _mods)
 	{
-		assert(0 <= _key);
+		assert(-1 <= _key);
 		assert(_key < NUM_KEYS);
 
 		auto keyStates = statesAreA ? keyStatesA : keyStatesB;

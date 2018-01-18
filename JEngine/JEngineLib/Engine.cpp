@@ -17,7 +17,7 @@
 
 namespace JEngine
 {
-#define DEFAULT_FOV glm::pi<float>() * 0.5f
+#define DEFAULT_FOV (glm::pi<float>() * 0.6f)
 #define DEFAULT_Z_NEAR 0.1f
 #define DEFAULT_Z_FAR 100.f
 

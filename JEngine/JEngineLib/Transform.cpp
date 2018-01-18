@@ -4,8 +4,9 @@ namespace JEngine
 {
 	Transform::Transform() :
 		position(),
-		eulerAngles(),
-		scale(),
+		//eulerAngles(),
+		rotation(),
+		scale(1.f ,1.f, 1.f),
 		localTransformMatrix()
 	{
 		flush();
@@ -18,20 +19,25 @@ namespace JEngine
 	void Transform::flush()
 	{
 		//Update local transform matrix
-		localTransformMatrix = MatrixUtil::gen(position, eulerAngles, scale);
+		//localTransformMatrix = MathUtil::gen(position, eulerAngles, scale);
+		localTransformMatrix = MathUtil::gen(position, rotation, scale);
 	}
 
 	const vec3 & Transform::getLocalPosition() const
 	{
 		return position;
 	}
-	const vec3 & Transform::getLocalEulerAngles() const
-	{
-		return eulerAngles;
-	}
+	//const vec3 & Transform::getLocalEulerAngles() const
+	//{
+	//	return eulerAngles;
+	//}
 	const vec3 & Transform::getLocalScale() const
 	{
 		return scale;
+	}
+	const quat & Transform::getLocalRotation() const
+	{
+		return rotation;
 	}
 	const mat4 & Transform::getLocalTransformMatrix() const
 	{
@@ -42,14 +48,19 @@ namespace JEngine
 		position += _delta;
 		return *this;
 	}
-	Transform & Transform::localRotateEulerAngles(const vec3 & _delta)
-	{
-		eulerAngles += _delta;
-		return *this;
-	}
+	//Transform & Transform::localRotateEulerAngles(const vec3 & _delta)
+	//{
+	//	eulerAngles += _delta;
+	//	return *this;
+	//}
 	Transform & Transform::localScale(const vec3 & _multiplier)
 	{
 		scale *= _multiplier;
+		return *this;
+	}
+	Transform & Transform::localRotate(const quat & _other)
+	{
+		rotation *= _other;
 		return *this;
 	}
 	Transform & Transform::localSetPosition(const vec3 & _value)
@@ -57,14 +68,25 @@ namespace JEngine
 		position = _value;
 		return *this;
 	}
-	Transform & Transform::localSetEulerAngles(const vec3 & _value)
-	{
-		eulerAngles = _value;
-		return *this;
-	}
+	//Transform & Transform::localSetEulerAngles(const vec3 & _value)
+	//{
+	//	eulerAngles = _value;
+	//	return *this;
+	//}
 	Transform & Transform::localSetScale(const vec3 & _value)
 	{
 		scale = _value;
+		return *this;
+	}
+	Transform & Transform::localSetRotation(const quat & _value)
+	{
+		rotation = _value;
+		return *this;
+	}
+	Transform & Transform::lookAt(const vec3 & _lookDir, const vec3 & _up)
+	{
+		rotation = MathUtil::lookAtQuat(_lookDir, _up);
+
 		return *this;
 	}
 }

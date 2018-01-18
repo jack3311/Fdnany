@@ -92,24 +92,24 @@ namespace JEngine
 		lineRanges.emplace_back(range);
 	}
 
-	void DebugRendering::drawAxes(const vec3 & _pos, const vec3 & _u, const vec3 & _v, const vec3 & _w)
+	void DebugRendering::drawAxes(const vec3 & _pos, const vec3 & _u, const vec3 & _v, const vec3 & _w, const float & _size)
 	{
 		//u
 		drawLine({
-			{ _pos - _u, { 1.f, 0.f, 0.f } },
-			{ _pos + _u, { 1.f, 0.f, 0.f } }
+			{ _pos - _u * _size, { 1.f, 0.f, 0.f } },
+			{ _pos + _u * _size, { 1.f, 0.f, 0.f } }
 		});
 
 		//v
 		drawLine({
-			{ _pos - _v, { 0.f, 1.f, 0.f } },
-			{ _pos + _v, { 0.f, 1.f, 0.f } }
+			{ _pos - _v * _size, { 0.f, 1.f, 0.f } },
+			{ _pos + _v * _size, { 0.f, 1.f, 0.f } }
 		});
 
 		//w
 		drawLine({
-			{ _pos - _w, { 0.f, 0.f, 1.f } },
-			{ _pos + _w, { 0.f, 0.f, 1.f } }
+			{ _pos - _w * _size, { 0.f, 0.f, 1.f } },
+			{ _pos + _w * _size, { 0.f, 0.f, 1.f } }
 		});
 	}
 
