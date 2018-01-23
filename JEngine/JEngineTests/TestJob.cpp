@@ -14,13 +14,19 @@ TestJob::~TestJob()
 
 void TestJob::execute()
 {
-	for (int i = 2; i * i <= num; ++i)
-	{
-		if (num % i == 0) {
-			isThisNumberPrimeData = NOT_PRIME;
-			return;
-		}
-	}
+	JEngine::Logger::getLogger().log(JEngine::strJoinConvert("Starting job for: ", num));
 
-	isThisNumberPrimeData = PRIME;
+	for (int j = 0; j < num; ++j)
+	{
+		bool isPrime = true;
+		for (int i = 2; i * i <= num; ++i)
+		{
+			if (num % i == 0) {
+				isPrime = false;
+				break;
+			}
+		}
+
+		JEngine::Logger::getLogger().log(JEngine::strJoinConvert(j, " prime: ", isPrime));
+	}
 }

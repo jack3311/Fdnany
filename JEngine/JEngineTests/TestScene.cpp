@@ -105,6 +105,12 @@ TestScene::TestScene()
 
 
 
+
+
+
+
+
+
 	//std::vector<MyVertexFormat> vertices = {
 	//	MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
 	//	MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
@@ -360,6 +366,42 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	_engine.getStandardView().getCamera()->localLookAt(dir);
 	
 	_engine.getStandardView().getCamera()->flush();
+
+
+
+
+
+
+
+
+	//Setup test jobs
+	auto aggregate = std::make_shared<JEngine::JobAggregate>();
+
+	auto aggregate2 = std::make_shared<JEngine::JobAggregate>();
+
+	aggregate2->addJob(std::make_shared<TestJob>(500));
+	aggregate2->addJob(std::make_shared<TestJob>(600));
+	aggregate2->addJob(std::make_shared<TestJob>(700));
+
+	aggregate->addJob(std::make_shared<TestJob>(100));
+	aggregate->addJob(std::make_shared<TestJob>(200));
+	aggregate->addJob(aggregate2);
+	aggregate->addJob(std::make_shared<TestJob>(300));
+	aggregate->addJob(std::make_shared<TestJob>(400));
+
+
+	auto time1 = glfwGetTime();
+
+	_engine.getJobManager().enqueueJob(aggregate);
+
+	aggregate->waitUntilFinished();
+
+	auto time2 = glfwGetTime();
+
+	auto len = time2 - time1;
+	JEngine::Logger::getLogger().log(JEngine::strJoinConvert("Time taken: ", len));
+
+	JEngine::Logger::getLogger().log("Done");
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)

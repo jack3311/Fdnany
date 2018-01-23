@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Engine.h"
+
 namespace JEngine
 {
 	Worker::Worker(const std::shared_ptr<JobManager> & _parentJobManager) :
@@ -56,6 +58,13 @@ namespace JEngine
 
 	
 
+	Job::Job(bool _spawnNewThread) :
+		spawnNewThread(_spawnNewThread),
+		isFinished(false),
+		successful(false)
+	{
+	}
+
 	void Job::setComplete()
 	{
 		{
@@ -83,6 +92,11 @@ namespace JEngine
 	bool Job::wasSuccessful() const
 	{
 		return successful;
+	}
+
+	bool Job::getSpawnNewThread() const
+	{
+		return spawnNewThread;
 	}
 
 
@@ -132,14 +146,25 @@ namespace JEngine
 
 	void JobManager::enqueueJob(std::shared_ptr<Job> job)
 	{
+		if (job->getSpawnNewThread())
 		{
-			std::lock_guard<std::mutex> lk(hasJobsCVMutex);
-			jobs.push(job);
-
-			_hasJobsOrShutdown = true;
+			std::thread newThread([job]() {
+				job->execute();
+				job->setComplete();
+			});
+			newThread.detach();
 		}
+		else
+		{
+			{
+				std::lock_guard<std::mutex> lk(hasJobsCVMutex);
+				jobs.push(job);
 
-		hasJobsCV.notify_one();
+				_hasJobsOrShutdown = true;
+			}
+
+			hasJobsCV.notify_one();
+		}
 	}
 
 	bool JobManager::dequeueJob(std::shared_ptr<Job> & job)
@@ -182,6 +207,7 @@ namespace JEngine
 	{
 		return numWorkers;
 	}
+
 	JobCallFunction::JobCallFunction(std::function<bool()> _function) :
 		function(_function)
 	{
@@ -189,5 +215,37 @@ namespace JEngine
 	void JobCallFunction::execute()
 	{
 		successful = function();
+	}
+
+
+	JobAggregate::JobAggregate() :
+		Job(true)
+	{
+		//Successful by default unless sub job fails
+		successful = true;
+	}
+
+	void JobAggregate::execute()
+	{
+		//Start all sub jobs
+		for (const auto & job : jobs)
+		{
+			Engine::get().getJobManager().enqueueJob(job);
+		}
+
+		//Wait for all sub jobs
+		for (const auto & job : jobs)
+		{
+			job->waitUntilFinished();
+		}
+	}
+	void JobAggregate::addJob(std::shared_ptr<Job> _job)
+	{
+		jobs.emplace_back(_job);
+	}
+
+	void JobAggregate::waitUntilFinished()
+	{
+		Job::waitUntilFinished();
 	}
 }

@@ -15,7 +15,8 @@ namespace JEngine
 	class Job
 	{
 	private:
-		bool isFinished = false;
+		bool isFinished;
+		bool spawnNewThread;
 
 		std::condition_variable isFinishedCV;
 		std::mutex isFinishedCVMutex;
@@ -23,9 +24,11 @@ namespace JEngine
 		JEvent<const Job *> jEvent;
 
 	protected:
-		bool successful = false;
+		bool successful;
 
 	public:
+		Job(bool _spawnNewThread = false);
+
 		virtual void execute() = 0;
 		void setComplete();
 
@@ -34,6 +37,8 @@ namespace JEngine
 		JEvent<const Job *> & getEvent();
 
 		bool wasSuccessful() const;
+
+		bool getSpawnNewThread() const;
 	};
 
 	class Worker
@@ -97,5 +102,22 @@ namespace JEngine
 		JobCallFunction(std::function<bool()>);
 
 		virtual void execute();
+	};
+
+	class JobAggregate : public Job
+	{
+	private:
+		std::mutex jobsMutex;
+		std::vector<std::shared_ptr<Job>> jobs;
+
+	public:
+		JobAggregate();
+
+		virtual void execute();
+
+		void addJob(std::shared_ptr<Job> _job);
+
+		//Override
+		void waitUntilFinished();
 	};
 }

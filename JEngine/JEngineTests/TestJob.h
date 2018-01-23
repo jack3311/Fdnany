@@ -10,11 +10,6 @@ private:
 public:
 	int num = -1;
 
-	enum {
-		NOT_PRIME, PRIME, NOT_YET_CALCULATED
-	} isThisNumberPrimeData = NOT_YET_CALCULATED;
-
-
 	TestJob(int);
 	virtual ~TestJob();
 

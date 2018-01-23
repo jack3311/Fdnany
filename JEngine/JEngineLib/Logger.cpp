@@ -37,7 +37,7 @@ namespace JEngine
 #ifndef _DEBUG
 		if (_logLevel == LogLevel::INFO)
 		{
-			return;
+			//return;
 		}
 #endif
 

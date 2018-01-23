@@ -27,6 +27,7 @@ int main()
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
 
+
 	engine.start();
 
 	engine.cleanUp();
