@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Maths.h"
+#include "JobManagement.h"
 
 namespace JEngine
 {
@@ -17,10 +18,12 @@ namespace JEngine
 		mat4 localTransformMatrix;
 		mat4 globalTransformMatrix;
 
+		Transform * parent;
 		std::vector<std::shared_ptr<Transform>> children;
 
 	public: //TODO: make protected as above
-		void updateGlobalTransformMatrixRecursive(const mat4 & _parentGlobalTransformMatrix);
+		void updateGlobalTransformMatrixRecursive();
+		void updateGlobalTransformMatrixRecursiveAsync(std::shared_ptr<JobAggregate> _jobAggregate);
 
 	public:
 		Transform();

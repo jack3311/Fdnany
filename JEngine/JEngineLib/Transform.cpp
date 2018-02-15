@@ -4,13 +4,26 @@
 
 namespace JEngine
 {
-	void Transform::updateGlobalTransformMatrixRecursive(const mat4 & _parentGlobalTransformMatrix)
+	void Transform::updateGlobalTransformMatrixRecursive()
 	{
-		globalTransformMatrix = _parentGlobalTransformMatrix * localTransformMatrix;
+		globalTransformMatrix = (parent ? parent->getGlobalTransformMatrix() : mat4()) * localTransformMatrix;
 		
 		for (const auto & child : children)
 		{
-			child->updateGlobalTransformMatrixRecursive(globalTransformMatrix);
+			child->updateGlobalTransformMatrixRecursive();
+		}
+	}
+
+	void Transform::updateGlobalTransformMatrixRecursiveAsync(std::shared_ptr<JobAggregate> _jobAggregate)
+	{
+		_jobAggregate->addJob(std::make_shared<JobCallFunction>([this]() -> bool {
+			globalTransformMatrix = (parent ? parent->getGlobalTransformMatrix() : mat4()) * localTransformMatrix;
+			return true;
+		}));
+
+		for (const auto & child : children)
+		{
+			child->updateGlobalTransformMatrixRecursiveAsync(_jobAggregate);
 		}
 	}
 
@@ -19,13 +32,15 @@ namespace JEngine
 		rotation(),
 		scale(1.f, 1.f, 1.f),
 		localTransformMatrix(),
-		globalTransformMatrix()
+		globalTransformMatrix(),
+		parent(nullptr)
 	{
 		flush();
 	}
 
 	Transform::~Transform()
 	{
+
 	}
 
 	void Transform::flush()
@@ -95,6 +110,8 @@ namespace JEngine
 	}
 	void Transform::addChild(const std::shared_ptr<Transform> & _child)
 	{
+		assert(!_child->parent);
+		_child->parent = this;
 		children.push_back(_child);
 	}
 	void Transform::removeChild(const std::shared_ptr<Transform> & _child)
@@ -103,6 +120,8 @@ namespace JEngine
 
 		if (itr != children.end())
 		{
+			assert((*itr)->parent == this);
+			(*itr)->parent = nullptr;
 			children.erase(itr);
 		}
 		else

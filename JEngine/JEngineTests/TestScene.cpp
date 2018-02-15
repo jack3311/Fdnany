@@ -100,7 +100,7 @@ TestScene::TestScene()
 
 	testTransform.addChild(child1);
 
-	testTransform.updateGlobalTransformMatrixRecursive(glm::mat4());
+	//testTransform.updateGlobalTransformMatrixRecursive();
 
 
 
@@ -368,6 +368,12 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	_engine.getStandardView().getCamera()->flush();
 
 
+	std::shared_ptr<JEngine::JobAggregate> matrixUpdates = std::make_shared<JEngine::JobAggregate>();
+	testTransform.updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
+	
+	_engine.getJobManager().enqueueJob(matrixUpdates);
+
+	matrixUpdates->waitUntilFinished();
 
 
 
@@ -375,7 +381,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 
 	//Setup test jobs
-	auto aggregate = std::make_shared<JEngine::JobAggregate>();
+	/*auto aggregate = std::make_shared<JEngine::JobAggregate>();
 
 	auto aggregate2 = std::make_shared<JEngine::JobAggregate>();
 
@@ -401,7 +407,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	auto len = time2 - time1;
 	JEngine::Logger::getLogger().log(JEngine::strJoinConvert("Time taken: ", len));
 
-	JEngine::Logger::getLogger().log("Done");
+	JEngine::Logger::getLogger().log("Done");*/
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
