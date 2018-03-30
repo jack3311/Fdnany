@@ -27,7 +27,7 @@ namespace JEngine
 		bool successful;
 
 	public:
-		Job(bool _spawnNewThread = false);
+		Job(/*bool _spawnNewThread = false*/);
 
 		virtual void execute() = 0;
 		void setComplete();
@@ -38,7 +38,7 @@ namespace JEngine
 
 		bool wasSuccessful() const;
 
-		bool getSpawnNewThread() const;
+		/*bool getSpawnNewThread() const;*/
 	};
 
 	class Worker
@@ -119,5 +119,7 @@ namespace JEngine
 
 		//Override
 		void waitUntilFinished();
+
+		void waitUntilAllSubJobsFinishedOrShutdown();
 	};
 }

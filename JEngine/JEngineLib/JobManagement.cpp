@@ -58,8 +58,8 @@ namespace JEngine
 
 	
 
-	Job::Job(bool _spawnNewThread) :
-		spawnNewThread(_spawnNewThread),
+	Job::Job(/*bool _spawnNewThread*/) :
+		/*spawnNewThread(_spawnNewThread),*/
 		isFinished(false),
 		successful(false)
 	{
@@ -94,10 +94,10 @@ namespace JEngine
 		return successful;
 	}
 
-	bool Job::getSpawnNewThread() const
+	/*bool Job::getSpawnNewThread() const
 	{
 		return spawnNewThread;
-	}
+	}*/
 
 
 
@@ -146,7 +146,7 @@ namespace JEngine
 
 	void JobManager::enqueueJob(std::shared_ptr<Job> job)
 	{
-		if (job->getSpawnNewThread())
+		/*if (job->getSpawnNewThread())
 		{
 			std::thread newThread([job]() {
 				job->execute();
@@ -155,7 +155,7 @@ namespace JEngine
 			newThread.detach();
 		}
 		else
-		{
+		{*/
 			{
 				std::lock_guard<std::mutex> lk(hasJobsCVMutex);
 				jobs.push(job);
@@ -164,7 +164,7 @@ namespace JEngine
 			}
 
 			hasJobsCV.notify_one();
-		}
+		//}
 	}
 
 	bool JobManager::dequeueJob(std::shared_ptr<Job> & job)
@@ -219,7 +219,7 @@ namespace JEngine
 
 
 	JobAggregate::JobAggregate() :
-		Job(true)
+		Job(/*true*/)
 	{
 		//Successful by default unless sub job fails
 		successful = true;
@@ -233,11 +233,11 @@ namespace JEngine
 			Engine::get().getJobManager().enqueueJob(job);
 		}
 
-		//Wait for all sub jobs
-		for (const auto & job : jobs)
-		{
-			job->waitUntilFinished();
-		}
+		////Wait for all sub jobs
+		//for (const auto & job : jobs)
+		//{
+		//	job->waitUntilFinished();
+		//}
 	}
 	void JobAggregate::addJob(std::shared_ptr<Job> _job)
 	{
@@ -247,5 +247,17 @@ namespace JEngine
 	void JobAggregate::waitUntilFinished()
 	{
 		Job::waitUntilFinished();
+	}
+
+	void JobAggregate::waitUntilAllSubJobsFinishedOrShutdown()
+	{
+		//Wait for all jobs to be enqueued (this job)
+		waitUntilFinished();
+
+		//Wait for all sub jobs
+		for (const auto & job : jobs)
+		{
+			job->waitUntilFinished();
+		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "Transform.h"
 
 #include "Logger.h"
+#include "MathUtil.h"
 
 namespace JEngine
 {
@@ -46,7 +47,7 @@ namespace JEngine
 	void Transform::flush()
 	{
 		//Update local transform matrix
-		localTransformMatrix = MathUtil::gen(position, rotation, scale);
+		localTransformMatrix = Maths::MathUtil::mat4FromPosRotScl(position, rotation, scale);
 	}
 
 	const vec3 & Transform::getLocalPosition() const
@@ -105,7 +106,7 @@ namespace JEngine
 	}
 	Transform & Transform::localLookAt(const vec3 & _lookDir, const vec3 & _up)
 	{
-		rotation = MathUtil::lookAtQuat(_lookDir, _up);
+		rotation = Maths::MathUtil::lookAtQuat(_lookDir, _up);
 		return *this;
 	}
 	void Transform::addChild(const std::shared_ptr<Transform> & _child)

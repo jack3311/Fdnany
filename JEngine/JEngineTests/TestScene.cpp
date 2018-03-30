@@ -373,7 +373,8 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	
 	_engine.getJobManager().enqueueJob(matrixUpdates);
 
-	matrixUpdates->waitUntilFinished();
+	//matrixUpdates->waitUntilFinished();
+	matrixUpdates->waitUntilAllSubJobsFinishedOrShutdown();
 
 
 
