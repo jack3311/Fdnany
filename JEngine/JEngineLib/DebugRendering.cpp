@@ -146,7 +146,7 @@ namespace JEngine
 		debugShader->begin(engine.getStandardView());
 		{
 			//Flush line renderer
-			lineRenderer->updateData();
+			lineRenderer->flush();
 
 			//Draw each line range
 			for (const auto & range : lineRanges)

@@ -41,7 +41,7 @@ namespace JEngine
 		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices = -1, unsigned int _maxIndices = -1); //-1 gives size of arrays
 		bool initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices = -1); //-1 gives size of arrays
 
-		void updateData();
+		void flush();
 
 		void draw(const mat4 & _model) const;
 		void draw(const mat4 & _model, const BufferRange & _range) const;
@@ -133,7 +133,7 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::updateData()
+	inline void Renderer<VertexFormat, enableIndices>::flush()
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
