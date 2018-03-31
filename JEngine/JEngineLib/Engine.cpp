@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "View.h"
 #include "DebugRendering.h"
+#include "World.h"
 
 namespace JEngine
 {
@@ -25,13 +26,13 @@ namespace JEngine
 	{
 		void errorCallbackGLFW(int _error, const char * _description)
 		{
-			Logger::getLogger().log(_description, LogLevel::ERROR);
+			Logger::get().log(_description, LogLevel::ERROR);
 			Engine::get().stop();
 		}
 		void APIENTRY errorCallbackGL(GLenum _source, GLenum _type, GLuint _id, GLenum _severity, 
 			GLsizei _length, const GLchar * _message, const void * _userParam)
 		{
-			Logger::getLogger().log(strJoin({ "GL: ", _message }), LogLevel::ERROR);
+			Logger::get().log(strJoin({ "GL: ", _message }), LogLevel::ERROR);
 		}
 	}
 
@@ -49,6 +50,7 @@ namespace JEngine
 		standardView = std::make_unique<View>(
 			std::make_shared<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR)
 		);
+		world = std::make_unique<World>();
 	}
 
 	Engine::~Engine()
@@ -96,6 +98,11 @@ namespace JEngine
 		return *standardView;
 	}
 
+	World & Engine::getWorld()
+	{
+		return *world;
+	}
+
 	const ivec2 & Engine::getWindowSizeInt() const
 	{
 		return windowSize;
@@ -113,7 +120,7 @@ namespace JEngine
 
 		//Initialise Logger
 		Logger::create();
-		ERR_IF(!Logger::getLogger().initialise("log.txt"), "Failed to initialise logger");
+		ERR_IF(!Logger::get().initialise("log.txt"), "Failed to initialise logger");
 
 		//Initialise GLFW
 		ERR_IF(!glfwInit(), "Failed to initialise GLFW");
@@ -152,6 +159,7 @@ namespace JEngine
 		ERR_IF(!ResourceManager::create().initialise(), "Failed to initialise resource manager");
 		ERR_IF(!ui->initialise(), "Failed to initialise UI");
 		ERR_IF(!DebugRendering::create().initialise(), "Failed to initialise debug renderer");
+		ERR_IF(!world->initialise(), "Failed to initialise world");
 
 		//Setup blocking input events
 		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };
@@ -160,7 +168,7 @@ namespace JEngine
 		Input::mouseUp += [this](int _key) { mouseUpBlockable.triggerEvent(_key); };
 		
 
-		Logger::getLogger().log("Engine initialised successfully");
+		Logger::get().log("Engine initialised successfully");
 
 		return true;
 	}
@@ -202,7 +210,7 @@ namespace JEngine
 		frameAllocator->cleanUp();
 		jobManager->stop();
 
-		Logger::getLogger().cleanUp();
+		Logger::get().cleanUp();
 
 		glfwTerminate();
 	}
@@ -231,6 +239,7 @@ namespace JEngine
 		//Update systems
 		engineTime->update();
 		Input::update();
+		world->update();
 		ui->update();
 
 		//Pre-render for current scene
@@ -257,6 +266,9 @@ namespace JEngine
 	{
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		//Render world
+		world->render();
 
 		//Render UI
 		ui->render();

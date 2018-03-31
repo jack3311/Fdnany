@@ -14,7 +14,7 @@ TestJob::~TestJob()
 
 void TestJob::execute()
 {
-	JEngine::Logger::getLogger().log(JEngine::strJoinConvert("Starting job for: ", num));
+	JEngine::Logger::get().log(JEngine::strJoinConvert("Starting job for: ", num));
 
 	for (int j = 0; j < num; ++j)
 	{
@@ -27,6 +27,6 @@ void TestJob::execute()
 			}
 		}
 
-		JEngine::Logger::getLogger().log(JEngine::strJoinConvert(j, " prime: ", isPrime));
+		JEngine::Logger::get().log(JEngine::strJoinConvert(j, " prime: ", isPrime));
 	}
 }

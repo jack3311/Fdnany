@@ -2,11 +2,11 @@
 
 #include "ResourceManagement.h"
 
+#include "Engine.h"
+#include "JObject.h"
+
 namespace JEngine
 {
-	class Camera;
-	class View;
-
 	class Shader : public Resource
 	{
 	public:
@@ -32,7 +32,9 @@ namespace JEngine
 			GLint
 				projectionLocation,
 				viewLocation,
-				viewProjectionLocation;
+				modelLocation,
+				viewProjectionLocation,
+				modelViewProjectionLocation;
 		} uniformLocations;
 
 
@@ -42,6 +44,7 @@ namespace JEngine
 		void loadUniformLocations();
 		void setFrameUniforms() const;
 		void setFrameViewUniforms(const View & _view) const;
+		void setTransformUniforms(const View & _view, const JObject & _transform) const;
 
 	public:
 		Shader();
@@ -50,8 +53,7 @@ namespace JEngine
 		bool loadFromDisk(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 		bool initialise();
 
-		void begin() const;
-		void begin(const View & _view) const;
+		void begin(const JObject & _transform = JObject::getDefaultTransform(), const View & _view = Engine::get().getStandardView()) const;
 		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);

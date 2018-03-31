@@ -30,7 +30,7 @@ namespace JEngine
 	{
 	}
 
-	void RendererText::draw(const ResourceFont & _font, const vec2 & _position, const float & _scale, const std::string & _text, const glm::mat4 & _model) const
+	void RendererText::draw(const ResourceFont & _font, const vec2 & _position, const float & _scale, const std::string & _text) const
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -68,7 +68,7 @@ namespace JEngine
 			fc.texture->bind(GL_TEXTURE0);
 			
 			//Actually draw
-			Renderer::draw(_model);
+			Renderer::draw();
 
 			//Move forwards for next char
 			textPosition.x += (fc.advance >> 6) * _scale;

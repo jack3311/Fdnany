@@ -180,7 +180,7 @@ namespace JEngine
 	
 	void UILabel::render() const
 	{
-		Logger::getLogger().log(text);
+		Logger::get().log(text);
 
 		UIElement::render();
 	}

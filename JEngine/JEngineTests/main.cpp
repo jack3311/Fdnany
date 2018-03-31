@@ -97,7 +97,7 @@ int main()
 //		auto time2 = glfwGetTime();
 //
 //		auto len = time2 - time1;
-//		JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+//		JEngine::Logger::get().log(strJoinConvert("Time taken: ", len));
 //	});
 //
 //	t.detach();

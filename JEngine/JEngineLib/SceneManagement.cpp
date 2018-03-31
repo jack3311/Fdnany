@@ -24,7 +24,7 @@ namespace JEngine
 	{
 		scenes.push_back(_scene);
 		
-		Logger::getLogger().log(strJoin({ "Registered scene: ", typeid(*_scene).name() }));
+		Logger::get().log(strJoin({ "Registered scene: ", typeid(*_scene).name() }));
 
 		return static_cast<unsigned int>(scenes.size()) - 1u;
 	}
@@ -38,14 +38,14 @@ namespace JEngine
 
 		currentScenes.push(scenes[_scene]);
 
-		Logger::getLogger().log(strJoin({ "Pushed static scene: ", typeid(*scene).name() }));
+		Logger::get().log(strJoin({ "Pushed static scene: ", typeid(*scene).name() }));
 	}
 
 	void SceneManager::pushScene(const std::shared_ptr<Scene> & _scene)
 	{
 		currentScenes.push(_scene);
 
-		Logger::getLogger().log(strJoin({ "Pushed instanced scene: ", typeid(*_scene).name() }));
+		Logger::get().log(strJoin({ "Pushed instanced scene: ", typeid(*_scene).name() }));
 	}
 
 	void SceneManager::popScene()
@@ -55,7 +55,7 @@ namespace JEngine
 		auto topScene = currentScenes.top();
 		currentScenes.pop();
 		
-		Logger::getLogger().log(strJoin({ "Popped scene: ", typeid(*topScene).name() }));
+		Logger::get().log(strJoin({ "Popped scene: ", typeid(*topScene).name() }));
 	}
 
 	std::shared_ptr<Scene> SceneManager::getCurrentScene()

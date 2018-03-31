@@ -14,6 +14,7 @@
 #include <JEngineLib\DebugRendering.h>
 #include <JEngineLib\View.h>
 #include <JEngineLib\EngineTime.h>
+#include <JEngineLib\World.h>
 
 #include "TestJob.h"
 
@@ -88,17 +89,20 @@ TestScene::TestScene()
 	};
 
 
+	std::shared_ptr<JEngine::JObject> testTransform = std::make_shared<JEngine::JObject>();
 
-	testTransform.localMove({ 1.f, 1.f, 1.f });
-	testTransform.localScale({ 0.5f, 0.5f, 0.5f });
-	testTransform.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
-	testTransform.flush();
+	testTransform->localMove({ 1.f, 1.f, 1.f });
+	testTransform->localScale({ 0.5f, 0.5f, 0.5f });
+	testTransform->localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
+	testTransform->flush();
 
-	auto child1 = std::make_shared<JEngine::Transform>();
+	auto child1 = std::make_shared<JEngine::JObject>();
 	child1->localMove({ 1.f, 1.f, 1.f });
 	child1->flush();
 
-	testTransform.addChild(child1);
+	testTransform->addChild(child1);
+
+	JEngine::Engine::get().getWorld().addChild(testTransform);
 
 	//testTransform.updateGlobalTransformMatrixRecursive();
 
@@ -111,65 +115,68 @@ TestScene::TestScene()
 
 
 
-	//std::vector<MyVertexFormat> vertices = {
-	//	MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
-	//	MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
-	//	MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
-	//	MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
-	//};
+	std::vector<MyVertexFormat> vertices = {
+		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
+		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
+		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
+		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
+	};
 
-	//std::vector<GLuint> indices = {
-	//	0, 1, 2,
-	//	1, 3, 2
-	//};
+	std::vector<GLuint> indices = {
+		0, 1, 2,
+		1, 3, 2
+	};
 
-	//renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
-	//renderer->initialise(vertices, indices);
-
-
-	//
-	//auto & resourceManager = JEngine::ResourceManager::getResourceManager();
-
-	//resourceManager.beginResourceCaching();
-	//{
-	//	std::shared_ptr<JEngine::JobLoadResourceTexture> job;
-
-	//	resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
-
-	//	job->waitUntilFinished();
-	//	if (!job->texture->initialise())
-	//	{
-	//		JEngine::Logger::getLogger().log("Could not initialise test texture");
-	//	}
-	//	testTexture = job->texture;
-	//	JEngine::Logger::getLogger().log("Loaded test texture");
-	//}
-	//resourceManager.endResourceCaching();
+	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
+	renderer->initialise(vertices, indices);
+	JEngine::Logger::get().log("Created quad renderer");
 
 
+	
+	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
 
+	resourceManager.beginResourceCaching();
+	{
+		std::shared_ptr<JEngine::JobLoadResourceTexture> job;
+
+		resourceManager.loadResourceTextureAsync(job, "Assets\\image1.png");
+
+		job->waitUntilFinished();
+		if (!job->texture->initialise())
+		{
+			JEngine::Logger::get().log("Could not initialise test texture");
+		}
+		testTexture = job->texture;
+		JEngine::Logger::get().log("Loaded test texture");
+	}
+	resourceManager.endResourceCaching();
 
 
 
-	//{
-	//	testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
-	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
-	//		{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
-	//	}));
 
-	//	auto job = testShader->loadFromDiskAsync();
-	//	job->waitUntilFinished();
 
-	//	if (!job->wasSuccessful())
-	//	{
-	//		std::cout << "Could not load test shader" << std::endl;
-	//	}
 
-	//	if (!testShader->initialise())
-	//	{
-	//		std::cout << "Could not initialise test shader" << std::endl;
-	//	}
-	//}
+	{
+		testShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader());
+
+		auto job = testShader->loadFromDiskAsync({
+			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\testShader.vert") },
+			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\testShader.frag") }
+		});
+
+		job->waitUntilFinished();
+
+		if (!job->wasSuccessful())
+		{
+			std::cout << "Could not load test shader" << std::endl;
+		}
+
+		if (!testShader->initialise())
+		{
+			std::cout << "Could not initialise test shader" << std::endl;
+		}
+	}
+
 	//{
 	//	textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
 	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
@@ -196,15 +203,15 @@ TestScene::TestScene()
 	//testFont = std::make_shared<JEngine::ResourceFont>(JEngine::ResourceManager::getResourceManager().constructFullPath("Assets\\arial.ttf"));
 	//if (!testFont->initialise())
 	//{
-	//	JEngine::Logger::getLogger().log("Could not initialise font");
+	//	JEngine::Logger::get().log("Could not initialise font");
 	//}
-	//JEngine::Logger::getLogger().log("Font loaded successfully");
+	//JEngine::Logger::get().log("Font loaded successfully");
 	//
 	//
 	//rendererText = std::make_shared<JEngine::RendererText>();
 	//if (!rendererText->initialise())
 	//{
-	//	JEngine::Logger::getLogger().log("Could not initialise text renderer");
+	//	JEngine::Logger::get().log("Could not initialise text renderer");
 	//}
 	//
 	//
@@ -231,7 +238,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	//_engine.getJobManager().enqueueJob(job);
 	//job->waitUntilFinished();
 	//job->texture->initialise();
-	//JEngine::Logger::getLogger().log("Job finished");
+	//JEngine::Logger::get().log("Job finished");
 
 	/* TEXTURE RESOURCE LOADING
 	
@@ -250,19 +257,19 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	resourceManager.loadResourceTextureAsync(job3, "Assets\\image1.png");
 
 	job->waitUntilFinished();
-	JEngine::Logger::getLogger().log("Loaded texture 0");
+	JEngine::Logger::get().log("Loaded texture 0");
 	job->texture->initialise();
 
 	job1->waitUntilFinished();
-	JEngine::Logger::getLogger().log("Loaded texture 1");
+	JEngine::Logger::get().log("Loaded texture 1");
 	job1->texture->initialise();
 
 	job2->waitUntilFinished();
-	JEngine::Logger::getLogger().log("Loaded texture 2");
+	JEngine::Logger::get().log("Loaded texture 2");
 	job2->texture->initialise();
 
 	job3->waitUntilFinished();
-	JEngine::Logger::getLogger().log("Loaded texture 3");
+	JEngine::Logger::get().log("Loaded texture 3");
 	job3->texture->initialise();
 
 	resourceManager.endResourceCaching();*/
@@ -276,7 +283,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 		job->getEvent() += [](const JEngine::Job * _job) {
 			auto job = dynamic_cast<const TestJob *>(_job);
-			JEngine::Logger::getLogger().log(strJoinConvert(job->num, " result: ", job->isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
+			JEngine::Logger::get().log(strJoinConvert(job->num, " result: ", job->isThisNumberPrimeData, " from thread: ", std::this_thread::get_id()));
 		};
 
 		_engine.getJobManager().enqueueJob(job);
@@ -308,7 +315,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	auto time2 = glfwGetTime();
 
 	auto len = time2 - time1;
-	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+	JEngine::Logger::get().log(strJoinConvert("Time taken: ", len));
 	*/
 
 	/* Pool Allocator tests 
@@ -355,7 +362,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	rcPoolAllocator.cleanUp();
 
 	auto len = time2 - time1;
-	JEngine::Logger::getLogger().log(strJoinConvert("Time taken: ", len));
+	JEngine::Logger::get().log(strJoinConvert("Time taken: ", len));
 	*/
 
 	float time = _engine.getEngineTime().getTimeSinceStart();
@@ -368,13 +375,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	_engine.getStandardView().getCamera()->flush();
 
 
-	std::shared_ptr<JEngine::JobAggregate> matrixUpdates = std::make_shared<JEngine::JobAggregate>();
-	testTransform.updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
 	
-	_engine.getJobManager().enqueueJob(matrixUpdates);
-
-	//matrixUpdates->waitUntilFinished();
-	matrixUpdates->waitUntilAllSubJobsFinishedOrShutdown();
 
 
 
@@ -406,24 +407,28 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 	auto time2 = glfwGetTime();
 
 	auto len = time2 - time1;
-	JEngine::Logger::getLogger().log(JEngine::strJoinConvert("Time taken: ", len));
+	JEngine::Logger::get().log(JEngine::strJoinConvert("Time taken: ", len));
 
-	JEngine::Logger::getLogger().log("Done");*/
+	JEngine::Logger::get().log("Done");*/
 }
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	//testShader->begin();
-	//
-	//testTexture->bind(GL_TEXTURE0);
-	//
-	//RAIIGL::_EnableBlend<>::begin();
-	//
-	//renderer->draw(mat4());
-	//
-	//RAIIGL::_EnableBlend<>::end();
-	//
-	//testShader->end();
+	//JEngine::JObject t;
+	//t.localSetScale(vec3{ 5, 5, 5 });
+	//t.flush();
+	//t.updateGlobalTransformMatrixRecursive();
+	
+	testShader->begin();
+	
+	testTexture->bind(GL_TEXTURE0);
+
+	{ 
+		EnableBlend;
+		renderer->draw();
+	}
+	
+	testShader->end();
 
 	/*textShader->begin();
 	
@@ -446,14 +451,6 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	//	});
 	//}
 
-	//Draw axes
-	JEngine::DebugRendering::get().drawAxes();
 
-	JEngine::DebugRendering::get().drawTransform(testTransform);
-
-	for (const auto & child : testTransform.getChildren())
-	{
-		JEngine::DebugRendering::get().drawTransform(*child);
-	}
 	
 }

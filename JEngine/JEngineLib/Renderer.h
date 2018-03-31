@@ -41,10 +41,10 @@ namespace JEngine
 		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices = -1, unsigned int _maxIndices = -1); //-1 gives size of arrays
 		bool initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices = -1); //-1 gives size of arrays
 
-		void flush();
+		void flushBufferUpdates();
 
-		void draw(const mat4 & _model) const;
-		void draw(const mat4 & _model, const BufferRange & _range) const;
+		void draw() const;
+		void draw(const BufferRange & _range) const;
 
 		std::vector<VertexFormat> & getVertices();
 		std::vector<GLuint> & getIndices();
@@ -133,7 +133,7 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::flush()
+	inline void Renderer<VertexFormat, enableIndices>::flushBufferUpdates()
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -156,13 +156,13 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::draw(const mat4 & _model) const
+	inline void Renderer<VertexFormat, enableIndices>::draw() const
 	{
-		draw(_model, BufferRange{ 0, static_cast<unsigned int>(vertices.size()) });
+		draw(BufferRange{ 0, static_cast<unsigned int>(vertices.size()) });
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::draw(const mat4 & _model, const BufferRange & _range) const
+	inline void Renderer<VertexFormat, enableIndices>::draw(const BufferRange & _range) const
 	{
 		//TODO: Split to begin/draw/end
 

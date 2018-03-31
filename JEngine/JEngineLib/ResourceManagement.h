@@ -117,14 +117,14 @@ namespace JEngine
 
 			auto resourcePtr = itr->second;
 
-			Logger::getLogger().log(strJoin({ "Found cached resource: ", _name }));
+			Logger::get().log(strJoin({ "Found cached resource: ", _name }));
 
 			_resource = std::dynamic_pointer_cast<T>(resourcePtr);
 
 			//Verify resource type
 			if (!_resource)
 			{
-				Logger::getLogger().log(strJoin({ "Cached resource type for resource: '", _name, "' does not match expected" }), LogLevel::WARNING);
+				Logger::get().log(strJoin({ "Cached resource type for resource: '", _name, "' does not match expected" }), LogLevel::WARNING);
 				return false;
 			}
 

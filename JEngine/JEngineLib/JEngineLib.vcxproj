@@ -41,7 +41,7 @@
     <ClInclude Include="PoolAllocator.h" />
     <ClInclude Include="ResourceManagement.h" />
     <ClInclude Include="SceneManagement.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="JObject.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="View.h" />
@@ -64,7 +64,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="ResourceManagement.cpp" />
     <ClCompile Include="SceneManagement.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="JObject.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="View.cpp" />

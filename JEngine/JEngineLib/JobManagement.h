@@ -121,5 +121,7 @@ namespace JEngine
 		void waitUntilFinished();
 
 		void waitUntilAllSubJobsFinishedOrShutdown();
+
+		size_t getSubJobCount() const;
 	};
 }

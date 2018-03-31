@@ -28,7 +28,7 @@ namespace JEngine
 	}
 
 	Camera::Camera(ProjectionType _projectionType, float _zNear, float _zFar) :
-		Transform(),
+		JObject(),
 		projectionType(_projectionType),
 		zNear(_zNear),
 		zFar(_zFar)
@@ -36,7 +36,7 @@ namespace JEngine
 	}
 
 	Camera::Camera(ProjectionType _projectionType, float _fov, float _zNear, float _zFar) :
-		Transform(),
+		JObject(),
 		fov(_fov),
 		projectionType(_projectionType),
 		zNear(_zNear),
@@ -50,7 +50,7 @@ namespace JEngine
 
 	void Camera::flush()
 	{
-		Transform::flush();
+		JObject::flush();
 		cameraFlush();
 	}
 	const mat4 & Camera::getViewMatrix() const

@@ -260,4 +260,8 @@ namespace JEngine
 			job->waitUntilFinished();
 		}
 	}
+	size_t JobAggregate::getSubJobCount() const
+	{
+		return jobs.size();
+	}
 }

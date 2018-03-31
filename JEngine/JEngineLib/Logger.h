@@ -22,7 +22,7 @@ namespace JEngine
 		Logger(const Logger &) = delete;
 		~Logger();
 	public:
-		static Logger & getLogger();
+		static Logger & get();
 		static Logger & create();
 
 

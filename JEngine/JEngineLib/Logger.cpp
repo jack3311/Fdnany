@@ -20,7 +20,7 @@ namespace JEngine
 	{
 	}
 
-	Logger & Logger::getLogger()
+	Logger & Logger::get()
 	{
 		return *logger;
 	}

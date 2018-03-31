@@ -58,8 +58,8 @@ namespace JEngine
 			float secondsPerFrame = cumulativeSecondsForFPS / static_cast<float>(numFramesForFPS);
 			float framesPerSecond = 1.f / secondsPerFrame;
 
-			//Logger::getLogger().log(strJoinConvert("s/f:", secondsPerFrame));
-			//Logger::getLogger().log(strJoinConvert("f/s:", framesPerSecond));
+			//Logger::get().log(strJoinConvert("s/f:", secondsPerFrame));
+			//Logger::get().log(strJoinConvert("f/s:", framesPerSecond));
 
 			lastSpf = secondsPerFrame;
 			lastFps = framesPerSecond;

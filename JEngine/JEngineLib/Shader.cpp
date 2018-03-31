@@ -34,7 +34,7 @@ namespace JEngine
 			std::vector<char> shader_log(info_log_length);
 			glGetShaderInfoLog(_result, info_log_length, NULL, &shader_log[0]);
 
-			Logger::getLogger().log(strJoinConvert("Could not compile ", shaderComponentNames[_componentType], ": ", &shader_log[0]), LogLevel::ERROR);
+			Logger::get().log(strJoinConvert("Could not compile ", shaderComponentNames[_componentType], ": ", &shader_log[0]), LogLevel::ERROR);
 			
 			return false;
 		}
@@ -71,7 +71,7 @@ namespace JEngine
 				if (i == ShaderComponent::VERTEX ||
 					i == ShaderComponent::FRAGMENT)
 				{
-					Logger::getLogger().log(strJoin({ "Shader must have a ", shaderComponentNames[i], " component." }), LogLevel::ERROR);
+					Logger::get().log(strJoin({ "Shader must have a ", shaderComponentNames[i], " component." }), LogLevel::ERROR);
 					return false;
 				}
 				
@@ -82,7 +82,7 @@ namespace JEngine
 
 			if (!result)
 			{
-				Logger::getLogger().log(strJoin({ "Could not read shader file: ", path }), LogLevel::ERROR);
+				Logger::get().log(strJoin({ "Could not read shader file: ", path }), LogLevel::ERROR);
 				return false;
 			}
 		}
@@ -140,7 +140,7 @@ namespace JEngine
 			std::vector<char> program_log(info_log_length);
 			glGetProgramInfoLog(program, info_log_length, NULL, &program_log[0]);
 			
-			Logger::getLogger().log(strJoinConvert("Could not link shader: ", &program_log[0]), LogLevel::ERROR);
+			Logger::get().log(strJoinConvert("Could not link shader: ", &program_log[0]), LogLevel::ERROR);
 
 			//Critical error - no need to clean up components
 
@@ -161,16 +161,7 @@ namespace JEngine
 		return true;
 	}
 
-	void Shader::begin() const
-	{
-		assert(Engine::get().isCurrentThreadMain());
-
-		glUseProgram(program);
-
-		setFrameUniforms();
-	}
-
-	void Shader::begin(const View & _view) const
+	void Shader::begin(const JObject & _transform, const View & _view) const
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -178,6 +169,7 @@ namespace JEngine
 
 		setFrameUniforms();
 		setFrameViewUniforms(_view);
+		setTransformUniforms(_view, _transform);
 	}
 
 	void Shader::end()
@@ -207,7 +199,9 @@ namespace JEngine
 	{
 		uniformLocations.viewLocation = glGetUniformLocation(program, "viewMatrix");
 		uniformLocations.projectionLocation = glGetUniformLocation(program, "projectionMatrix");
+		uniformLocations.modelLocation = glGetUniformLocation(program, "modelMatrix");
 		uniformLocations.viewProjectionLocation = glGetUniformLocation(program, "viewProjectionMatrix");
+		uniformLocations.modelViewProjectionLocation = glGetUniformLocation(program, "modelViewProjectionMatrix");
 	}
 
 	void Shader::setFrameUniforms() const
@@ -222,5 +216,17 @@ namespace JEngine
 		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(camera->getViewMatrix()));
 		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(camera->getProjectionMatrix()));
 		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(camera->getViewProjectionMatrix()));
+	}
+
+	void Shader::setTransformUniforms(const View & _view, const JObject & _transform) const
+	{
+		const std::shared_ptr<Camera> & camera = _view.getCamera();
+		
+		glUniformMatrix4fv(uniformLocations.modelLocation, 1, false, glm::value_ptr(_transform.getGlobalTransformMatrix()));
+		
+		//Calculate and set MVP
+		glUniformMatrix4fv(uniformLocations.modelViewProjectionLocation, 1, false, glm::value_ptr(
+			camera->getViewProjectionMatrix() * _transform.getGlobalTransformMatrix()
+		));
 	}
 }

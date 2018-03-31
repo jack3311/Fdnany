@@ -18,6 +18,7 @@ namespace JEngine
 	class StackAllocator;
 	class UI;
 	class View;
+	class World;
 
 	class Engine
 	{
@@ -42,6 +43,7 @@ namespace JEngine
 		std::unique_ptr<StackAllocator> frameAllocator;
 		std::unique_ptr<UI> ui;
 		std::unique_ptr<View> standardView;
+		std::unique_ptr<World> world;
 
 		ivec2 windowSize;
 
@@ -62,6 +64,7 @@ namespace JEngine
 		StackAllocator & getFrameAllocator();
 		UI & getUI();
 		View & getStandardView();
+		World & getWorld();
 
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
 		JEventBlockable<int> keyDownBlockable, keyUpBlockable;

@@ -8,6 +8,5 @@ uniform sampler2D texture0;
 
 void main()
 {
-	//color = vec4(1.f, 1.f, 1.f, 1.f);
 	color = vec4(texture(texture0, vs_fs_texCoords).rgba);
 }

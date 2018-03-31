@@ -89,7 +89,7 @@ namespace JEngine
 
 			if (!ok)
 			{
-				Logger::getLogger().log(strJoin({ "Image not found: ", path }), JEngine::LogLevel::WARNING);
+				Logger::get().log(strJoin({ "Image not found: ", path }), JEngine::LogLevel::WARNING);
 				return false;
 			}
 		}
@@ -100,7 +100,7 @@ namespace JEngine
 
 		if (image == nullptr)
 		{
-			Logger::getLogger().log(strJoin({ "Could not load image: ", _name }), JEngine::LogLevel::WARNING);
+			Logger::get().log(strJoin({ "Could not load image: ", _name }), JEngine::LogLevel::WARNING);
 			return false;
 		}
 
@@ -119,7 +119,7 @@ namespace JEngine
 		}
 		else
 		{
-			Logger::getLogger().log(strJoinConvert("Unrecognised colour type: ", colourType), JEngine::LogLevel::WARNING);
+			Logger::get().log(strJoinConvert("Unrecognised colour type: ", colourType), JEngine::LogLevel::WARNING);
 			return false;
 		}
 
@@ -164,7 +164,7 @@ namespace JEngine
 #ifdef _DEBUG
 		if (initialised)
 		{
-			Logger::getLogger().log("Texture already initialised!", LogLevel::ERROR);
+			Logger::get().log("Texture already initialised!", LogLevel::ERROR);
 			return false;
 		}
 		initialised = true;

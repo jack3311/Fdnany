@@ -22,7 +22,7 @@ namespace JEngine
 		RendererText();
 		~RendererText();
 
-		void draw(const ResourceFont & _font, const vec2 & _position, const float & _scale, const std::string & _text, const glm::mat4 & _model = glm::mat4()) const;
+		void draw(const ResourceFont & _font, const vec2 & _position, const float & _scale, const std::string & _text) const;
 	
 		bool initialise();
 	};
