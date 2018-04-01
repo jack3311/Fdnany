@@ -1,18 +1,13 @@
 #pragma once
 
-#include "JObject.h"
+#include "EntityManager.h"
 
 namespace JEngine
 {
-	class World : private JObject
+	class World
 	{
-	public:
-		using JObject::addChild;
-		using JObject::removeChild;
-		using JObject::getChildren;
-
 	private:
-
+		ECS::EntityManager entityManager;
 
 	public:
 		World();
@@ -22,5 +17,7 @@ namespace JEngine
 
 		void update();
 		void render() const;
+
+		ECS::EntityManager & getEntityManager();
 	};
 }

@@ -3,6 +3,8 @@
 #include "Engine.h"
 #include "Logger.h"
 #include "Util.h"
+#include "Entity.h"
+#include "JobManagement.h"
 
 #ifdef _DEBUG
 #include "DebugRendering.h"
@@ -10,7 +12,7 @@
 
 namespace JEngine
 {
-	World::World() : JObject()
+	World::World()
 	{
 	}
 
@@ -21,16 +23,16 @@ namespace JEngine
 
 	bool World::initialise()
 	{
+		ERR_IF(!entityManager.initialise(), "Could not initialise entity manager");
 
-
-		return false;
+		return true;
 	}
 
 	void World::update()
 	{
-		//Update JObject and thus all of the scene objects
+		//Update scene tree recursively
 		std::shared_ptr<JEngine::JobAggregate> matrixUpdates = std::make_shared<JEngine::JobAggregate>();
-		updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
+		entityManager.getRoot().updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
 
 		Logger::get().log(strJoinConvert("Updating ", matrixUpdates->getSubJobCount(), " JObjects"));
 
@@ -45,7 +47,11 @@ namespace JEngine
 		//Draw axes
 		DebugRendering::get().drawAxes();
 		
-		drawDebugInfo();
+		entityManager.getRoot().drawDebugInfo();
 #endif
+	}
+	ECS::EntityManager & World::getEntityManager()
+	{
+		return entityManager;
 	}
 }

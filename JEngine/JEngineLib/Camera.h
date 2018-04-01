@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Maths.h"
-#include "JObject.h"
+#include "Entity.h"
 
 namespace JEngine
 {
@@ -11,7 +11,7 @@ namespace JEngine
 		ORTHOGRAPHIC
 	};
 
-	class Camera : public JObject
+	class Camera : public ECS::Entity
 	{
 	private:
 		float zNear, zFar;
@@ -19,7 +19,7 @@ namespace JEngine
 
 		ProjectionType projectionType;
 
-		mat4 viewMatrix; //Inverse of transformMatrix in 'JObject'
+		mat4 viewMatrix; //Inverse of transformMatrix in 'Entity'
 		mat4 projectionMatrix; //Perspective/Ortho
 		mat4 viewProjectionMatrix; //VP Optimisation matrix
 

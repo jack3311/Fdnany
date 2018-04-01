@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "ResourceManagement.h"
 #include "Engine.h"
-#include "JObject.h"
+#include "Entity.h"
 
 namespace JEngine
 {
@@ -114,7 +114,7 @@ namespace JEngine
 		});
 	}
 
-	void DebugRendering::drawTransform(const JObject & _transform)
+	void DebugRendering::drawTransform(const ECS::Entity & _transform)
 	{
 		vec4 u{ 1.f, 0.f, 0.f, 1.f },
 			v{ 0.f, 1.f, 0.f, 1.f },

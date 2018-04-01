@@ -89,20 +89,40 @@ TestScene::TestScene()
 	};
 
 
-	std::shared_ptr<JEngine::JObject> testTransform = std::make_shared<JEngine::JObject>();
+
+	JEngine::ECS::EntityManager & entityManager = JEngine::Engine::get().getWorld().getEntityManager();
+	
+	JEngine::ECS::Entity & newEntity = entityManager.createEntity();
+
+	newEntity.localMove({ 1.f, 1.f, 1.f });
+	newEntity.localScale({ 3.f, 3.f, 3.f });
+	newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
+	newEntity.flush();
+
+	JEngine::ECS::Entity & newEntity2 = entityManager.createEntity();
+
+	newEntity2.localMove({ 2.f, 0.f, 0.f });
+	newEntity2.flush();
+
+	newEntity2.setParent(&newEntity);
+
+	entity1 = &newEntity;
+
+/*
+	std::shared_ptr<JEngine::Entity> testTransform = std::make_shared<JEngine::Entity>();
 
 	testTransform->localMove({ 1.f, 1.f, 1.f });
 	testTransform->localScale({ 0.5f, 0.5f, 0.5f });
 	testTransform->localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
 	testTransform->flush();
 
-	auto child1 = std::make_shared<JEngine::JObject>();
+	auto child1 = std::make_shared<JEngine::Entity>();
 	child1->localMove({ 1.f, 1.f, 1.f });
 	child1->flush();
 
 	testTransform->addChild(child1);
 
-	JEngine::Engine::get().getWorld().addChild(testTransform);
+	JEngine::Engine::get().getWorld().addChild(testTransform);*/
 
 	//testTransform.updateGlobalTransformMatrixRecursive();
 
@@ -376,8 +396,8 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 
 	
-
-
+	entity1->localRotate(glm::rotate(glm::quat(), _engine.getEngineTime().deltaTime * 3.14f * 0.1f, glm::vec3{ 1, 1, 0 }));
+	entity1->flush();
 
 
 
@@ -414,7 +434,7 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	//JEngine::JObject t;
+	//JEngine::Entity t;
 	//t.localSetScale(vec3{ 5, 5, 5 });
 	//t.flush();
 	//t.updateGlobalTransformMatrixRecursive();

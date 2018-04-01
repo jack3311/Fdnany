@@ -161,7 +161,7 @@ namespace JEngine
 		return true;
 	}
 
-	void Shader::begin(const JObject & _transform, const View & _view) const
+	void Shader::begin(const ECS::Entity & _transform, const View & _view) const
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -218,7 +218,7 @@ namespace JEngine
 		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(camera->getViewProjectionMatrix()));
 	}
 
-	void Shader::setTransformUniforms(const View & _view, const JObject & _transform) const
+	void Shader::setTransformUniforms(const View & _view, const ECS::Entity & _transform) const
 	{
 		const std::shared_ptr<Camera> & camera = _view.getCamera();
 		

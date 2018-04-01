@@ -23,6 +23,7 @@
     <ClInclude Include="DebugRendering.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="RAIIGL.h" />
@@ -41,7 +42,7 @@
     <ClInclude Include="PoolAllocator.h" />
     <ClInclude Include="ResourceManagement.h" />
     <ClInclude Include="SceneManagement.h" />
-    <ClInclude Include="JObject.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="View.h" />
@@ -52,6 +53,7 @@
     <ClCompile Include="DebugRendering.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="RendererTerrain.cpp" />
     <ClCompile Include="RendererText.cpp" />
@@ -64,7 +66,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="ResourceManagement.cpp" />
     <ClCompile Include="SceneManagement.cpp" />
-    <ClCompile Include="JObject.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="View.cpp" />

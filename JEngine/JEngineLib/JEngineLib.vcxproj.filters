@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Maths">
       <UniqueIdentifier>{2bb12cc3-94d7-4a5d-a7dc-7eb385a48d88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ECS">
+      <UniqueIdentifier>{e0ed0f2c-718f-41b5-a425-7e41747343bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ECS">
+      <UniqueIdentifier>{550eac26-9967-4cad-9c2f-e01b415d03a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IScene.h">
@@ -99,8 +105,11 @@
     <ClInclude Include="RendererTerrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JObject.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Header Files\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,8 +173,11 @@
     <ClCompile Include="RendererTerrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JObject.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\ECS</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
