@@ -10,12 +10,22 @@ namespace JEngine
 {
 	namespace ECS
 	{
-
+		///
+		/// Components only store DATA, no functions, not even a constructor
+		///
 		class ComponentManager
 		{
 		private:
 			RawPoolAllocator<MAX_SIZE_PER_COMPONENT, MAX_COMPONENTS> componentAllocator;
+
+			//       component type id
+			//         |              object id
+			//         |               |   component pointer
+			//         |               |      |
 			std::map<size_t, std::map<int, void *>> components;
+
+
+			void destroyComponentInternal(int _entity, size_t _componentTypeHash);
 
 
 		public:
@@ -27,10 +37,10 @@ namespace JEngine
 			void clearComponents(int _entity);
 
 			template <typename T>
-			T & getComponent(int _entity);
+			T * getComponent(int _entity);
 
-			template <typename T, typename ... Args>
-			T & createComponent(int _entity, Args ... _args);
+			template <typename T>
+			T * createComponent(int _entity);
 
 			template <typename T>
 			void destroyComponent(int _entity);
@@ -38,26 +48,28 @@ namespace JEngine
 		};
 
 		template<typename T>
-		inline T & ComponentManager::getComponent(int _entity)
+		inline T * ComponentManager::getComponent(int _entity)
 		{
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
 			//Return the component for this entity
-			return *reinterpret_cast<T*>(currComponent[_entity]);
+			return reinterpret_cast<T*>(currComponent[_entity]);
 		}
 
-		template <typename T, typename ... Args>
-		inline T & ComponentManager::createComponent(int _entity, Args ... _args)
+		template <typename T>
+		inline T * ComponentManager::createComponent(int _entity)
 		{
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
 			//Allocate new component
-			T * allocated = componentAllocator.allocateRaw<T>(_args...);
+			T * allocated = componentAllocator.allocateRaw<T>();
 
 			//Set component in map
 			currComponent[_entity] = allocated;
+
+			return allocated;
 		}
 
 		template<typename T>
@@ -67,7 +79,7 @@ namespace JEngine
 			auto & currComponent = components[typeid(T).hash_code()];
 
 			//Find component memory
-			T * allocated = currComponent[_entity];
+			T * allocated = reinterpret_cast<T*>(currComponent[_entity]);
 
 			//Clear address in map
 			currComponent[_entity] = nullptr;

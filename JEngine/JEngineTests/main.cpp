@@ -7,6 +7,7 @@
 #include <JEngineLib\UI.h>
 #include <JEngineLib\ResourceManagement.h>
 #include <JEngineLib\Shader.h>
+#include <JEngineLib\ComponentManager.h>
 
 #include <GL\glew.h>
 
@@ -23,7 +24,6 @@ int main()
 
 	engine.initialise("Test Game", "log.txt", ivec2{ 1280, 800 });
 
-
 	auto sceneID = engine.getSceneManager().registerScene(std::make_shared<TestScene>());
 	engine.getSceneManager().pushScene(sceneID);
 
@@ -35,7 +35,54 @@ int main()
 	return 0;
 }
 
-
+//void testComponents()
+//{
+//	JEngine::ECS::ComponentManager cm;
+//	if (!cm.initialise())
+//	{
+//		JEngine::Logger::get().log("Could not initialise component manager", JEngine::LogLevel::ERROR);
+//	}
+//
+//
+//
+//	for (int entity = 0; entity < 100; ++entity)
+//	{
+//		cm.createComponent<JEngine::ECS::ComponentTest>(entity)->testData = "Hello";
+//	}
+//
+//	for (int entity = 0; entity < 100; ++entity)
+//	{
+//		JEngine::ECS::ComponentTest * blah = cm.getComponent<JEngine::ECS::ComponentTest>(entity);
+//		JEngine::Logger::get().log(JEngine::strJoinConvert("Data says: ", blah->testData));
+//	}
+//
+//	for (int entity = 0; entity < 100; ++entity)
+//	{
+//		cm.getComponent<JEngine::ECS::ComponentTest>(entity)->testData = "World!";
+//	}
+//
+//	for (int entity = 0; entity < 100; ++entity)
+//	{
+//		JEngine::ECS::ComponentTest * blah = cm.getComponent<JEngine::ECS::ComponentTest>(entity);
+//		JEngine::Logger::get().log(JEngine::strJoinConvert("Data says: ", blah->testData));
+//	}
+//
+//
+//
+//	for (int entity = 0; entity < 50; ++entity)
+//	{
+//		cm.destroyComponent<JEngine::ECS::ComponentTest>(entity);
+//	}
+//
+//	for (int entity = 0; entity < 100; ++entity)
+//	{
+//		JEngine::ECS::ComponentTest * blah = cm.getComponent<JEngine::ECS::ComponentTest>(entity);
+//		if (blah)
+//			JEngine::Logger::get().log(JEngine::strJoinConvert("Data says: ", blah->testData));
+//	}
+//
+//	JEngine::Logger::get().log("Done");
+//}
 
 //void testUI()
 //{

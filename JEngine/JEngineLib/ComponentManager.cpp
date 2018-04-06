@@ -27,6 +27,12 @@ namespace JEngine
 
 		void ComponentManager::clearComponents(int _entity)
 		{
+			for (auto itr = components.begin(); itr != components.end(); ++itr)
+			{
+				auto thisComponentTypeMap = itr->second;
+				
+
+			}
 		}
 	}
 }
