@@ -55,7 +55,7 @@ namespace JEngine
 		bool initialise();
 
 		void begin(const ECS::Entity & _transform = Engine::get().getWorld().getEntityManager().getRoot(), 
-			const View & _view = Engine::get().getStandardView()) const;
+			const View & _view = Engine::get().getCurrentView()) const;
 		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);

@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include "ECSConstants.h"
 #include "PoolAllocator.h"
 #include "Entity.h"
 
@@ -9,8 +10,6 @@ namespace JEngine
 {
 	namespace ECS
 	{
-#define MAX_ENTITIES 10000
-#define MAX_SIZE_PER_ENTITY sizeof(int) * 100
 
 		class EntityManager
 		{

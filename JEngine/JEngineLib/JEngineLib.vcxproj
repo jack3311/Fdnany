@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="DebugRendering.h" />
+    <ClInclude Include="ECSConstants.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="EntityManager.h" />
@@ -43,6 +46,7 @@
     <ClInclude Include="ResourceManagement.h" />
     <ClInclude Include="SceneManagement.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="View.h" />
@@ -50,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugRendering.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />

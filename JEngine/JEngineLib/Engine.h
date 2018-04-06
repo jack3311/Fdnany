@@ -42,7 +42,6 @@ namespace JEngine
 		std::unique_ptr<JobManager> jobManager;
 		std::unique_ptr<StackAllocator> frameAllocator;
 		std::unique_ptr<UI> ui;
-		std::unique_ptr<View> standardView;
 		std::unique_ptr<World> world;
 
 		ivec2 windowSize;
@@ -51,6 +50,7 @@ namespace JEngine
 
 		std::thread::id mainThreadID;
 
+		std::shared_ptr<View> currentView;
 
 		//Frame functions
 		void executeOneFrame();
@@ -63,7 +63,6 @@ namespace JEngine
 		JobManager & getJobManager();
 		StackAllocator & getFrameAllocator();
 		UI & getUI();
-		View & getStandardView();
 		World & getWorld();
 
 		JEventBlockable<int> mouseDownBlockable, mouseUpBlockable;
@@ -71,6 +70,8 @@ namespace JEngine
 
 		const ivec2 & getWindowSizeInt() const;
 		const vec2 getWindowSizeFloat() const;
+
+		View & getCurrentView();
 
 		bool initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize);
 

@@ -6,7 +6,7 @@ namespace JEngine
 {
 	class Camera;
 
-	class View
+	class View //TODO: Draw each view to unique framebuffer
 	{
 	private:
 		std::shared_ptr<Camera> camera;

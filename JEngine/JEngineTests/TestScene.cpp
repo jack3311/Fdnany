@@ -387,12 +387,12 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 	float time = _engine.getEngineTime().getTimeSinceStart();
 
-	_engine.getStandardView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 8.f, 4.f, cosf(time * 0.1f) * 8.f });
+	_engine.getCurrentView().getCamera()->localSetPosition({ sinf(time * 0.1f) * 8.f, 4.f, cosf(time * 0.1f) * 8.f });
 	
-	auto dir = glm::vec3{ 0.f, 0.f, 0.f } -_engine.getStandardView().getCamera()->getLocalPosition();
-	_engine.getStandardView().getCamera()->localLookAt(dir);
+	auto dir = glm::vec3{ 0.f, 0.f, 0.f } -_engine.getCurrentView().getCamera()->getLocalPosition();
+	_engine.getCurrentView().getCamera()->localLookAt(dir);
 	
-	_engine.getStandardView().getCamera()->flush();
+	_engine.getCurrentView().getCamera()->flush();
 
 
 	

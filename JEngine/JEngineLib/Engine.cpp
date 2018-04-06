@@ -47,7 +47,7 @@ namespace JEngine
 		jobManager = std::make_unique<JobManager>();
 		frameAllocator = std::make_unique<StackAllocator>();
 		ui = std::make_unique<UI>();
-		standardView = std::make_unique<View>(
+		currentView = std::make_unique<View>(
 			std::make_shared<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR)
 		);
 		world = std::make_unique<World>();
@@ -93,11 +93,6 @@ namespace JEngine
 		return *ui;
 	}
 
-	View & Engine::getStandardView()
-	{
-		return *standardView;
-	}
-
 	World & Engine::getWorld()
 	{
 		return *world;
@@ -111,6 +106,11 @@ namespace JEngine
 	const vec2 Engine::getWindowSizeFloat() const
 	{
 		return static_cast<vec2>(windowSize);
+	}
+
+	View & Engine::getCurrentView()
+	{
+		return *currentView;
 	}
 
 	bool Engine::initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize)
@@ -151,7 +151,7 @@ namespace JEngine
 		glCullFace(GL_BACK);
 
 		//Initialise engine systems
-		ERR_IF(!standardView->initialise(), "Failed to initialise standard view");
+		ERR_IF(!currentView->initialise(), "Failed to initialise standard view");
 		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
 		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
