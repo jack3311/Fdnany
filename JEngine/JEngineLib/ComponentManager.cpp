@@ -4,23 +4,29 @@
 #include "Logger.h"
 
 
-ComponentManager::ComponentManager()
+namespace JEngine
 {
-	
-}
+	namespace ECS
+	{
+		ComponentManager::ComponentManager()
+		{
+
+		}
 
 
-ComponentManager::~ComponentManager()
-{
-}
+		ComponentManager::~ComponentManager()
+		{
+		}
 
-bool JEngine::ECS::ComponentManager::initialise()
-{
-	ERR_IF(!componentAllocator.initialise(), "Could not initialise component allocator");
-	
-	return true;
-}
+		bool ComponentManager::initialise()
+		{
+			ERR_IF(!componentAllocator.initialise(), "Could not initialise component allocator");
 
-void JEngine::ECS::ComponentManager::clearComponents(int _entity)
-{
+			return true;
+		}
+
+		void ComponentManager::clearComponents(int _entity)
+		{
+		}
+	}
 }
