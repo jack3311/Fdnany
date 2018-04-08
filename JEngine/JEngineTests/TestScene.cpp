@@ -17,6 +17,8 @@
 #include <JEngineLib\World.h>
 
 #include "TestJob.h"
+#include "SystemTest.h"
+
 
 
 #include <iostream>
@@ -80,6 +82,13 @@ MyVertexFormat::MyVertexFormat(const vec3 & _pos, const vec2 & _texCoords) : pos
 
 TestScene::TestScene()
 {
+	JEngine::Engine::get().getWorld().getSystemManager().registerSystem<SystemTest>();
+
+
+
+
+
+
 	JEngine::Input::keyDown += [](int _key) {
 
 	};

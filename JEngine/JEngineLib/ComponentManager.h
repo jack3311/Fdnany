@@ -5,6 +5,7 @@
 #include "ECSConstants.h"
 #include "PoolAllocator.h"
 #include "Component.h"
+#include "Engine.h"
 
 namespace JEngine
 {
@@ -25,7 +26,7 @@ namespace JEngine
 			std::map<size_t, std::map<int, void *>> components;
 
 
-			void destroyComponentInternal(int _entity, size_t _componentTypeHash);
+			void destroyComponentInternal(int _entity, std::map<int, void *> & _components);
 
 
 		public:
@@ -33,6 +34,8 @@ namespace JEngine
 			~ComponentManager();
 
 			bool initialise();
+
+			void cleanUp();
 
 			void clearComponents(int _entity);
 
@@ -50,6 +53,8 @@ namespace JEngine
 		template<typename T>
 		inline T * ComponentManager::getComponent(int _entity)
 		{
+			assert(Engine::get().isCurrentThreadMain());
+
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
@@ -60,6 +65,8 @@ namespace JEngine
 		template <typename T>
 		inline T * ComponentManager::createComponent(int _entity)
 		{
+			assert(Engine::get().isCurrentThreadMain());
+
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
@@ -75,17 +82,12 @@ namespace JEngine
 		template<typename T>
 		inline void ComponentManager::destroyComponent(int _entity)
 		{
+			assert(Engine::get().isCurrentThreadMain());
+
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
-			//Find component memory
-			T * allocated = reinterpret_cast<T*>(currComponent[_entity]);
-
-			//Clear address in map
-			currComponent[_entity] = nullptr;
-
-			//Return allocated memory to pool
-			componentAllocator.deallocate(allocated);
+			destroyComponentInternal(_entity, currComponent);
 		}
 	}
 }

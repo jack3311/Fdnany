@@ -83,6 +83,11 @@ namespace JEngine
 			return *root;
 		}
 
+		const std::map<int, Entity *> & EntityManager::getEntities() const
+		{
+			return entities;
+		}
+
 
 		
 	}

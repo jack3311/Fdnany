@@ -242,6 +242,9 @@ namespace JEngine
 		world->update();
 		ui->update();
 
+		//Pre-render for world & objects
+		world->preRender();
+
 		//Pre-render for current scene
 		currentScene->preSceneRender(*this);
 
@@ -251,6 +254,9 @@ namespace JEngine
 
 
 		//POST-RENDER:
+
+		//Post-render for world & objects
+		world->postRender();
 
 		//Post-render for current scene
 		currentScene->postSceneRender(*this);

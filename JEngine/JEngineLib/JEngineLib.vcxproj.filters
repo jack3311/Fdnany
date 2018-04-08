@@ -25,6 +25,9 @@
     <Filter Include="Source Files\ECS">
       <UniqueIdentifier>{550eac26-9967-4cad-9c2f-e01b415d03a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{a39d643d-ede3-4a6b-8531-7d76e64ae8dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IScene.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="ComponentManager.h">
       <Filter>Header Files\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="SystemManager.h">
+      <Filter>Header Files\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineTime.cpp">
@@ -192,6 +198,12 @@
       <Filter>Source Files\ECS</Filter>
     </ClCompile>
     <ClCompile Include="ComponentManager.cpp">
+      <Filter>Source Files\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemManager.cpp">
       <Filter>Source Files\ECS</Filter>
     </ClCompile>
   </ItemGroup>

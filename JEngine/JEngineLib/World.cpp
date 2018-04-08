@@ -12,6 +12,19 @@
 
 namespace JEngine
 {
+	void World::updateEntityMatrices()
+	{
+		//Update scene tree recursively
+		std::shared_ptr<JEngine::JobAggregate> matrixUpdates = std::make_shared<JEngine::JobAggregate>();
+		entityManager.getRoot().updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
+
+		Logger::get().log(strJoinConvert("Updating ", matrixUpdates->getSubJobCount(), " JObjects"));
+
+		Engine::get().getJobManager().enqueueJob(matrixUpdates);
+
+		matrixUpdates->waitUntilAllSubJobsFinishedOrShutdown();
+	}
+
 	World::World()
 	{
 	}
@@ -30,15 +43,6 @@ namespace JEngine
 
 	void World::update()
 	{
-		//Update scene tree recursively
-		std::shared_ptr<JEngine::JobAggregate> matrixUpdates = std::make_shared<JEngine::JobAggregate>();
-		entityManager.getRoot().updateGlobalTransformMatrixRecursiveAsync(matrixUpdates);
-
-		Logger::get().log(strJoinConvert("Updating ", matrixUpdates->getSubJobCount(), " JObjects"));
-
-		Engine::get().getJobManager().enqueueJob(matrixUpdates);
-
-		matrixUpdates->waitUntilAllSubJobsFinishedOrShutdown();
 	}
 
 	void World::render() const
@@ -50,8 +54,38 @@ namespace JEngine
 		entityManager.getRoot().drawDebugInfo();
 #endif
 	}
+
+
 	ECS::EntityManager & World::getEntityManager()
 	{
 		return entityManager;
+	}
+	ECS::ComponentManager & World::getComponentManager()
+	{
+		return componentManager;
+	}
+	ECS::SystemManager & World::getSystemManager()
+	{
+		return systemManager;
+	}
+
+
+	void World::preRender()
+	{
+		auto & entities = entityManager.getEntities();
+		for (auto & entity : entities)
+		{
+			systemManager.preRender(*entity.second);
+		}
+
+		updateEntityMatrices();
+	}
+	void World::postRender()
+	{
+		auto & entities = entityManager.getEntities();
+		for (auto & entity : entities)
+		{
+			systemManager.postRender(*entity.second);
+		}
 	}
 }

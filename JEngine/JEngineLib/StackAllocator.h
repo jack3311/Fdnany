@@ -19,14 +19,14 @@ namespace JEngine
 		bool initialise(size_t _maxSize);
 		void cleanUp();
 
-		template <typename T>
-		T * allocateRaw();
+		template <typename T, typename ... Args>
+		T * allocateRaw(Args ... _args);
 
 		void reset();
 	};
 
-	template<typename T>
-	inline T * StackAllocator::allocateRaw()
+	template<typename T, typename ... Args>
+	inline T * StackAllocator::allocateRaw(Args ... _args)
 	{
 		size_t size = sizeof(T);
 
@@ -40,7 +40,7 @@ namespace JEngine
 		currentAddress += size;
 
 		//Call constructor manually
-		new (allocated) T();
+		new (allocated) T(_args...);
 
 		return allocated;
 	}

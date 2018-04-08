@@ -33,6 +33,10 @@ namespace JEngine
 			Entity & getEntity(int _entity);
 			Entity & getRoot();
 			const Entity & getRoot() const;
+
+			const std::map<int, Entity *> & getEntities() const;
+
+
 		};
 	}
 }
