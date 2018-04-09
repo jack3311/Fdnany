@@ -30,8 +30,7 @@ namespace JEngine
 			template <typename T, typename ... Args>
 			void registerSystem(Args ... _args);
 
-			void preRender(Entity & _entity);
-			void postRender(Entity & _entity);
+			std::multimap<unsigned int, System *, std::less<unsigned int>> & getSystemsOrdered();
 		};
 
 		template<typename T, typename ... Args>

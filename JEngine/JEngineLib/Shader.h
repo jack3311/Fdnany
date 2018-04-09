@@ -44,8 +44,7 @@ namespace JEngine
 
 		void loadUniformLocations();
 		void setFrameUniforms() const;
-		void setFrameViewUniforms(const View & _view) const;
-		void setTransformUniforms(const View & _view, const ECS::Entity & _transform) const;
+		void setFrameViewUniforms() const;
 
 	public:
 		Shader();
@@ -54,12 +53,13 @@ namespace JEngine
 		bool loadFromDisk(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 		bool initialise();
 
-		void begin(const ECS::Entity & _transform = Engine::get().getWorld().getEntityManager().getRoot(), 
-			const View & _view = Engine::get().getCurrentView()) const;
+		void begin(const ECS::Entity & _transform = Engine::get().getWorld().getEntityManager().getRoot()) const;
 		static void end();
 
 		std::shared_ptr<JobCallFunction> loadFromDiskAsync(const std::vector<std::pair<ShaderComponent, const std::string>> _componentPathsInit);
 
 		GLuint getProgramID() const;
+
+		void setTransformUniforms(const ECS::Entity & _transform) const;
 	};
 }

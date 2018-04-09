@@ -31,20 +31,9 @@ namespace JEngine
 			systemOrder.clear();
 		}
 
-		void SystemManager::preRender(Entity & _entity)
+		std::multimap<unsigned int, System *, std::less<unsigned int>> & SystemManager::getSystemsOrdered()
 		{
-			for (auto itr = systemOrder.begin(); itr != systemOrder.end(); ++itr)
-			{
-				itr->second->preRender(_entity);
-			}
-		}
-
-		void SystemManager::postRender(Entity & _entity)
-		{
-			for (auto itr = systemOrder.begin(); itr != systemOrder.end(); ++itr)
-			{
-				itr->second->postRender(_entity);
-			}
+			return systemOrder;
 		}
 	}
 }

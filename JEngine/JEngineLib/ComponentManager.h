@@ -4,7 +4,6 @@
 
 #include "ECSConstants.h"
 #include "PoolAllocator.h"
-#include "Component.h"
 #include "Engine.h"
 
 namespace JEngine

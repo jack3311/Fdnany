@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Util.h"
 #include "Entity.h"
+#include "System.h"
 #include "JobManagement.h"
 
 #ifdef _DEBUG
@@ -72,20 +73,31 @@ namespace JEngine
 
 	void World::preRender()
 	{
+		auto & systems = systemManager.getSystemsOrdered();
 		auto & entities = entityManager.getEntities();
-		for (auto & entity : entities)
+
+		for (auto systemItr = systems.begin(); systemItr != systems.end(); ++systemItr)
 		{
-			systemManager.preRender(*entity.second);
+			for (auto entityItr = entities.begin(); entityItr != entities.end(); ++entityItr)
+			{
+				systemItr->second->preRender(*entityItr->second);
+			}
 		}
+
 
 		updateEntityMatrices();
 	}
 	void World::postRender()
 	{
+		auto & systems = systemManager.getSystemsOrdered();
 		auto & entities = entityManager.getEntities();
-		for (auto & entity : entities)
+
+		for (auto systemItr = systems.begin(); systemItr != systems.end(); ++systemItr)
 		{
-			systemManager.postRender(*entity.second);
+			for (auto entityItr = entities.begin(); entityItr != entities.end(); ++entityItr)
+			{
+				systemItr->second->postRender(*entityItr->second);
+			}
 		}
 	}
 }

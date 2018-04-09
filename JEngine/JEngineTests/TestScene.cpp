@@ -449,6 +449,8 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	//t.updateGlobalTransformMatrixRecursive();
 	
 	testShader->begin();
+
+	testShader->setTransformUniforms(*entity1);
 	
 	testTexture->bind(GL_TEXTURE0);
 

@@ -161,15 +161,15 @@ namespace JEngine
 		return true;
 	}
 
-	void Shader::begin(const ECS::Entity & _transform, const View & _view) const
+	void Shader::begin(const ECS::Entity & _transform) const
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
 		glUseProgram(program);
 
 		setFrameUniforms();
-		setFrameViewUniforms(_view);
-		setTransformUniforms(_view, _transform);
+		setFrameViewUniforms();
+		setTransformUniforms(_transform);
 	}
 
 	void Shader::end()
@@ -209,18 +209,20 @@ namespace JEngine
 		//Below is example
 	}
 
-	void Shader::setFrameViewUniforms(const View & _view) const
+	void Shader::setFrameViewUniforms() const
 	{
-		const std::shared_ptr<Camera> & camera = _view.getCamera();
+		const View & currentView = Engine::get().getCurrentView();
+		const std::shared_ptr<Camera> & camera = currentView.getCamera();
 
 		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(camera->getViewMatrix()));
 		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(camera->getProjectionMatrix()));
 		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(camera->getViewProjectionMatrix()));
 	}
 
-	void Shader::setTransformUniforms(const View & _view, const ECS::Entity & _transform) const
+	void Shader::setTransformUniforms(const ECS::Entity & _transform) const
 	{
-		const std::shared_ptr<Camera> & camera = _view.getCamera();
+		const View & currentView = Engine::get().getCurrentView();
+		const std::shared_ptr<Camera> & camera = currentView.getCamera();
 		
 		glUniformMatrix4fv(uniformLocations.modelLocation, 1, false, glm::value_ptr(_transform.getGlobalTransformMatrix()));
 		

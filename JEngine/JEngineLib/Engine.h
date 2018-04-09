@@ -43,6 +43,7 @@ namespace JEngine
 		std::unique_ptr<StackAllocator> frameAllocator;
 		std::unique_ptr<UI> ui;
 		std::unique_ptr<World> world;
+		std::unique_ptr<View> screenView;
 
 		ivec2 windowSize;
 
@@ -50,7 +51,7 @@ namespace JEngine
 
 		std::thread::id mainThreadID;
 
-		std::shared_ptr<View> currentView;
+		const View * currentView = nullptr;
 
 		//Frame functions
 		void executeOneFrame();
@@ -71,7 +72,8 @@ namespace JEngine
 		const ivec2 & getWindowSizeInt() const;
 		const vec2 getWindowSizeFloat() const;
 
-		View & getCurrentView();
+		const View & getCurrentView();
+		void setCurrentView(const View & _view);
 
 		bool initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize);
 
