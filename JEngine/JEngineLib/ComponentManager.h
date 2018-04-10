@@ -11,7 +11,7 @@ namespace JEngine
 	namespace ECS
 	{
 		///
-		/// Components only store DATA, no functions, not even a constructor
+		/// Components only store DATA, no functions except constructor and destructor
 		///
 		class ComponentManager
 		{
@@ -36,21 +36,21 @@ namespace JEngine
 
 			void cleanUp();
 
-			void clearComponents(int _entity);
+			void clearComponents(const int _entity);
 
 			template <typename T>
-			T * getComponent(int _entity);
+			T * getComponent(const int _entity);
+
+			template <typename T, typename ... Args>
+			T * createComponent(const int _entity, Args ... _args);
 
 			template <typename T>
-			T * createComponent(int _entity);
-
-			template <typename T>
-			void destroyComponent(int _entity);
+			void destroyComponent(const int _entity);
 
 		};
 
 		template<typename T>
-		inline T * ComponentManager::getComponent(int _entity)
+		inline T * ComponentManager::getComponent(const int _entity)
 		{
 			assert(Engine::get().isCurrentThreadMain());
 
@@ -61,16 +61,17 @@ namespace JEngine
 			return reinterpret_cast<T*>(currComponent[_entity]);
 		}
 
-		template <typename T>
-		inline T * ComponentManager::createComponent(int _entity)
+		template <typename T, typename ... Args>
+		inline T * ComponentManager::createComponent(const int _entity, Args ... _args)
 		{
+			assert(sizeof(T) <= MAX_SIZE_PER_COMPONENT);
 			assert(Engine::get().isCurrentThreadMain());
 
 			//Find list of components (by entity id) of this type
 			auto & currComponent = components[typeid(T).hash_code()];
 
 			//Allocate new component
-			T * allocated = componentAllocator.allocateRaw<T>();
+			T * allocated = componentAllocator.allocateRaw<T>(_entity, _args...);
 
 			//Set component in map
 			currComponent[_entity] = allocated;
@@ -79,7 +80,7 @@ namespace JEngine
 		}
 
 		template<typename T>
-		inline void ComponentManager::destroyComponent(int _entity)
+		inline void ComponentManager::destroyComponent(const int _entity)
 		{
 			assert(Engine::get().isCurrentThreadMain());
 

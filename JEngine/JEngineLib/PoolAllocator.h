@@ -165,7 +165,7 @@ namespace JEngine
 	inline bool RcPoolAllocator<maxSize, maxCount>::initialise()
 	{
 		//Initialise ref counter pool
-		ERR_IF(!refCounterPool->initialise(), "Could not initialise ref counter pool");
+		ERR_IF(!refCounterPool->initialise(), "Could not initialise ref counter pool allocator", "Initialised ref counter pool allocator");
 		return RawPoolAllocator::initialise();
 	}
 

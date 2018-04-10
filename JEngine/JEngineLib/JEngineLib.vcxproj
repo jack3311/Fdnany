@@ -21,8 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ComponentManager.h" />
-    <ClInclude Include="ComponentMaterial.h" />
-    <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentRenderable.h" />
     <ClInclude Include="DebugRendering.h" />
     <ClInclude Include="ECSConstants.h" />
     <ClInclude Include="Engine.h" />
@@ -57,12 +56,13 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
-    <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentRenderable.cpp" />
     <ClCompile Include="DebugRendering.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererTerrain.cpp" />
     <ClCompile Include="RendererText.cpp" />
     <ClCompile Include="ResourceFont.cpp" />

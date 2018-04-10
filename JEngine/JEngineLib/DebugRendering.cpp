@@ -64,11 +64,11 @@ namespace JEngine
 			{ Shader::ShaderComponent::FRAGMENT, "Assets\\debugShader.frag" },
 		});
 		
-		ERR_IF(!lineRenderer->initialise({}, MAX_TOTAL_LINE_VERTICES), "Could not initialise standard debug renderer");
+		ERR_IF(!lineRenderer->initialise({}, MAX_TOTAL_LINE_VERTICES), "Could not initialise standard debug renderer", "Initilaised standard debug renderer");
 
 		debugShaderLoadJob->waitUntilFinished();
-		ERR_IF(!debugShaderLoadJob->wasSuccessful(), "Could not load debug shader");
-		ERR_IF(!debugShader->initialise(), "Could not initialise debug shader");
+		ERR_IF(!debugShaderLoadJob->wasSuccessful(), "Could not load debug shader", "Loaded debug shader");
+		ERR_IF(!debugShader->initialise(), "Could not initialise debug shader", "Initialised debug shader");
 
 		return true;
 	}

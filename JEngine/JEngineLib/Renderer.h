@@ -14,6 +14,17 @@ namespace JEngine
 #define DEFAULT_DRAW_MODE GL_TRIANGLES
 #define DEFAULT_CULL_FACE true
 
+	class VertexFormatStandard
+	{
+		vec3 position;
+		vec3 normal;
+		vec2 texCoords;
+
+		static void setupVertexAttributes();
+
+		VertexFormatStandard(const vec3 &, const vec3 &, const vec2 &);
+	};
+
 	template <typename VertexFormat, bool enableIndices>
 	class Renderer
 	{

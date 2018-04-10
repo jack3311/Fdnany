@@ -6,7 +6,8 @@
 
 namespace JEngine
 {
-#define ERR_IF(exp, msg) { if (exp) { Logger::get().log(msg, LogLevel::ERROR); return false; } else {} }
+#define ERR_IF(exp, msgFail, msgSuccess) { if (exp) { Logger::get().log(msgFail, LogLevel::ERROR); return false; } else { Logger::get().log(msgSuccess, LogLevel::INFO); } }
+#define ERR_IF_FAIL(exp, msgFail) { if (exp) { Logger::get().log(msgFail, LogLevel::ERROR); return false; } else {} }
 
 	template <typename T>
 	struct Range

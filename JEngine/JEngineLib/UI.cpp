@@ -55,7 +55,7 @@ namespace JEngine
 
 	bool UI::initialise()
 	{
-		ERR_IF(!setupDebugUI(), "Could not set up debug UI");
+		ERR_IF(!setupDebugUI(), "Could not set up debug UI", "Setup debug UI");
 
 		//Create textured rect renderer
 		{
@@ -71,7 +71,7 @@ namespace JEngine
 				2, 3, 1
 			};
 
-			ERR_IF(!texturedRectRenderer->initialise(vertices, indices), "Could not initialise textured rect renderer");
+			ERR_IF(!texturedRectRenderer->initialise(vertices, indices), "Could not initialise textured rect renderer", "Initialised textured rect renderer");
 		}
 
 		return true;

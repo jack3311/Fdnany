@@ -126,10 +126,10 @@ namespace JEngine
 
 		//Initialise Logger
 		Logger::create();
-		ERR_IF(!Logger::get().initialise("log.txt"), "Failed to initialise logger");
+		ERR_IF(!Logger::get().initialise("log.txt"), "Failed to initialise logger", "Initialised logger");
 
 		//Initialise GLFW
-		ERR_IF(!glfwInit(), "Failed to initialise GLFW");
+		ERR_IF(!glfwInit(), "Failed to initialise GLFW", "Initialised GLFW");
 		
 		//Set GLFW error callback
 		glfwSetErrorCallback(errorCallbackGLFW);
@@ -137,13 +137,13 @@ namespace JEngine
 		//Create window
 		windowSize = _windowSize;
 		window = glfwCreateWindow(_windowSize.x, _windowSize.y, "My Title", NULL, NULL);
-		ERR_IF(!window, "Failed to create window");
+		ERR_IF(!window, "Failed to create window", "Created window");
 
 		//Set current context
 		glfwMakeContextCurrent(window);
 
 		//Initialise GLEW
-		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW");
+		ERR_IF(glewInit() != GLEW_OK, "Failed to initialise GLEW", "Initialised GLEW");
 
 		//Set OpenGL error callback
 #if _DEBUG
@@ -157,16 +157,16 @@ namespace JEngine
 		glCullFace(GL_BACK);
 
 		//Initialise engine systems
-		ERR_IF(!screenView->initialise(), "Failed to initialise screen view");
+		ERR_IF(!screenView->initialise(), "Failed to initialise screen view", "Initialised screen view");
 		currentView = screenView.get();
-		ERR_IF(!Input::initialise(window), "Failed to initialise input system");
-		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager");
-		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager");
-		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator");
-		ERR_IF(!ResourceManager::create().initialise(), "Failed to initialise resource manager");
-		ERR_IF(!ui->initialise(), "Failed to initialise UI");
-		ERR_IF(!DebugRendering::create().initialise(), "Failed to initialise debug renderer");
-		ERR_IF(!world->initialise(), "Failed to initialise world");
+		ERR_IF(!Input::initialise(window), "Failed to initialise input system", "Initialised input system");
+		ERR_IF(!jobManager->initialise(), "Failed to initialise job manager", "Initialised job manager");
+		ERR_IF(!frameAllocator->initialise(1000000), "Failed to initialise frame allocator", "Initialised frame allocator");
+		ERR_IF(!ResourceManager::create().initialise(), "Failed to initialise resource manager", "Initialised resource manager");
+		ERR_IF(!ui->initialise(), "Failed to initialise UI", "Initialised UI");
+		ERR_IF(!DebugRendering::create().initialise(), "Failed to initialise debug renderer", "Initialised debug renderer");
+		ERR_IF(!world->initialise(), "Failed to initialise world", "Initialised world");
+		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager", "Initialised scene manager");
 
 		//Setup blocking input events
 		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };

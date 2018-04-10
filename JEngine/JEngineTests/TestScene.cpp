@@ -15,6 +15,7 @@
 #include <JEngineLib\View.h>
 #include <JEngineLib\EngineTime.h>
 #include <JEngineLib\World.h>
+#include <JEngineLib\ComponentRenderable.h>
 
 #include "TestJob.h"
 #include "SystemTest.h"
@@ -100,20 +101,40 @@ TestScene::TestScene()
 
 
 	JEngine::ECS::EntityManager & entityManager = JEngine::Engine::get().getWorld().getEntityManager();
+	JEngine::ECS::ComponentManager & componentManager = JEngine::Engine::get().getWorld().getComponentManager();
 	
-	JEngine::ECS::Entity & newEntity = entityManager.createEntity();
 
-	newEntity.localMove({ 1.f, 1.f, 1.f });
-	newEntity.localScale({ 3.f, 3.f, 3.f });
-	newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
-	newEntity.flush();
+
+	JEngine::ECS::Entity & newEntity = entityManager.createEntity();
+	{
+		newEntity.localMove({ 1.f, 1.f, 1.f });
+		newEntity.localScale({ 3.f, 3.f, 3.f });
+		newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
+		newEntity.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity.getEntityID(), (JEngine::Shader *)0x333333, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x101010);
+	}
 
 	JEngine::ECS::Entity & newEntity2 = entityManager.createEntity();
+	{
+		newEntity2.setParent(&newEntity);
 
-	newEntity2.localMove({ 2.f, 0.f, 0.f });
-	newEntity2.flush();
+		newEntity2.localMove({ 2.5f, 0.f, 0.f });
+		newEntity2.flush();
 
-	newEntity2.setParent(&newEntity);
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity2.getEntityID(), (JEngine::Shader *)0x222222, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x202020);
+	}
+
+	JEngine::ECS::Entity & newEntity3 = entityManager.createEntity();
+	{
+		newEntity3.setParent(&newEntity2);
+
+		newEntity3.localMove({ 0, -2.5f, 0.f });
+		newEntity3.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity3.getEntityID(), (JEngine::Shader *)0x333333, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x000001);
+	}
+
 
 	entity1 = &newEntity;
 

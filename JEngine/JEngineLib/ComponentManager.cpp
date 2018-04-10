@@ -34,7 +34,7 @@ namespace JEngine
 		{
 			assert(Engine::get().isCurrentThreadMain());
 
-			ERR_IF(!componentAllocator.initialise(), "Could not initialise component allocator");
+			ERR_IF(!componentAllocator.initialise(), "Could not initialise component allocator", "Initilised component allocator");
 
 			return true;
 		}
@@ -45,7 +45,7 @@ namespace JEngine
 			componentAllocator.cleanUp();
 		}
 
-		void ComponentManager::clearComponents(int _entity)
+		void ComponentManager::clearComponents(const int _entity)
 		{
 			assert(Engine::get().isCurrentThreadMain());
 

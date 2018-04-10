@@ -21,7 +21,7 @@ namespace JEngine
 
 		bool EntityManager::initialise()
 		{
-			ERR_IF(!entityAllocator.initialise(), "Could not initialise entity allocator");
+			ERR_IF(!entityAllocator.initialise(), "Could not initialise entity allocator", "Initialised entity allocator");
 			
 			//Create root entity
 			Entity & rootRef = createEntity();

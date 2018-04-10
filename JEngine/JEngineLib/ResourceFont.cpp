@@ -36,11 +36,11 @@ namespace JEngine
 		FT_Library ft;
 
 		//All functions return a value different than 0 whenever an error occurred
-		ERR_IF(FT_Init_FreeType(&ft), "Could not initialise FreeType");
+		ERR_IF(FT_Init_FreeType(&ft), "Could not initialise FreeType", "Initialised FreeType");
 
 		//Load font as face
 		FT_Face face;
-		ERR_IF(FT_New_Face(ft, path.c_str(), 0, &face), "Could not load font");
+		ERR_IF(FT_New_Face(ft, path.c_str(), 0, &face), "Could not load font", "Loaded font");
 
 		//Set size to load glyphs as
 		FT_Set_Pixel_Sizes(face, 0, 48);
@@ -51,7 +51,7 @@ namespace JEngine
 		for (unsigned char c = 0; c < NUM_CHARACTERS; ++c)
 		{
 			//Load character
-			ERR_IF(FT_Load_Char(face, c, FT_LOAD_RENDER), strJoinConvert("Could not load character: ", c));
+			ERR_IF_FAIL(FT_Load_Char(face, c, FT_LOAD_RENDER), strJoinConvert("Could not load character: ", c));
 
 			auto & character = characters[c];
 
@@ -62,7 +62,7 @@ namespace JEngine
 					face->glyph->bitmap.rows,
 					ResourceTexture::ResourceTextureFormat::R);
 
-			ERR_IF(!character.texture->initialise(), strJoinConvert("Could not load texture for character: ", c));
+			ERR_IF_FAIL(!character.texture->initialise(), strJoinConvert("Could not load texture for character: ", c));
 
 			character.size = { face->glyph->bitmap.width, face->glyph->bitmap.rows };
 			character.bearing = { face->glyph->bitmap_left, face->glyph->bitmap_top };
