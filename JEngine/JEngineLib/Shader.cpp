@@ -215,8 +215,8 @@ namespace JEngine
 		//uniformLocations.projectionLocation = glGetUniformLocation(program, "projectionMatrix");
 		//uniformLocations.viewProjectionLocation = glGetUniformLocation(program, "viewProjectionMatrix");
 
-		uniformLocations.modelLocation = glGetUniformLocation(program, "modelMatrix");
-		uniformLocations.modelViewProjectionLocation = glGetUniformLocation(program, "modelViewProjectionMatrix");
+		uniformLocations.modelLocation = glGetUniformLocation(program, "model");
+		uniformLocations.modelViewProjectionLocation = glGetUniformLocation(program, "modelViewProjection");
 	}
 
 	void Shader::loadBlockIndices()

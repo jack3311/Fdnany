@@ -75,6 +75,7 @@ namespace JEngine
 		const vec2 getWindowSizeFloat() const;
 
 		const View & getCurrentView();
+		const View & getCurrentView() const;
 		void setCurrentView(const View & _view);
 
 		bool initialise(std::string _title, std::string _logFile, const ivec2 & _windowSize);

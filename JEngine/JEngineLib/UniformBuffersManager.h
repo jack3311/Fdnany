@@ -15,5 +15,7 @@ namespace JEngine
 		~UniformBuffersManager();
 
 		bool initialise();
+
+		void updateUniformBuffers();
 	};
 }

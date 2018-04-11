@@ -11,7 +11,7 @@ namespace JEngine
 	{
 	private:
 		GLuint UBO;
-		GLuint uniformBufferLocation
+		GLuint uniformBufferBindingLocation;
 
 	public:
 		UniformBufferFormat bufferData;
@@ -41,7 +41,7 @@ namespace JEngine
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
-		uniformBufferLocation = _uniformBufferBindingLocation;
+		uniformBufferBindingLocation = _uniformBufferBindingLocation;
 
 		memset(&bufferData, 0, sizeof(UniformBufferFormat));
 		

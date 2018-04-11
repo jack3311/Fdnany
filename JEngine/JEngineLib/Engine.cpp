@@ -16,6 +16,7 @@
 #include "DebugRendering.h"
 #include "World.h"
 #include "Constants.h"
+#include "UniformBuffersManager.h"
 
 namespace JEngine
 {
@@ -50,7 +51,7 @@ namespace JEngine
 			std::make_shared<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR)
 		);
 		world = std::make_unique<World>();
-		uniformBufferViewInfo = std::make_unique<UniformBuffer<UniformBufferFormatViewInfo>>();
+		uniformBuffersManager = std::make_unique<UniformBuffersManager>();
 	}
 
 	Engine::~Engine()
@@ -113,6 +114,11 @@ namespace JEngine
 		return *currentView;
 	}
 
+	const View & Engine::getCurrentView() const
+	{
+		return *currentView;
+	}
+
 	void Engine::setCurrentView(const View & _view)
 	{
 		currentView = &_view;
@@ -166,6 +172,7 @@ namespace JEngine
 		ERR_IF(!DebugRendering::create().initialise(), "Failed to initialise debug renderer", "Initialised debug renderer");
 		ERR_IF(!world->initialise(), "Failed to initialise world", "Initialised world");
 		ERR_IF(!sceneManager->initialise(), "Failed to initialise scene manager", "Initialised scene manager");
+		ERR_IF(!uniformBuffersManager->initialise(), "Failed to initialise uniform buffers manager", "Initialised uniform buffers");
 
 		//Setup blocking input events
 		Input::keyDown += [this](int _key) { keyDownBlockable.triggerEvent(_key); };
@@ -254,6 +261,8 @@ namespace JEngine
 		//Pre-render for current scene
 		currentScene->preSceneRender(*this);
 
+		//Update uniforms
+		uniformBuffersManager->updateUniformBuffers();
 
 		//RENDER:
 		render();
