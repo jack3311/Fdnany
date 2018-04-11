@@ -15,12 +15,10 @@
 #include "View.h"
 #include "DebugRendering.h"
 #include "World.h"
+#include "Constants.h"
 
 namespace JEngine
 {
-#define DEFAULT_FOV (glm::pi<float>() * 0.6f)
-#define DEFAULT_Z_NEAR 0.1f
-#define DEFAULT_Z_FAR 100.f
 
 	namespace
 	{
@@ -52,6 +50,7 @@ namespace JEngine
 			std::make_shared<Camera>(ProjectionType::PERSPECTIVE, DEFAULT_FOV, DEFAULT_Z_NEAR, DEFAULT_Z_FAR)
 		);
 		world = std::make_unique<World>();
+		uniformBufferViewInfo = std::make_unique<UniformBuffer<UniformBufferFormatViewInfo>>();
 	}
 
 	Engine::~Engine()

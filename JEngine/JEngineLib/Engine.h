@@ -5,7 +5,6 @@
 
 #include "Maths.h"
 #include "JEvent.h"
-#include "UniformBufferManager.h"
 
 #include <memory>
 #include <string>
@@ -20,6 +19,7 @@ namespace JEngine
 	class UI;
 	class View;
 	class World;
+	class UniformBuffersManager;
 
 	class Engine
 	{
@@ -45,8 +45,7 @@ namespace JEngine
 		std::unique_ptr<UI> ui;
 		std::unique_ptr<World> world;
 		std::unique_ptr<View> screenView;
-
-		//std::unique_ptr<UniformBufferManager<struct 
+		std::unique_ptr<UniformBuffersManager> uniformBuffersManager;
 
 		ivec2 windowSize;
 

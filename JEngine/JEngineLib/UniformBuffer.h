@@ -7,7 +7,7 @@
 namespace JEngine
 {
 	template <typename UniformBufferFormat>
-	class UniformBufferManager
+	class UniformBuffer
 	{
 	private:
 		GLuint UBO;
@@ -16,8 +16,8 @@ namespace JEngine
 	public:
 		UniformBufferFormat bufferData;
 
-		UniformBufferManager();
-		~UniformBufferManager();
+		UniformBuffer();
+		~UniformBuffer();
 
 		bool initialise(GLuint _uniformBufferBindingLocation);
 
@@ -25,11 +25,11 @@ namespace JEngine
 	};
 
 	template<typename UniformBufferFormat>
-	inline UniformBufferManager<UniformBufferFormat>::UniformBufferManager()
+	inline UniformBuffer<UniformBufferFormat>::UniformBuffer()
 	{
 	}
 	template<typename UniformBufferFormat>
-	inline UniformBufferManager<UniformBufferFormat>::~UniformBufferManager()
+	inline UniformBuffer<UniformBufferFormat>::~UniformBuffer()
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -37,7 +37,7 @@ namespace JEngine
 	}
 
 	template<typename UniformBufferFormat>
-	inline bool UniformBufferManager<UniformBufferFormat>::initialise(GLuint _uniformBufferBindingLocation)
+	inline bool UniformBuffer<UniformBufferFormat>::initialise(GLuint _uniformBufferBindingLocation)
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
@@ -51,13 +51,13 @@ namespace JEngine
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformBufferFormat), nullptr, GL_STATIC_DRAW);
 		
 		//Bind UBO to binding location
-		glBindBufferBase(GL_UNIFORM_BUFFER, _uniformBufferBindingLocation, UBO);
+		glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferBindingLocation, UBO);
 		
 		return true;
 	}
 
 	template<typename UniformBufferFormat>
-	inline void UniformBufferManager<UniformBufferFormat>::flushBufferUpdates()
+	inline void UniformBuffer<UniformBufferFormat>::flushBufferUpdates()
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
