@@ -25,8 +25,14 @@ namespace JEngine
 		VertexFormatStandard(const vec3 &, const vec3 &, const vec2 &);
 	};
 
+	class RendererInterface
+	{
+	public:
+		virtual void draw() const = 0;
+	};
+
 	template <typename VertexFormat, bool enableIndices>
-	class Renderer
+	class Renderer : public RendererInterface
 	{
 	protected:
 		GLuint VAO;
@@ -54,7 +60,7 @@ namespace JEngine
 
 		void flushBufferUpdates();
 
-		void draw() const;
+		virtual void draw() const;
 		void draw(const BufferRange & _range) const;
 
 		std::vector<VertexFormat> & getVertices();

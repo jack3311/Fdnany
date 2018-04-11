@@ -22,11 +22,13 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentRenderable.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="DebugRendering.h" />
     <ClInclude Include="ECSConstants.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="RAIIGL.h" />
@@ -49,6 +51,7 @@
     <ClInclude Include="System.h" />
     <ClInclude Include="SystemManager.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="UniformBufferManager.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="View.h" />
     <ClInclude Include="World.h" />
@@ -61,6 +64,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererTerrain.cpp" />

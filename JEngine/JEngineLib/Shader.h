@@ -29,22 +29,36 @@ namespace JEngine
 		std::vector<std::string> componentSources;
 
 		struct
-		{
+		{/*
 			GLint
 				projectionLocation,
 				viewLocation,
 				modelLocation,
 				viewProjectionLocation,
+				modelViewProjectionLocation;*/
+
+			GLuint modelLocation,
 				modelViewProjectionLocation;
+
 		} uniformLocations;
 
+		struct
+		{
+			GLuint viewInfoUniformBlockIndex;
+		} uniformBlockIndices;
 
+
+		bool compileShader();
 		bool compileComponent(GLuint & _result, int _componentType) const;
 
 
 		void loadUniformLocations();
+		void loadBlockIndices();
+		void setUniformBlocks();
+		
+		/*
 		void setFrameUniforms() const;
-		void setFrameViewUniforms() const;
+		void setFrameViewUniforms() const;*/
 
 	public:
 		Shader();

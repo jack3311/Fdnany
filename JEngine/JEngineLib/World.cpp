@@ -6,8 +6,9 @@
 #include "Entity.h"
 #include "System.h"
 #include "JobManagement.h"
-#include "Renderer.h"
 #include "ComponentRenderable.h"
+#include "Renderer.h"
+#include "Material.h"
 
 #ifdef _DEBUG
 #include "DebugRendering.h"
@@ -20,46 +21,47 @@ namespace JEngine
 	{
 		ECS::Entity * entity = &entityManager.getEntity(_entity);
 
-		auto & mapOfRenderersForThisShader = renderMatrix[_renderable->shader];
+		auto & mapOfRenderersForThisMaterial = renderMatrix[_renderable->material];
 
-		mapOfRenderersForThisShader.insert(std::make_pair(_renderable->renderer, entity));
+		mapOfRenderersForThisMaterial.insert(std::make_pair(_renderable->renderer, entity));
 	}
 	void World::removeFromRenderMatrix(ComponentRenderable * _renderable, const int _entity)
 	{
 		ECS::Entity * entity = &entityManager.getEntity(_entity);
 
-		auto & mapOfRenderersForThisShader = renderMatrix[_renderable->shader];
+		auto & mapOfRenderersForThisMaterial = renderMatrix[_renderable->material];
 
 		{ //Remove renderer/entity pair from the map
-			auto entitiesWithThisRendererItrRange = mapOfRenderersForThisShader.equal_range(_renderable->renderer);
+			auto entitiesWithThisRendererItrRange = mapOfRenderersForThisMaterial.equal_range(_renderable->renderer);
 			auto itr = entitiesWithThisRendererItrRange.first;
 
 			for (; itr != entitiesWithThisRendererItrRange.second; ++itr)
 			{
 				if (itr->second == entity)
 				{
-					mapOfRenderersForThisShader.erase(itr);
+					mapOfRenderersForThisMaterial.erase(itr);
 					break;
 				}
 			}
 		}
 
 		//Remove map for this shader if no renderer/entity pairs present
-		if (mapOfRenderersForThisShader.size() == 0)
+		if (mapOfRenderersForThisMaterial.size() == 0)
 		{
-			renderMatrix.erase(_renderable->shader);
+			renderMatrix.erase(_renderable->material);
 		}
 	}
 
 	void World::drawRenderMatrix() const
 	{
+#ifdef _DEBUG
 		Logger::get().log("-------------------");
 		Logger::get().log("Render Matrix Debug");
 		Logger::get().log("-------------------");
 		
 		for (auto itr = renderMatrix.begin(); itr != renderMatrix.end(); ++itr)
 		{
-			Logger::get().log(strJoinConvert("Shader: ", itr->first));
+			Logger::get().log(strJoinConvert("Material: ", itr->first));
 
 			void * lastRenderer = nullptr;
 
@@ -74,6 +76,7 @@ namespace JEngine
 			}
 		}
 		Logger::get().log("-------------------");
+#endif
 	}
 
 	void World::updateEntityMatrices()
@@ -142,6 +145,7 @@ namespace JEngine
 
 	void World::preRender()
 	{
+		//Call pre-render on each system for each entity
 		auto & systems = systemManager.getSystemsOrdered();
 		auto & entities = entityManager.getEntities();
 
@@ -158,6 +162,7 @@ namespace JEngine
 	}
 	void World::postRender()
 	{
+		//Call post-render on each system for each entity
 		auto & systems = systemManager.getSystemsOrdered();
 		auto & entities = entityManager.getEntities();
 

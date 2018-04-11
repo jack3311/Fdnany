@@ -4,13 +4,12 @@
 #include "ComponentManager.h"
 #include "SystemManager.h"
 
-#include "Renderer.h"
-
 namespace JEngine
 {
-	class Shader;
+	class Material;
 	class ECS::Entity;
 	class ComponentRenderable;
+	class RendererInterface;
 
 	class World
 	{
@@ -20,7 +19,7 @@ namespace JEngine
 		ECS::SystemManager systemManager;
 
 		//Sort by material and renderer components
-		std::map<Shader *, std::multimap<Renderer<VertexFormatStandard, true> *, ECS::Entity *>> renderMatrix;
+		std::map<Material *, std::multimap<RendererInterface *, ECS::Entity *>> renderMatrix;
 
 		void drawRenderMatrix() const;
 

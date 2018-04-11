@@ -112,7 +112,7 @@ TestScene::TestScene()
 		newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
 		newEntity.flush();
 
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity.getEntityID(), (JEngine::Shader *)0x333333, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x101010);
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x101010);
 	}
 
 	JEngine::ECS::Entity & newEntity2 = entityManager.createEntity();
@@ -122,7 +122,7 @@ TestScene::TestScene()
 		newEntity2.localMove({ 2.5f, 0.f, 0.f });
 		newEntity2.flush();
 
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity2.getEntityID(), (JEngine::Shader *)0x222222, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x202020);
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity2.getEntityID(), (JEngine::Material *)0x222222, (JEngine::RendererInterface *)0x202020);
 	}
 
 	JEngine::ECS::Entity & newEntity3 = entityManager.createEntity();
@@ -132,9 +132,18 @@ TestScene::TestScene()
 		newEntity3.localMove({ 0, -2.5f, 0.f });
 		newEntity3.flush();
 
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity3.getEntityID(), (JEngine::Shader *)0x333333, (JEngine::Renderer<JEngine::VertexFormatStandard, true> *)0x000001);
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity3.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x000001);
 	}
 
+	JEngine::ECS::Entity & newEntity4 = entityManager.createEntity();
+	{
+		newEntity4.setParent(&newEntity3);
+
+		newEntity4.localMove({ 0, -2.5f, 0.f });
+		newEntity4.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity4.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x000001);
+	}
 
 	entity1 = &newEntity;
 

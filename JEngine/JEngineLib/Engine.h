@@ -5,6 +5,7 @@
 
 #include "Maths.h"
 #include "JEvent.h"
+#include "UniformBufferManager.h"
 
 #include <memory>
 #include <string>
@@ -44,6 +45,8 @@ namespace JEngine
 		std::unique_ptr<UI> ui;
 		std::unique_ptr<World> world;
 		std::unique_ptr<View> screenView;
+
+		//std::unique_ptr<UniformBufferManager<struct 
 
 		ivec2 windowSize;
 

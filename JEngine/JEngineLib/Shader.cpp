@@ -6,12 +6,79 @@
 #include "Camera.h"
 #include "Maths.h"
 #include "View.h"
+#include "Constants.h"
 
 namespace JEngine
 {
 	const GLenum Shader::glShaderComponent[ShaderComponent::SHADERCOMPONENT_NUM_ITEMS] = { GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER };
 	const std::string Shader::shaderComponentNames[ShaderComponent::SHADERCOMPONENT_NUM_ITEMS] = { "Vertex Shader", "Geometry Shader", "Fragment Shader" };
 
+
+	bool Shader::compileShader()
+	{
+		std::vector<GLuint> componentsCompiled(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS, 0u);
+
+		//Compile each component
+		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
+		{
+			if (componentSources[i].size() == 0)
+			{
+				continue;
+			}
+
+			if (!compileComponent(componentsCompiled[i], i))
+			{
+				//Error message within compileComponent
+				//Critical error - no need to clean up components
+				return false;
+			}
+		}
+
+		//Create program
+		program = glCreateProgram();
+
+		//Attach each component
+		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
+		{
+			if (componentsCompiled[i] == 0)
+			{
+				continue;
+			}
+
+			glAttachShader(program, componentsCompiled[i]);
+		}
+
+		//Link program
+		glLinkProgram(program);
+
+		//Check for errs
+		GLint linkStatus = 0;
+		glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+
+		if (linkStatus == GL_FALSE)
+		{
+			int info_log_length = 0;
+			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_length);
+			std::vector<char> program_log(info_log_length);
+			glGetProgramInfoLog(program, info_log_length, NULL, &program_log[0]);
+
+			Logger::get().log(strJoinConvert("Could not link shader: ", &program_log[0]), LogLevel::ERROR);
+
+			//Critical error - no need to clean up components
+
+			return false;
+		}
+
+		//Clean up
+		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
+		{
+			glDeleteShader(componentsCompiled[i]);
+		}
+
+		componentSources.clear();
+
+		return true;
+	}
 
 	bool Shader::compileComponent(GLuint & _result, int _componentType) const
 	{
@@ -94,69 +161,16 @@ namespace JEngine
 	{
 		assert(Engine::get().isCurrentThreadMain());
 
-		std::vector<GLuint> componentsCompiled(ShaderComponent::SHADERCOMPONENT_NUM_ITEMS, 0u);
-		
-		//Compile each component
-		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
-		{
-			if (componentSources[i].size() == 0)
-			{
-				continue;
-			}
-
-			if (!compileComponent(componentsCompiled[i], i))
-			{
-				//Error message within compileComponent
-				//Critical error - no need to clean up components
-				return false;
-			}
-		}
-
-		//Create program
-		program = glCreateProgram();
-
-		//Attach each component
-		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
-		{
-			if (componentsCompiled[i] == 0)
-			{
-				continue;
-			}
-
-			glAttachShader(program, componentsCompiled[i]);
-		}
-
-		//Link program
-		glLinkProgram(program);
-
-		//Check for errs
-		GLint linkStatus = 0;
-		glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-		
-		if (linkStatus == GL_FALSE)
-		{
-			int info_log_length = 0;
-			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_length);
-			std::vector<char> program_log(info_log_length);
-			glGetProgramInfoLog(program, info_log_length, NULL, &program_log[0]);
-			
-			Logger::get().log(strJoinConvert("Could not link shader: ", &program_log[0]), LogLevel::ERROR);
-
-			//Critical error - no need to clean up components
-
-			return false;
-		}
-
-		//Clean up
-		for (int i = 0; i < ShaderComponent::SHADERCOMPONENT_NUM_ITEMS; ++i)
-		{
-			glDeleteShader(componentsCompiled[i]);
-		}
-
-		componentSources.clear();
+		ERR_IF(!compileShader(), "Could not compile shader", "Compiled shader");
 
 		//Load uniform locations
 		loadUniformLocations();
+
+		//Load block indices
+		loadBlockIndices();
+
+		//Set block indices
+		setUniformBlocks();
 
 		return true;
 	}
@@ -167,8 +181,8 @@ namespace JEngine
 
 		glUseProgram(program);
 
-		setFrameUniforms();
-		setFrameViewUniforms();
+		//setFrameUniforms();
+		//setFrameViewUniforms();
 		setTransformUniforms(_transform);
 	}
 
@@ -197,19 +211,30 @@ namespace JEngine
 
 	void Shader::loadUniformLocations()
 	{
-		uniformLocations.viewLocation = glGetUniformLocation(program, "viewMatrix");
-		uniformLocations.projectionLocation = glGetUniformLocation(program, "projectionMatrix");
+		//uniformLocations.viewLocation = glGetUniformLocation(program, "viewMatrix");
+		//uniformLocations.projectionLocation = glGetUniformLocation(program, "projectionMatrix");
+		//uniformLocations.viewProjectionLocation = glGetUniformLocation(program, "viewProjectionMatrix");
+
 		uniformLocations.modelLocation = glGetUniformLocation(program, "modelMatrix");
-		uniformLocations.viewProjectionLocation = glGetUniformLocation(program, "viewProjectionMatrix");
 		uniformLocations.modelViewProjectionLocation = glGetUniformLocation(program, "modelViewProjectionMatrix");
 	}
 
-	void Shader::setFrameUniforms() const
+	void Shader::loadBlockIndices()
 	{
-		//Below is example
+		uniformBlockIndices.viewInfoUniformBlockIndex = glGetUniformBlockIndex(program, "viewInfo");
 	}
 
-	void Shader::setFrameViewUniforms() const
+	void Shader::setUniformBlocks()
+	{
+		glUniformBlockBinding(program, uniformBlockIndices.viewInfoUniformBlockIndex, UNIFORM_BUFFER_VIEW_INFO_BINDING_LOCATION);
+	}
+
+	//void Shader::setFrameUniforms() const
+	//{
+	//	//Below is example
+	//}
+
+	/*void Shader::setFrameViewUniforms() const
 	{
 		const View & currentView = Engine::get().getCurrentView();
 		const std::shared_ptr<Camera> & camera = currentView.getCamera();
@@ -217,7 +242,7 @@ namespace JEngine
 		glUniformMatrix4fv(uniformLocations.viewLocation, 1, false, glm::value_ptr(camera->getViewMatrix()));
 		glUniformMatrix4fv(uniformLocations.projectionLocation, 1, false, glm::value_ptr(camera->getProjectionMatrix()));
 		glUniformMatrix4fv(uniformLocations.viewProjectionLocation, 1, false, glm::value_ptr(camera->getViewProjectionMatrix()));
-	}
+	}*/
 
 	void Shader::setTransformUniforms(const ECS::Entity & _transform) const
 	{

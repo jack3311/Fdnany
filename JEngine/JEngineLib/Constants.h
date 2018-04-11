@@ -1,0 +1,3 @@
+#pragma once
+
+#define UNIFORM_BUFFER_VIEW_INFO_BINDING_LOCATION 1

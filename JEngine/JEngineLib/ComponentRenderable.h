@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Shader.h"
-#include "Renderer.h"
-
 namespace JEngine
 {
+	class Material;
+	class RendererInterface;
+
 	class ComponentRenderable
 	{
 	public:
 		int entity;
-		Shader * shader;
-		Renderer<VertexFormatStandard, true> * renderer;
+		Material * material;
+		RendererInterface * renderer;
 
-		ComponentRenderable(const int _entity, Shader * _shader, Renderer<VertexFormatStandard, true> * _renderer);
+		ComponentRenderable(const int _entity, Material * _material, RendererInterface * _renderer);
 		~ComponentRenderable();
 	};
 }
