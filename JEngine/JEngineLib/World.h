@@ -6,10 +6,10 @@
 
 namespace JEngine
 {
-	class Material;
 	class ECS::Entity;
 	class ComponentRenderable;
 	class RendererInterface;
+	class MaterialInterface;
 
 	class World
 	{
@@ -19,7 +19,7 @@ namespace JEngine
 		ECS::SystemManager systemManager;
 
 		//Sort by material and renderer components
-		std::map<Material *, std::multimap<RendererInterface *, ECS::Entity *>> renderMatrix;
+		std::map<MaterialInterface *, std::multimap<RendererInterface *, ECS::Entity *>> renderMatrix;
 
 		void drawRenderMatrix() const;
 

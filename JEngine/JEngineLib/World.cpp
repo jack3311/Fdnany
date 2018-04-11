@@ -78,11 +78,11 @@ namespace JEngine
 		Logger::get().log("-------------------");
 #endif
 
+		//Render the render matrix
 		for (auto itr = renderMatrix.begin(); itr != renderMatrix.end(); ++itr)
 		{
-			Logger::get().log(strJoinConvert("Material: ", itr->first));
-
-			
+			//Begin material (uniform buffer, shader)
+			itr->first->begin();
 
 
 			void * lastRenderer = nullptr;
@@ -91,10 +91,11 @@ namespace JEngine
 			{
 				if (itr2->first != lastRenderer)
 				{
-					Logger::get().log(strJoinConvert("   |-- Renderer: ", itr2->first));
+					//TODO: Begin renderer
 				}
 
-				Logger::get().log(strJoinConvert("      |-- Entity: ", itr2->second));
+				itr->first->getShader().setTransformUniforms(*itr2->second);
+				itr2->first->draw();
 			}
 		}
 	}

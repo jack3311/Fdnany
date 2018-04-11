@@ -9,6 +9,7 @@
 #include <JEngineLib\Camera.h>
 #include <JEngineLib\Entity.h>
 #include <JEngineLib\Material.h>
+#include <JEngineLib\UniformBufferFormats.h>
 
 struct MyVertexFormat
 {
@@ -25,7 +26,8 @@ class TestScene :
 {
 private:
 	std::shared_ptr<JEngine::Shader> testShader;
-	std::shared_ptr<JEngine::Renderer<MyVertexFormat, true>> renderer;
+	std::shared_ptr<JEngine::Renderer<MyVertexFormat, true>> renderer1;
+	std::shared_ptr<JEngine::Renderer<MyVertexFormat, true>> renderer2;
 
 	std::shared_ptr<JEngine::Shader> textShader;
 	std::shared_ptr<JEngine::ResourceFont> testFont;
@@ -37,8 +39,8 @@ private:
 
 	JEngine::ECS::Entity * entity1;
 
-	std::shared_ptr<JEngine::Material> * material1;
-	std::shared_ptr<JEngine::Material> * material1;
+	std::shared_ptr<JEngine::Material<UniformBufferFormatNull>> material1;
+	std::shared_ptr<JEngine::Material<UniformBufferFormatNull>> material2;
 
 public:
 	TestScene();

@@ -99,55 +99,7 @@ TestScene::TestScene()
 	};
 
 
-
-	JEngine::ECS::EntityManager & entityManager = JEngine::Engine::get().getWorld().getEntityManager();
-	JEngine::ECS::ComponentManager & componentManager = JEngine::Engine::get().getWorld().getComponentManager();
-	
-
-
-	JEngine::ECS::Entity & newEntity = entityManager.createEntity();
-	{
-		newEntity.localMove({ 1.f, 1.f, 1.f });
-		newEntity.localScale({ 3.f, 3.f, 3.f });
-		newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
-		newEntity.flush();
-
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x101010);
-	}
-
-	JEngine::ECS::Entity & newEntity2 = entityManager.createEntity();
-	{
-		newEntity2.setParent(&newEntity);
-
-		newEntity2.localMove({ 2.5f, 0.f, 0.f });
-		newEntity2.flush();
-
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity2.getEntityID(), (JEngine::Material *)0x222222, (JEngine::RendererInterface *)0x202020);
-	}
-
-	JEngine::ECS::Entity & newEntity3 = entityManager.createEntity();
-	{
-		newEntity3.setParent(&newEntity2);
-
-		newEntity3.localMove({ 0, -2.5f, 0.f });
-		newEntity3.flush();
-
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity3.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x000001);
-	}
-
-	JEngine::ECS::Entity & newEntity4 = entityManager.createEntity();
-	{
-		newEntity4.setParent(&newEntity3);
-
-		newEntity4.localMove({ 0, -2.5f, 0.f });
-		newEntity4.flush();
-
-		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity4.getEntityID(), (JEngine::Material *)0x333333, (JEngine::RendererInterface *)0x000001);
-	}
-
-	entity1 = &newEntity;
-
-/*
+	/*
 	std::shared_ptr<JEngine::Entity> testTransform = std::make_shared<JEngine::Entity>();
 
 	testTransform->localMove({ 1.f, 1.f, 1.f });
@@ -173,22 +125,41 @@ TestScene::TestScene()
 
 
 
+	{
+		std::vector<MyVertexFormat> vertices = {
+			MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
+			MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
+			MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
+			MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
+		};
 
-	std::vector<MyVertexFormat> vertices = {
-		MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
-		MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
-		MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } },
-		MyVertexFormat{ vec3{ 0.5f, 0.5f, 1.f }, vec2{ 1.f, 1.f } },
-	};
+		std::vector<GLuint> indices = {
+			0, 1, 2,
+			1, 3, 2
+		};
 
-	std::vector<GLuint> indices = {
-		0, 1, 2,
-		1, 3, 2
-	};
+		renderer1 = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
+		renderer1->initialise(vertices, indices);
 
-	renderer = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
-	renderer->initialise(vertices, indices);
-	JEngine::Logger::get().log("Created quad renderer");
+		JEngine::Logger::get().log("Created quad renderer");
+	}
+
+	{
+		std::vector<MyVertexFormat> vertices = {
+			MyVertexFormat{ vec3{ -0.5f, -0.5f, 1.f }, vec2{ 0.f, 0.f } },
+			MyVertexFormat{ vec3{ 0.5f, -0.5f, 1.f }, vec2{ 1.f, 0.f } },
+			MyVertexFormat{ vec3{ -0.5f, 0.5f, 1.f }, vec2{ 0.f, 1.f } }
+		};
+
+		std::vector<GLuint> indices = {
+			0, 1, 2,
+		};
+
+		renderer2 = std::make_shared<JEngine::Renderer<MyVertexFormat, true>>();
+		renderer2->initialise(vertices, indices);
+
+		JEngine::Logger::get().log("Created triangle renderer");
+	}
 
 
 	
@@ -281,6 +252,62 @@ TestScene::TestScene()
 
 
 
+
+
+	material1 = std::make_shared<JEngine::Material<UniformBufferFormatNull>>();
+	material1->initialise(&*testShader);
+
+	material2 = std::make_shared<JEngine::Material<UniformBufferFormatNull>>();
+	material2->initialise(&*testShader);
+
+
+
+	JEngine::ECS::EntityManager & entityManager = JEngine::Engine::get().getWorld().getEntityManager();
+	JEngine::ECS::ComponentManager & componentManager = JEngine::Engine::get().getWorld().getComponentManager();
+
+
+
+	JEngine::ECS::Entity & newEntity = entityManager.createEntity();
+	{
+		newEntity.localMove({ 1.f, 1.f, 1.f });
+		newEntity.localScale({ 3.f, 3.f, 3.f });
+		newEntity.localRotate(angleAxis(2.f, vec3{ 0.f, 1.f, 0.f }));
+		newEntity.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity.getEntityID(), &*material1, &*renderer1);
+	}
+
+	JEngine::ECS::Entity & newEntity2 = entityManager.createEntity();
+	{
+		newEntity2.setParent(&newEntity);
+
+		newEntity2.localMove({ 2.5f, 0.f, 0.f });
+		newEntity2.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity2.getEntityID(), &*material1, &*renderer2);
+	}
+
+	JEngine::ECS::Entity & newEntity3 = entityManager.createEntity();
+	{
+		newEntity3.setParent(&newEntity2);
+
+		newEntity3.localMove({ 0, -2.5f, 0.f });
+		newEntity3.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity3.getEntityID(), &*material2, &*renderer1);
+	}
+
+	JEngine::ECS::Entity & newEntity4 = entityManager.createEntity();
+	{
+		newEntity4.setParent(&newEntity3);
+
+		newEntity4.localMove({ 0, -2.5f, 0.f });
+		newEntity4.flush();
+
+		componentManager.createComponent<JEngine::ComponentRenderable>(newEntity4.getEntityID(), &*material2, &*renderer1);
+	}
+
+	entity1 = &newEntity;
 
 	
 
@@ -477,7 +504,7 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	//t.localSetScale(vec3{ 5, 5, 5 });
 	//t.flush();
 	//t.updateGlobalTransformMatrixRecursive();
-	
+	/*
 	testShader->begin();
 
 	testShader->setTransformUniforms(*entity1);
@@ -489,7 +516,7 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 		renderer->draw();
 	}
 	
-	testShader->end();
+	testShader->end();*/
 
 	/*textShader->begin();
 	

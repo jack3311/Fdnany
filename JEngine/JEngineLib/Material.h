@@ -9,12 +9,14 @@ namespace JEngine
 	class MaterialInterface
 	{
 	public:
-		virtual void bind() = 0;
+		virtual void begin() = 0;
+
+		virtual Shader & getShader() = 0;
 
 	};
 
 	template <typename UniformBufferFormat>
-	class Material : MaterialInterface
+	class Material : public MaterialInterface
 	{
 	private:
 		Shader * shader;
@@ -28,7 +30,8 @@ namespace JEngine
 
 		UniformBuffer<UniformBufferFormat> & getMaterialProperties();
 
-		virtual void bind();
+		virtual void begin();
+		virtual Shader & getShader();
 	};
 
 	template<typename UniformBufferFormat>
@@ -59,9 +62,18 @@ namespace JEngine
 	}
 
 	template<typename UniformBufferFormat>
-	inline void Material<UniformBufferFormat>::bind()
+	inline void Material<UniformBufferFormat>::begin()
 	{
 		//Set these material properties as current
 		materialProperties->bind();
+
+		//Bind shader
+		shader->begin();
+	}
+
+	template<typename UniformBufferFormat>
+	inline Shader & Material<UniformBufferFormat>::getShader()
+	{
+		return *shader;
 	}
 }
