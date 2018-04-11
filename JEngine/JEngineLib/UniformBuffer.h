@@ -22,6 +22,8 @@ namespace JEngine
 		bool initialise(GLuint _uniformBufferBindingLocation);
 
 		void flushBufferUpdates();
+
+		void bind();
 	};
 
 	template<typename UniformBufferFormat>
@@ -43,6 +45,7 @@ namespace JEngine
 
 		uniformBufferBindingLocation = _uniformBufferBindingLocation;
 
+		//Zero memory
 		memset(&bufferData, 0, sizeof(UniformBufferFormat));
 		
 		//Setup UBO
@@ -50,8 +53,8 @@ namespace JEngine
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformBufferFormat), nullptr, GL_STATIC_DRAW);
 		
-		//Bind UBO to binding location
-		glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferBindingLocation, UBO);
+		//Bind
+		bind();
 		
 		return true;
 	}
@@ -64,5 +67,14 @@ namespace JEngine
 		//Copy local uniforms to GPU buffer memory
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformBufferFormat), &bufferData, GL_STATIC_DRAW);
+	}
+
+	template<typename UniformBufferFormat>
+	inline void UniformBuffer<UniformBufferFormat>::bind()
+	{
+		assert(Engine::get().isCurrentThreadMain());
+
+		//Bind UBO to binding location
+		glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferBindingLocation, UBO);
 	}
 }

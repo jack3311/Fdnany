@@ -77,6 +77,26 @@ namespace JEngine
 		}
 		Logger::get().log("-------------------");
 #endif
+
+		for (auto itr = renderMatrix.begin(); itr != renderMatrix.end(); ++itr)
+		{
+			Logger::get().log(strJoinConvert("Material: ", itr->first));
+
+			
+
+
+			void * lastRenderer = nullptr;
+
+			for (auto itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
+			{
+				if (itr2->first != lastRenderer)
+				{
+					Logger::get().log(strJoinConvert("   |-- Renderer: ", itr2->first));
+				}
+
+				Logger::get().log(strJoinConvert("      |-- Entity: ", itr2->second));
+			}
+		}
 	}
 
 	void World::updateEntityMatrices()

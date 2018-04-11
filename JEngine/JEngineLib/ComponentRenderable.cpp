@@ -5,7 +5,7 @@
 #include "Material.h"
 #include "World.h"
 
-JEngine::ComponentRenderable::ComponentRenderable(const int _entity, Material * _material, RendererInterface * _renderer) :
+JEngine::ComponentRenderable::ComponentRenderable(const int _entity, MaterialInterface * _material, RendererInterface * _renderer) :
 	entity(_entity),
 	material(_material),
 	renderer(_renderer)

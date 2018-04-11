@@ -8,6 +8,7 @@
 #include <JEngineLib\RendererText.h>
 #include <JEngineLib\Camera.h>
 #include <JEngineLib\Entity.h>
+#include <JEngineLib\Material.h>
 
 struct MyVertexFormat
 {
@@ -35,6 +36,9 @@ private:
 	std::shared_ptr<JEngine::ResourceTexture> testTexture;
 
 	JEngine::ECS::Entity * entity1;
+
+	std::shared_ptr<JEngine::Material> * material1;
+	std::shared_ptr<JEngine::Material> * material1;
 
 public:
 	TestScene();

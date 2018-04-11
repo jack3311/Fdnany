@@ -1,18 +1,19 @@
 #pragma once
 
+#include "Material.h"
+
 namespace JEngine
 {
-	class Material;
 	class RendererInterface;
 
 	class ComponentRenderable
 	{
 	public:
 		int entity;
-		Material * material;
+		MaterialInterface * material;
 		RendererInterface * renderer;
 
-		ComponentRenderable(const int _entity, Material * _material, RendererInterface * _renderer);
+		ComponentRenderable(const int _entity, MaterialInterface * _material, RendererInterface * _renderer);
 		~ComponentRenderable();
 	};
 }
