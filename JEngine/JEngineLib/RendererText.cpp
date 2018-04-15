@@ -36,8 +36,11 @@ namespace JEngine
 
 		EnableBlend;
 
+		Renderer::begin();
+
 		vec2 textPosition = _position;
 		auto & characters = _font.getCharacters();
+
 
 		for (auto cCurrent = _text.begin(); cCurrent != _text.end(); ++cCurrent)
 		{
@@ -59,10 +62,10 @@ namespace JEngine
 				{ {x + width, y + height},	{1.0f, 0.0f} }, //2
 				{ {x, y + height},			{0.0f, 0.0f} } //3
 			};
-
+/*
 			glBindVertexArray(VAO);
 
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);*/
 			glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNew.size() * sizeof(VertexFormatText), &verticesNew[0]); //TODO: can be glBufferData?
 			
 			fc.texture->bind(GL_TEXTURE0);
@@ -73,6 +76,8 @@ namespace JEngine
 			//Move forwards for next char
 			textPosition.x += (fc.advance >> 6) * _scale;
 		}
+
+		Renderer::end();
 	}
 
 	bool RendererText::initialise()

@@ -160,6 +160,7 @@ namespace JEngine
 		glEnable(GL_TEXTURE_2D);
 		glFrontFace(GL_CCW);
 		glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);
 
 		//Initialise engine systems
 		ERR_IF(!screenView->initialise(), "Failed to initialise screen view", "Initialised screen view");
@@ -286,7 +287,7 @@ namespace JEngine
 	void Engine::render() const
 	{
 		glClearColor(0.f, 0.f, 0.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Render world
 		world->render();

@@ -8,6 +8,7 @@
 #include "Maths.h"
 #include "RAIIGL.h"
 #include "Util.h"
+#include "Engine.h"
 
 namespace JEngine
 {
@@ -16,6 +17,7 @@ namespace JEngine
 
 	class VertexFormatStandard
 	{
+	public:
 		vec3 position;
 		vec3 normal;
 		vec2 texCoords;
@@ -28,7 +30,9 @@ namespace JEngine
 	class RendererInterface
 	{
 	public:
+		virtual void begin() const = 0;
 		virtual void draw() const = 0;
+		virtual void end() const = 0;
 	};
 
 	template <typename VertexFormat, bool enableIndices>
@@ -60,8 +64,12 @@ namespace JEngine
 
 		void flushBufferUpdates();
 
+		virtual void begin() const;
+
 		virtual void draw() const;
 		void draw(const BufferRange & _range) const;
+
+		virtual void end() const;
 
 		std::vector<VertexFormat> & getVertices();
 		std::vector<GLuint> & getIndices();
@@ -173,16 +181,8 @@ namespace JEngine
 	}
 
 	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::draw() const
+	inline void Renderer<VertexFormat, enableIndices>::begin() const
 	{
-		draw(BufferRange{ 0, static_cast<unsigned int>(vertices.size()) });
-	}
-
-	template<typename VertexFormat, bool enableIndices>
-	inline void Renderer<VertexFormat, enableIndices>::draw(const BufferRange & _range) const
-	{
-		//TODO: Split to begin/draw/end
-
 		assert(Engine::get().isCurrentThreadMain());
 
 		if (enableCullFace)
@@ -197,6 +197,22 @@ namespace JEngine
 		if (enableIndices)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		}
+	}
+
+	template<typename VertexFormat, bool enableIndices>
+	inline void Renderer<VertexFormat, enableIndices>::draw() const
+	{
+		draw(BufferRange{ 0, static_cast<unsigned int>(vertices.size()) });
+	}
+
+	template<typename VertexFormat, bool enableIndices>
+	inline void Renderer<VertexFormat, enableIndices>::draw(const BufferRange & _range) const
+	{
+		assert(Engine::get().isCurrentThreadMain());
+
+		if (enableIndices)
+		{
 			glDrawElements(drawMode, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, (void*)(0));
 		}
 		else
@@ -205,11 +221,18 @@ namespace JEngine
 			glDrawArrays(drawMode, _range.start, len);
 		}
 
+	}
 
+	template<typename VertexFormat, bool enableIndices>
+	inline void Renderer<VertexFormat, enableIndices>::end() const
+	{
+		assert(Engine::get().isCurrentThreadMain());
+
+		/*
 		if (enableCullFace)
 		{
-			RAIIGL::_EnableCullFace::end();
-		}
+		RAIIGL::_EnableCullFace::end();
+		}*/
 	}
 
 	template<typename VertexFormat, bool enableIndices>

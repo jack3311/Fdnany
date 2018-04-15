@@ -10,6 +10,7 @@
 #include <JEngineLib\Entity.h>
 #include <JEngineLib\Material.h>
 #include <JEngineLib\UniformBufferFormats.h>
+#include <JEngineLib\RendererTerrain.h>
 
 struct MyVertexFormat
 {
@@ -28,6 +29,10 @@ private:
 	std::shared_ptr<JEngine::Shader> testShader;
 	std::shared_ptr<JEngine::Renderer<MyVertexFormat, true>> renderer1;
 	std::shared_ptr<JEngine::Renderer<MyVertexFormat, true>> renderer2;
+
+
+	std::shared_ptr<JEngine::Shader> terrainShader;
+	std::shared_ptr<JEngine::RendererTerrain> rendererTerrain;
 
 	std::shared_ptr<JEngine::Shader> textShader;
 	std::shared_ptr<JEngine::ResourceFont> testFont;

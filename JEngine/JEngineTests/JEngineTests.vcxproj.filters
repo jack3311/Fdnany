@@ -58,5 +58,11 @@
     <None Include="Assets\debugShader.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Assets\terrainShader.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Assets\terrainShader.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

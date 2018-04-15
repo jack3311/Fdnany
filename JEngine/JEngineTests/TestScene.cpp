@@ -83,7 +83,7 @@ MyVertexFormat::MyVertexFormat(const vec3 & _pos, const vec2 & _texCoords) : pos
 
 TestScene::TestScene()
 {
-	JEngine::Engine::get().getWorld().getSystemManager().registerSystem<SystemTest>();
+	//JEngine::Engine::get().getWorld().getSystemManager().registerSystem<SystemTest>();
 
 
 
@@ -161,6 +161,11 @@ TestScene::TestScene()
 		JEngine::Logger::get().log("Created triangle renderer");
 	}
 
+	{
+		rendererTerrain = std::make_shared<JEngine::RendererTerrain>();
+		rendererTerrain->initialise();
+	}
+
 
 	
 	auto & resourceManager = JEngine::ResourceManager::getResourceManager();
@@ -207,6 +212,27 @@ TestScene::TestScene()
 		}
 	}
 
+
+	{
+		terrainShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader());
+
+		auto job = terrainShader->loadFromDiskAsync({
+			{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\terrainShader.vert") },
+			{ JEngine::Shader::ShaderComponent::FRAGMENT, resourceManager.constructFullPath("Assets\\terrainShader.frag") }
+			});
+
+		job->waitUntilFinished();
+
+		if (!job->wasSuccessful())
+		{
+			std::cout << "Could not load terrain shader" << std::endl;
+		}
+
+		if (!terrainShader->initialise())
+		{
+			std::cout << "Could not initialise terrain shader" << std::endl;
+		}
+	}
 	//{
 	//	textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
 	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
@@ -500,10 +526,24 @@ void TestScene::preSceneRender(JEngine::Engine & _engine)
 
 void TestScene::postSceneRender(JEngine::Engine & _engine)
 {
-	//JEngine::Entity t;
-	//t.localSetScale(vec3{ 5, 5, 5 });
-	//t.flush();
-	//t.updateGlobalTransformMatrixRecursive();
+	JEngine::ECS::Entity t(-1);
+	t.localSetScale(vec3{ 1, 5, 1 });
+	t.localSetPosition({ -50, -20, -50 });
+	t.flush();
+	t.updateGlobalTransformMatrixRecursive();
+
+	terrainShader->begin();
+	{
+		rendererTerrain->begin();
+		{
+			terrainShader->setTransformUniforms(t);
+
+			rendererTerrain->draw();
+		}
+		rendererTerrain->end();
+	}
+	terrainShader->end();
+
 	/*
 	testShader->begin();
 

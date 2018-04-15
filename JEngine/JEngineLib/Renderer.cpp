@@ -2,6 +2,14 @@
 
 namespace JEngine
 {
+	VertexFormatStandard::VertexFormatStandard(const vec3 & _position, const vec3 & _normal, const vec2 & _texCoords) :
+		position(_position),
+		normal(_normal),
+		texCoords(_texCoords)
+	{
+
+	}
+
 	void VertexFormatStandard::setupVertexAttributes()
 	{
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatStandard), (GLvoid *)offsetof(VertexFormatStandard, VertexFormatStandard::position));

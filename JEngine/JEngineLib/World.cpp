@@ -85,16 +85,25 @@ namespace JEngine
 			itr->first->begin();
 
 
-			void * lastRenderer = nullptr;
+			RendererInterface * lastRenderer = nullptr;
 
 			for (auto itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
 			{
 				if (itr2->first != lastRenderer)
 				{
-					//TODO: Begin renderer
+					//Swap renderers
+					if (lastRenderer != nullptr)
+					{
+						lastRenderer->end();
+					}
+
+					itr2->first->begin();
 				}
 
+				//Load transform transformations
 				itr->first->getShader().setTransformUniforms(*itr2->second);
+
+				//Draw object
 				itr2->first->draw();
 			}
 		}
