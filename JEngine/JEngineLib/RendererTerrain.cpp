@@ -13,6 +13,11 @@ namespace JEngine
 	{
 	}
 
+	bool VertexFormatTerrain::operator<(const VertexFormatTerrain & b) const
+	{
+		return b.position.y < position.y;
+	}
+
 	void VertexFormatTerrain::setupVertexAttributes()
 	{
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatTerrain), (GLvoid *)offsetof(VertexFormatTerrain, VertexFormatTerrain::position));
@@ -37,11 +42,35 @@ namespace JEngine
 			{
 				float xpos = (float)(_offsetXZ.x + _step * x);
 				float zpos = (float)(_offsetXZ.y + _step * z);
-				float ypos = perlinNoise->octaveNoise((float)xpos * 0.1f, (float)zpos * 0.1f, 0.1f);
 
-				_vertices[x * _sizeXZ.y + z] = VertexFormatTerrain{ vec3{xpos, ypos, zpos}, vec3{0, 0, 0}, vec2{x, z}, vec4{0, 0, 0.5f, 0.5f} };
+				float h1 = perlinNoise->noise((float)xpos * 0.1f, (float)zpos * 0.1f, 0.1f);
+
+				float ypos = h1;
+
+				//For texture
+				float hScaled = 3.f * h1; //3 = num textures - 1
+
+
+				_vertices[x * _sizeXZ.y + z] = VertexFormatTerrain{ 
+					vec3{xpos, ypos, zpos}, 
+					vec3{0, 0, 0}, 
+					vec2{x, z}, 
+					vec4{
+						MAX(1.f - fabsf(hScaled - 0.f), 0.f),
+						MAX(1.f - fabsf(hScaled - 1.f), 0.f),
+						MAX(1.f - fabsf(hScaled - 2.f), 0.f),
+						MAX(1.f - fabsf(hScaled - 3.f), 0.f),
+					} 
+				};
 			}
 		}
+
+		std::vector<VertexFormatTerrain> verticesSorted;
+		verticesSorted.insert(verticesSorted.begin(), _vertices.begin(), _vertices.end());
+		std::sort(verticesSorted.begin(), verticesSorted.end());
+		/*std::sort(verticesSorted.begin(), verticesSorted.end(), [](const VertexFormatTerrain & a, const VertexFormatTerrain & b) {
+			return a.position.y < b.position.y ? a : b;
+		});*/
 
 		//Calculate normals
 		for (int x = 0; x < _sizeXZ.x - 1; ++x)
