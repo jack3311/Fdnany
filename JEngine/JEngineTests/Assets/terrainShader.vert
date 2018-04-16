@@ -2,10 +2,13 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoords;
+layout (location = 3) in vec4 texFactors;
 
+out vec3 vs_fs_position;
 out vec3 vs_fs_normal;
 out vec2 vs_fs_texCoords;
-out vec3 vs_fs_position;
+out vec4 vs_fs_texFactors;
+
 
 layout (std140) uniform viewInfo
 {
@@ -22,5 +25,7 @@ void main(void)
 	
 	vs_fs_normal = normal;
 	vs_fs_texCoords = texCoords;
+	vs_fs_texFactors = texFactors;
+
 	vs_fs_position = position;
 }

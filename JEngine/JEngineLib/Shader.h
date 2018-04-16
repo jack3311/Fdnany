@@ -55,6 +55,7 @@ namespace JEngine
 		void loadUniformLocations();
 		void loadBlockIndices();
 		void setUniformBlocks();
+		void setSamplerBindings();
 		
 		/*
 		void setFrameUniforms() const;

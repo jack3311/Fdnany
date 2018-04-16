@@ -47,7 +47,7 @@ namespace JEngine
 
 		bool initialise();
 
-		void bind(GLenum _unit) const;
+		void bind(unsigned int _unit) const;
 	};
 
 	class JobLoadResourceTexture : public Job

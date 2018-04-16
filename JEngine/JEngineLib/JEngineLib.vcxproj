@@ -34,6 +34,7 @@
     <ClInclude Include="RAIIGL.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RendererTerrain.h" />
+    <ClInclude Include="RendererTerrainChunk.h" />
     <ClInclude Include="RendererText.h" />
     <ClInclude Include="ResourceFont.h" />
     <ClInclude Include="Shader.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererTerrain.cpp" />
+    <ClCompile Include="RendererTerrainChunk.cpp" />
     <ClCompile Include="RendererText.cpp" />
     <ClCompile Include="ResourceFont.cpp" />
     <ClCompile Include="Shader.cpp" />

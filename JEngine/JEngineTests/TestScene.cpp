@@ -185,9 +185,7 @@ TestScene::TestScene()
 		JEngine::Logger::get().log("Loaded test texture");
 	}
 	resourceManager.endResourceCaching();
-
-
-
+	
 
 
 
@@ -233,6 +231,46 @@ TestScene::TestScene()
 			std::cout << "Could not initialise terrain shader" << std::endl;
 		}
 	}
+
+	{
+		materialTerrain = std::make_shared<JEngine::Material<UniformBufferFormatNull>>();
+		materialTerrain->initialise(&*terrainShader);
+	}
+
+
+
+	resourceManager.beginResourceCaching();
+	{
+		//Load terrain textures
+		std::shared_ptr<JEngine::JobLoadResourceTexture> jobTerrainTex0;
+		std::shared_ptr<JEngine::JobLoadResourceTexture> jobTerrainTex1;
+		std::shared_ptr<JEngine::JobLoadResourceTexture> jobTerrainTex2;
+		std::shared_ptr<JEngine::JobLoadResourceTexture> jobTerrainTex3;
+
+		resourceManager.loadResourceTextureAsync(jobTerrainTex0, "Assets\\wests_textures\\grass1.png");
+		resourceManager.loadResourceTextureAsync(jobTerrainTex1, "Assets\\wests_textures\\snow 1.png");
+		resourceManager.loadResourceTextureAsync(jobTerrainTex2, "Assets\\wests_textures\\dirt 1.png");
+		resourceManager.loadResourceTextureAsync(jobTerrainTex3, "Assets\\wests_textures\\stone 3.png");
+
+		jobTerrainTex0->waitUntilFinished();
+		jobTerrainTex1->waitUntilFinished();
+		jobTerrainTex2->waitUntilFinished();
+		jobTerrainTex3->waitUntilFinished();
+
+		jobTerrainTex0->texture->initialise();
+		jobTerrainTex1->texture->initialise();
+		jobTerrainTex2->texture->initialise();
+		jobTerrainTex3->texture->initialise();
+
+
+		//Set material textures
+		materialTerrain->getTextures()[0] = jobTerrainTex0->texture;
+		materialTerrain->getTextures()[1] = jobTerrainTex1->texture;
+		materialTerrain->getTextures()[2] = jobTerrainTex2->texture;
+		materialTerrain->getTextures()[3] = jobTerrainTex3->texture;
+	}
+	resourceManager.endResourceCaching();
+
 	//{
 	//	textShader = std::shared_ptr<JEngine::Shader>(new JEngine::Shader({
 	//		{ JEngine::Shader::ShaderComponent::VERTEX, resourceManager.constructFullPath("Assets\\text.vert") },
@@ -532,7 +570,7 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 	t.flush();
 	t.updateGlobalTransformMatrixRecursive();
 
-	terrainShader->begin();
+	materialTerrain->begin();
 	{
 		rendererTerrain->begin();
 		{
@@ -542,7 +580,6 @@ void TestScene::postSceneRender(JEngine::Engine & _engine)
 		}
 		rendererTerrain->end();
 	}
-	terrainShader->end();
 
 	/*
 	testShader->begin();

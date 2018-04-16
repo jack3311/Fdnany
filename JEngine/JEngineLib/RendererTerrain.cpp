@@ -5,19 +5,41 @@
 
 namespace JEngine
 {
-	void RendererTerrain::generateTerrainChunk(ivec2 _offsetXZ, ivec2 _sizeXZ, int _step, std::vector<VertexFormatStandard> & _vertices, std::vector<GLuint> & _indices)
+	VertexFormatTerrain::VertexFormatTerrain(const vec3 & _position, const vec3 & _normal, const vec2 & _texCoords, const vec4 & _texFactors) :
+		position(_position),
+		normal(_normal),
+		texCoords(_texCoords),
+		texFactors(_texFactors)
 	{
-		_vertices.resize(_sizeXZ.x * _sizeXZ.y, VertexFormatStandard{ {0, 0, 0}, {0, 0, 0}, {0, 0} });
+	}
+
+	void VertexFormatTerrain::setupVertexAttributes()
+	{
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatTerrain), (GLvoid *)offsetof(VertexFormatTerrain, VertexFormatTerrain::position));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormatTerrain), (GLvoid *)offsetof(VertexFormatTerrain, VertexFormatTerrain::normal));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexFormatTerrain), (GLvoid *)offsetof(VertexFormatTerrain, VertexFormatTerrain::texCoords));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormatTerrain), (GLvoid *)offsetof(VertexFormatTerrain, VertexFormatTerrain::texFactors));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+	}
+
+
+	void RendererTerrain::generateTerrainChunk(ivec2 _offsetXZ, ivec2 _sizeXZ, int _step, std::vector<VertexFormatTerrain> & _vertices, std::vector<GLuint> & _indices)
+	{
+		//Generate vertices
+		_vertices.resize(_sizeXZ.x * _sizeXZ.y, VertexFormatTerrain{ {0, 0, 0}, {0, 0, 0}, {0, 0}, {0, 0, 0, 0} });
 
 		for (int x = 0; x < _sizeXZ.x; x += _step)
 		{
 			for (int z = 0; z < _sizeXZ.y; z += _step)
 			{
-				float xpos = _offsetXZ.x + _step * x;
-				float zpos = _offsetXZ.y + _step * z;
+				float xpos = (float)(_offsetXZ.x + _step * x);
+				float zpos = (float)(_offsetXZ.y + _step * z);
 				float ypos = perlinNoise->octaveNoise((float)xpos * 0.1f, (float)zpos * 0.1f, 0.1f);
 
-				_vertices[x * _sizeXZ.y + z] = VertexFormatStandard{ vec3{xpos, ypos, zpos}, vec3{0, 0, 0}, vec2{x, z} };
+				_vertices[x * _sizeXZ.y + z] = VertexFormatTerrain{ vec3{xpos, ypos, zpos}, vec3{0, 0, 0}, vec2{x, z}, vec4{0, 0, 0.5f, 0.5f} };
 			}
 		}
 
@@ -40,17 +62,17 @@ namespace JEngine
 			}
 		}
 
+		//Calculate indices
 		_indices.resize((_sizeXZ.x - 1) * (_sizeXZ.y - 1) * 6);
 
-		//Add indices
 		for (int x = 0; x < _sizeXZ.x - 1; ++x)
 		{
 			for (int z = 0; z < _sizeXZ.y - 1; ++z)
 			{
 				int startIndex = x * (_sizeXZ.y - 1) * 6 + z * 6;
 
-				_indices[startIndex] = (x * _sizeXZ.y + z);				//0
-				_indices[startIndex + 1] = (x * _sizeXZ.y + z + 1);		//1		
+				_indices[startIndex] = (x * _sizeXZ.y + z);					//0
+				_indices[startIndex + 1] = (x * _sizeXZ.y + z + 1);			//1		
 				_indices[startIndex + 2] = ((x + 1) * _sizeXZ.y + (z + 1));	//3
 				
 				_indices[startIndex + 3] = (x * _sizeXZ.y + z);				//0
@@ -71,7 +93,7 @@ namespace JEngine
 	{
 		perlinNoise = std::make_unique<Maths::PerlinNoise>(10);
 
-		std::vector<VertexFormatStandard> vertices;
+		std::vector<VertexFormatTerrain> vertices;
 		std::vector<GLuint> indices;
 		generateTerrainChunk({ 0, 0 }, { 100, 100 }, 1, vertices, indices);
 		

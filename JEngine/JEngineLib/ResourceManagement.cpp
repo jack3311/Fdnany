@@ -193,11 +193,11 @@ namespace JEngine
 		return true;
 	}
 
-	void ResourceTexture::bind(GLenum _unit) const
+	void ResourceTexture::bind(unsigned int _unit) const
 	{
 		assert(Engine::get().isCurrentThreadMain());
 		
-		glActiveTexture(_unit);
+		glActiveTexture(GL_TEXTURE0 + _unit);
 		glBindTexture(GL_TEXTURE_2D, glTextureID);
 	}
 

@@ -15,9 +15,8 @@ namespace JEngine
 #define DEFAULT_DRAW_MODE GL_TRIANGLES
 #define DEFAULT_CULL_FACE true
 
-	class VertexFormatStandard
+	struct VertexFormatStandard
 	{
-	public:
 		vec3 position;
 		vec3 normal;
 		vec2 texCoords;

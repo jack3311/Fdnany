@@ -33,6 +33,7 @@ private:
 
 	std::shared_ptr<JEngine::Shader> terrainShader;
 	std::shared_ptr<JEngine::RendererTerrain> rendererTerrain;
+	std::shared_ptr<JEngine::Material<UniformBufferFormatNull>> materialTerrain;
 
 	std::shared_ptr<JEngine::Shader> textShader;
 	std::shared_ptr<JEngine::ResourceFont> testFont;

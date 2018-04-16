@@ -163,6 +163,8 @@ namespace JEngine
 
 		ERR_IF(!compileShader(), "Could not compile shader", "Compiled shader");
 
+		glUseProgram(program);
+
 		//Load uniform locations
 		loadUniformLocations();
 
@@ -171,6 +173,9 @@ namespace JEngine
 
 		//Set block indices
 		setUniformBlocks();
+
+		//Set sampler bindings
+		setSamplerBindings();
 
 		return true;
 	}
@@ -227,6 +232,15 @@ namespace JEngine
 	void Shader::setUniformBlocks()
 	{
 		glUniformBlockBinding(program, uniformBlockIndices.viewInfoUniformBlockIndex, UNIFORM_BUFFER_VIEW_INFO_BINDING_LOCATION);
+	}
+
+	void Shader::setSamplerBindings()
+	{
+		auto texture0Loc = glGetUniformLocation(program, "texture0");
+		glUniform1i(texture0Loc, 0);
+		glUniform1i(glGetUniformLocation(program, "texture1"), 1);
+		glUniform1i(glGetUniformLocation(program, "texture2"), 2);
+		glUniform1i(glGetUniformLocation(program, "texture3"), 3);
 	}
 
 	//void Shader::setFrameUniforms() const

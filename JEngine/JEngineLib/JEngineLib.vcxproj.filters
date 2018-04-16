@@ -159,6 +159,9 @@
     <ClInclude Include="UniformBuffersManager.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="RendererTerrainChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineTime.cpp">
@@ -243,6 +246,9 @@
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="RendererTerrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RendererTerrainChunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

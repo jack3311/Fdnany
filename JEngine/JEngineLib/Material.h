@@ -3,6 +3,7 @@
 #include "UniformBuffer.h"
 #include "Constants.h"
 #include "Shader.h"
+#include "ResourceManagement.h"
 
 namespace JEngine
 {
@@ -21,6 +22,9 @@ namespace JEngine
 	private:
 		Shader * shader;
 		std::unique_ptr<UniformBuffer<UniformBufferFormat>> materialProperties;
+		std::map<GLuint, std::shared_ptr<ResourceTexture>> textures;
+
+		void bindTextures() const;
 
 	public:
 		Material();
@@ -29,10 +33,20 @@ namespace JEngine
 		bool initialise(Shader * _shader);
 
 		UniformBuffer<UniformBufferFormat> & getMaterialProperties();
+		std::map<GLuint, std::shared_ptr<ResourceTexture>> & getTextures();
 
 		virtual void begin();
 		virtual Shader & getShader();
 	};
+
+	template<typename UniformBufferFormat>
+	inline void Material<UniformBufferFormat>::bindTextures() const
+	{
+		for (auto itr = textures.begin(); itr != textures.end(); ++itr)
+		{
+			itr->second->bind(itr->first);
+		}
+	}
 
 	template<typename UniformBufferFormat>
 	inline Material<UniformBufferFormat>::Material()
@@ -56,9 +70,15 @@ namespace JEngine
 	}
 
 	template<typename UniformBufferFormat>
-	inline UniformBuffer<UniformBufferFormat>& Material<UniformBufferFormat>::getMaterialProperties()
+	inline UniformBuffer<UniformBufferFormat> & Material<UniformBufferFormat>::getMaterialProperties()
 	{
 		return materialProperties;
+	}
+
+	template<typename UniformBufferFormat>
+	inline std::map<GLuint, std::shared_ptr<ResourceTexture>> & Material<UniformBufferFormat>::getTextures()
+	{
+		return textures;
 	}
 
 	template<typename UniformBufferFormat>
@@ -69,6 +89,9 @@ namespace JEngine
 
 		//Bind shader
 		shader->begin();
+
+		//Bind textures
+		bindTextures();
 	}
 
 	template<typename UniformBufferFormat>
