@@ -51,15 +51,16 @@ namespace JEngine
 
 		unsigned int maxVertices,
 			maxIndices;
-
-		bool initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices);
+/*
+		bool initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices);*/
 			
 	public:
 		Renderer(GLenum _drawMode = DEFAULT_DRAW_MODE, bool _enableCullFace = DEFAULT_CULL_FACE);
 		~Renderer();
 
-		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices = -1, unsigned int _maxIndices = -1); //-1 gives size of arrays
-		bool initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices = -1); //-1 gives size of arrays
+		bool initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices = 0, unsigned int _maxIndices = 0); //0 gives size of arrays
+		bool initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices = 0); //0 gives size of arrays
+		bool initialise();
 
 		void flushBufferUpdates();
 
@@ -76,7 +77,7 @@ namespace JEngine
 
 	template <typename VertexFormat, bool enableIndices>
 	inline Renderer<VertexFormat, enableIndices>::Renderer(GLenum _drawMode, bool _enableCullFace) :
-		drawMode(_drawMode), enableCullFace(_enableCullFace)
+		drawMode(_drawMode), enableCullFace(_enableCullFace), maxVertices(0), maxIndices(0)
 	{
 	}
 
@@ -98,49 +99,44 @@ namespace JEngine
 	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, const std::vector<GLuint> & _indices, unsigned int _maxVertices, unsigned int _maxIndices)
 	{
 		static_assert(enableIndices, "Cannot initialise index-disabled renderer with indices array");
-
 		assert(Engine::get().isCurrentThreadMain());
 
-		//Configure normally
-		if (!initialiseBase(_vertices, _maxVertices))
-		{
-			return false;
-		}
-
-		//Configure index-related
+		vertices = _vertices;
+		maxVertices = _maxVertices;
 		indices = _indices;
+		maxIndices = _maxIndices;
 
-		//Setup EBO
-		maxIndices = _maxIndices == -1 ? static_cast<unsigned int>(indices.size()) : _maxIndices;
-
-		glGenBuffers(1, &EBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndices * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
-
-		return true;
+		//Configure normally
+		return initialise();
 	}
 
 	template<typename VertexFormat, bool enableIndices>
 	inline bool Renderer<VertexFormat, enableIndices>::initialise(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices)
 	{
 		static_assert(!enableIndices, "Cannot initialise index-enabled renderer without indices array");
-
-		return initialiseBase(_vertices, _maxVertices);
-	}
-
-	template<typename VertexFormat, bool enableIndices>
-	inline bool Renderer<VertexFormat, enableIndices>::initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices)
-	{
 		assert(Engine::get().isCurrentThreadMain());
 
 		vertices = _vertices;
+		maxVertices = _maxVertices;
+
+		//Configure normally
+		return initialise();
+	}
+
+	template<typename VertexFormat, bool enableIndices>
+	inline bool Renderer<VertexFormat, enableIndices>::initialise()
+	{
+		assert(Engine::get().isCurrentThreadMain());
 
 		//Setup VAO
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
 
 		//Setup VBO
-		maxVertices = _maxVertices == -1 ? static_cast<unsigned int>(vertices.size()) : _maxVertices;
+		if (maxVertices == 0)
+		{
+			maxVertices = static_cast<unsigned int>(vertices.size());
+		}
 
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -153,8 +149,49 @@ namespace JEngine
 		//Setup Vertex Attributes
 		VertexFormat::setupVertexAttributes();
 
+		//Setup Indices
+		if (enableIndices)
+		{
+			if (maxIndices == 0)
+			{
+				maxIndices = static_cast<unsigned int>(indices.size());
+			}
+
+			glGenBuffers(1, &EBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndices * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
+		}
+
 		return true;
 	}
+
+	//template<typename VertexFormat, bool enableIndices>
+	//inline bool Renderer<VertexFormat, enableIndices>::initialiseBase(const std::vector<VertexFormat> & _vertices, unsigned int _maxVertices)
+	//{
+	//	assert(Engine::get().isCurrentThreadMain());
+
+	//	vertices = _vertices;
+
+	//	//Setup VAO
+	//	glGenVertexArrays(1, &VAO);
+	//	glBindVertexArray(VAO);
+
+	//	//Setup VBO
+	//	maxVertices = _maxVertices == -1 ? static_cast<unsigned int>(vertices.size()) : _maxVertices;
+
+	//	glGenBuffers(1, &VBO);
+	//	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	//	if (vertices.size() > 0)
+	//	{
+	//		glBufferData(GL_ARRAY_BUFFER, maxVertices * sizeof(VertexFormat), &vertices[0], GL_STATIC_DRAW);
+	//	}
+
+	//	//Setup Vertex Attributes
+	//	VertexFormat::setupVertexAttributes();
+
+	//	return true;
+	//}
 
 	template<typename VertexFormat, bool enableIndices>
 	inline void Renderer<VertexFormat, enableIndices>::flushBufferUpdates()

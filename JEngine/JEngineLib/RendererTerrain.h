@@ -2,33 +2,21 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "Renderer.h"
-#include "PerlinNoise.h"
+#include "RendererTerrainChunk.h"
+#include "VertexFormatTerrain.h"
 
 namespace JEngine
 {
-	struct VertexFormatTerrain
-	{
-		vec3 position;
-		vec3 normal;
-		vec2 texCoords;
-		vec4 texFactors;
-
-		static void setupVertexAttributes();
-
-		VertexFormatTerrain(const vec3 &, const vec3 &, const vec2 &, const vec4 &);
-
-		bool operator<(const VertexFormatTerrain & b) const;
-	};
 
 	class RendererTerrain : RendererInterface
 	{
 	private:
-		Renderer<VertexFormatTerrain, true> rendererBase;
-		std::unique_ptr<Maths::PerlinNoise> perlinNoise;
+		std::map<int, std::unique_ptr<RendererTerrainChunk>> chunks;
 
-		void generateTerrainChunk(ivec2 _offsetXZ, ivec2 _scaleXZ, int _step, std::vector<VertexFormatTerrain> & _vertices, std::vector<GLuint> & _indices);
+		std::unique_ptr<Maths::PerlinNoise> perlinNoise;
 
 	public:
 		RendererTerrain();
